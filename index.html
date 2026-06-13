@@ -580,6 +580,7 @@
           </div>
           <div class="page-actions">
             <button class="btn" onclick="App.exportarModulo('cotizaciones')">↓ CSV</button>
+            <button class="btn" onclick="App.openImportCotizaciones()">📥 Importar CSV</button>
             <button class="btn btn-primary" onclick="App.openCotizacion()">+ Nueva cotización</button>
           </div>
         </div>
@@ -3362,6 +3363,129 @@ CH-001,Chapa galvanizada,Chapas,unidad,120,50,22500,18500"></textarea>
         </tr>`);
     });
     if(!cache.cotizaciones.length) tb.innerHTML = `<tr><td colspan="9" class="empty">Sin cotizaciones. Creá la primera con "+ Nueva cotización".</td></tr>`;
+  },
+
+  /* ----- IMPORTADOR DE COTIZACIONES (CSV) ----- */
+  openImportCotizaciones(){
+    const prysOpts = cache.proyectos.map(p=>`<option value="${p.id}">${p.codigo} · ${p.nombre} (${p.cliente_nombre||'sin cliente'})</option>`).join('');
+    this.openModal('Importar cotización desde CSV', `
+      <p class="t-body" style="margin-bottom:12px">Pegá un CSV con formato de items: <b>tipo, cantidad, unidad, descripcion, precio_unitario</b></p>
+      <div class="t-meta" style="margin-bottom:8px">
+        <code style="display:block;background:#0e1119;padding:8px;border-radius:4px;margin-top:6px;font-size:11px">
+          tipo,cantidad,unidad,descripcion,precio_unitario<br>
+          material,30,un,P.CORD CAT.6 3.0 MT NEGRO,12.89<br>
+          equipo,1,un,NVR HIKVISION 128 canales,13000
+        </code>
+      </div>
+      <div class="form-row" style="margin-top:12px">
+        <div class="field"><label>Proyecto destino</label>
+          <select id="ic_proy">${prysOpts||'<option>Sin proyectos</option>'}</select>
+        </div>
+        <div class="field"><label>Moneda</label>
+          <select id="ic_mon"><option value="USD">USD</option><option value="ARS">ARS</option></select>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:8px">
+        <div class="field"><label>Título de la cotización</label><input id="ic_tit" placeholder="Cotización importada"/></div>
+        <div class="field"><label>Tipo de cambio</label><input type="number" id="ic_tc" value="1"/></div>
+      </div>
+      <div class="field" style="margin-top:10px">
+        <label>Pegar CSV (solo items)</label>
+        <textarea id="ic_csv" style="min-height:150px;font-family:monospace;font-size:12px" placeholder="tipo,cantidad,unidad,descripcion,precio_unitario
+material,30,un,P.CORD CAT.6,12.89
+equipo,1,un,NVR 128ch,13000"></textarea>
+      </div>
+      <div class="field" style="margin-top:10px"><label>O subir archivo</label>
+        <input type="file" id="ic_file" accept=".csv,.txt" onchange="App.leerArchivoCotCSV(this)"/>
+      </div>
+      <div id="ic_preview"></div>
+    `, [
+      {label:'Cancelar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Parsear', cls:'btn btn-primary', fn:()=> this.parsearCotCSV()}
+    ]);
+  },
+
+  leerArchivoCotCSV(input){
+    const f = input.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onload = e=>{
+      document.getElementById('ic_csv').value = e.target.result;
+      this.parsearCotCSV();
+    };
+    reader.readAsText(f);
+  },
+
+  parsearCotCSV(){
+    const txt = document.getElementById('ic_csv').value.trim();
+    if(!txt){ this.toast('Pegá el CSV primero','err'); return; }
+    const lineas = this.parsearCSVLines(txt);
+    if(lineas.length<2){ this.toast('CSV inválido','err'); return; }
+    const header = lineas[0].map(c=>c.toLowerCase().trim());
+    const idx = {
+      tipo: header.findIndex(h=>h.includes('tipo')),
+      cantidad: header.findIndex(h=>h.includes('cant')||h.includes('qty')),
+      unidad: header.findIndex(h=>h.includes('unidad')),
+      descripcion: header.findIndex(h=>h.includes('desc')||h.includes('nombre')||h.includes('item')),
+      precio: header.findIndex(h=>h.includes('precio')||h.includes('unitario'))
+    };
+    if(idx.descripcion<0 || idx.cantidad<0 || idx.precio<0){
+      this.toast('Faltan columnas: descripcion, cantidad, precio','err'); return;
+    }
+    const items = [];
+    for(let i=1; i<lineas.length; i++){
+      const r = lineas[i];
+      if(r.length<3) continue;
+      const tipoRaw = idx.tipo>=0 ? (r[idx.tipo]||'material').toLowerCase().trim() : 'material';
+      let tipo = 'material';
+      if(tipoRaw.includes('mano') || tipoRaw.includes('mo') || tipoRaw.includes('obra')) tipo = 'mano_obra';
+      else if(tipoRaw.includes('equipo') || tipoRaw.includes('eq')) tipo = 'equipo';
+      else if(tipoRaw.includes('servicio') || tipoRaw.includes('sv')) tipo = 'servicio';
+      const cant = parseFloat((r[idx.cantidad]||'0').replace(',','.'))||0;
+      const precio = parseFloat((r[idx.precio]||'0').replace(',','.'))||0;
+      const desc = (r[idx.descripcion]||'').trim();
+      const unidad = idx.unidad>=0 ? (r[idx.unidad]||'un').trim() : 'un';
+      if(cant>0 && desc){
+        items.push({ tipo, cantidad: cant, unidad, descripcion: desc, precio_unitario: precio, subtotal: cant*precio });
+      }
+    }
+    const total = items.reduce((s,i)=>s+i.subtotal,0);
+    const html = `
+      <div style="background:#0e1119;padding:12px;border-radius:6px;margin:14px 0">
+        <b>${items.length} items listos · Total: $${this.fmt(total)}</b>
+      </div>
+      <div style="max-height:200px;overflow:auto;border:1px solid var(--line);border-radius:6px">
+        <table class="table" style="font-size:11px">
+          <thead><tr><th>Tipo</th><th>Cant</th><th>Unidad</th><th>Descripcion</th><th>P.U.</th><th>Subtotal</th></tr></thead>
+          <tbody>${items.slice(0,15).map(i=>`<tr class="tr-${i.tipo}"><td>${i.tipo}</td><td>${i.cantidad}</td><td>${i.unidad}</td><td>${i.descripcion}</td><td>$${this.fmt(i.precio_unitario)}</td><td><b>$${this.fmt(i.subtotal)}</b></td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn" onclick="App.closeModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="App.ejecutarImportCotizacion(${JSON.stringify(items).replace(/"/g,'&quot;')})">📥 Crear cotización</button>
+      </div>
+    `;
+    document.getElementById('ic_preview').innerHTML = html;
+  },
+
+  async ejecutarImportCotizacion(items){
+    const proyecto_id = parseInt(document.getElementById('ic_proy').value);
+    if(!proyecto_id){ this.toast('Sin proyecto válido','err'); return; }
+    const titulo = document.getElementById('ic_tit').value.trim() || 'Cotización importada';
+    const moneda = document.getElementById('ic_mon').value;
+    const tc = parseFloat(document.getElementById('ic_tc').value)||1;
+    const total = items.reduce((s,i)=>s+i.subtotal,0);
+    const { data: cot, error } = await db.from('cotizaciones').insert({
+      proyecto_id, titulo, moneda, tipo_cambio: tc, version: 1, estado:'borrador', total
+    }).select().single();
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    const rows = items.map((i,idx)=>({...i, cotizacion_id: cot.id, orden: idx}));
+    await db.from('cotizacion_items').insert(rows);
+    await this.logEvent('cotizacion','Cotización importada',`${titulo} · ${items.length} items · $${this.fmt(total)}`, cot.id+'');
+    this.toast('Cotización importada con '+items.length+' items','ok');
+    this.closeModal();
+    this.renderAll();
+    this.openCotizacionEditor(cot.id);
   },
 
   openCotizacion(){
