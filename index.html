@@ -1575,22 +1575,311 @@ const App = {
   viewProyecto(id){
     const p = cache.proyectos.find(x=> x.id===id);
     if(!p) return;
-    this.openModal(`Proyecto ${p.codigo}`, `
+    const tareas = cache.tareas.filter(t=> t.proyecto_id===id);
+    const alcances = cache.alcances.filter(a=> a.proyecto_id===id);
+    const cot = cache.cotizaciones.find(c=> c.proyecto_id===id);
+    // Calcular avance automatico
+    const av = this.calcAvanceProyecto(id);
+    const avanceAuto = av.auto;
+    const avanceActual = p.avance != null ? p.avance : av.auto;
+    const override = p.avance != null && p.avance !== av.auto;
+
+    this.openModal(`Proyecto ${p.codigo} · ${p.nombre}`, `
       <div class="form-row">
-        <div><div class="label" style="color:var(--muted);font-size:12px">Nombre</div><div><b>${p.nombre}</b></div></div>
-        <div><div class="label" style="color:var(--muted);font-size:12px">Cliente</div><div>${p.cliente_nombre||'—'}</div></div>
+        <div><div class="label" style="color:var(--muted);font-size:12px">Cliente</div><div><b>${p.cliente_nombre||'—'}</b></div></div>
+        <div><div class="label" style="color:var(--muted);font-size:12px">Responsable</div><div>${p.profiles?.full_name||'—'}</div></div>
       </div>
       <div class="form-row cols-3" style="margin-top:10px">
         <div><div class="label" style="color:var(--muted);font-size:12px">Estado</div><div>${this.pillProyecto(p.estado)}</div></div>
         <div><div class="label" style="color:var(--muted);font-size:12px">Prioridad</div><div>${this.pillPrioridad(p.prioridad)}</div></div>
-        <div><div class="label" style="color:var(--muted);font-size:12px">Avance</div><div>${p.avance||0}%</div></div>
+        <div><div class="label" style="color:var(--muted);font-size:12px">Fechas</div><div style="font-size:12px">${p.fecha_inicio?this.fmtDate(p.fecha_inicio):'—'} → ${p.fecha_fin_estimada?this.fmtDate(p.fecha_fin_estimada):'—'}</div></div>
+      </div>
+
+      <div style="margin-top:14px;padding:14px;background:#0e1119;border:1px solid var(--line);border-radius:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div>
+            <div class="label" style="color:var(--muted);font-size:11px;text-transform:uppercase">Avance del proyecto</div>
+            <div style="margin-top:4px"><b id="vp_avance_num" style="font-size:24px">${avanceActual}%</b> <span class="t-meta" id="vp_avance_origen">${override?'(manual)':'(automático)'}</span></div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span style="font-size:11px;color:var(--muted)">${tareas.filter(t=>t.estado==='completada').length}/${tareas.length} tareas</span>
+            <span style="font-size:11px;color:var(--muted)">·</span>
+            <span style="font-size:11px;color:var(--muted)">${alcances.filter(a=>a.estado==='validado').length}/${alcances.length} alcances</span>
+          </div>
+        </div>
+        <div class="progress"><div id="vp_avance_bar" style="width:${avanceActual}%"></div></div>
+        <div style="margin-top:10px;display:flex;gap:6px;align-items:center">
+          <button class="btn btn-ghost" onclick="App.setAvanceOverride(${id}, null)" title="Usar cálculo automático">${override?'🔓 Quitar override':'🔒 Override'}</button>
+          <input type="number" min="0" max="100" id="vp_avance_input" value="${avanceActual}" style="width:80px;background:#0e1119;border:1px solid var(--line);border-radius:6px;padding:5px 8px;color:var(--text);text-align:right" ${override?'':'disabled'}/>
+          <button class="btn" onclick="App.setAvanceOverride(${id}, parseInt(document.getElementById('vp_avance_input').value))" ${override?'':'disabled'}>Aplicar</button>
+          <span class="t-meta" style="margin-left:auto">Auto: <b>${avanceAuto}%</b></span>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;border-top:1px solid var(--line);padding-top:14px">
+        <div class="cot-actions" style="margin-bottom:10px">
+          <button class="btn" onclick="App.switchProyectoTab('tareas',${id})" id="vptab_tareas">Tareas (${tareas.length})</button>
+          <button class="btn" onclick="App.switchProyectoTab('alcances',${id})" id="vptab_alcances">Alcances (${alcances.length})</button>
+          <button class="btn" onclick="App.switchProyectoTab('cotizacion',${id})" id="vptab_cotizacion">Cotización</button>
+          <button class="btn" onclick="App.switchProyectoTab('timeline',${id})" id="vptab_timeline">Timeline</button>
+        </div>
+        <div id="vp_tab_content">
+          ${this.proyectoTabTareas(id)}
+        </div>
+      </div>
+
+      ${p.descripcion?`<div class="t-body" style="margin-top:10px;padding:10px;background:#0e1119;border-radius:6px">${p.descripcion}</div>`:''}
+    `, [
+      {label:'Cerrar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Editar proyecto', cls:'btn btn-primary', fn:()=> { this.closeModal(); this.openEditarProyecto(id); }}
+    ]);
+  },
+
+  switchProyectoTab(tab, proyectoId){
+    document.querySelectorAll('[id^="vptab_"]').forEach(b=> b.classList.remove('btn-primary'));
+    document.getElementById('vptab_'+tab)?.classList.add('btn-primary');
+    const cont = document.getElementById('vp_tab_content');
+    if(tab==='tareas') cont.innerHTML = this.proyectoTabTareas(proyectoId);
+    else if(tab==='alcances') cont.innerHTML = this.proyectoTabAlcances(proyectoId);
+    else if(tab==='cotizacion') cont.innerHTML = this.proyectoTabCotizacion(proyectoId);
+    else if(tab==='timeline') cont.innerHTML = this.proyectoTabTimeline(proyectoId);
+  },
+
+  proyectoTabTareas(id){
+    const tareas = cache.tareas.filter(t=> t.proyecto_id===id);
+    if(!tareas.length) return '<div class="empty">Sin tareas. <a onclick="App.openTarea()" style="color:var(--accent);cursor:pointer">Crear la primera</a></div>';
+    return `<div class="table-wrap" style="max-height:300px"><table class="table">
+      <thead><tr><th>Tarea</th><th>Asignado</th><th>Estado</th><th>Prioridad</th><th>Límite</th></tr></thead>
+      <tbody>${tareas.map(t=>`<tr>
+        <td><b>${t.titulo}</b></td>
+        <td>${t.profiles?.full_name||'—'}</td>
+        <td>${this.pillTarea(t.estado)}</td>
+        <td>${this.pillPrioridad(t.prioridad)}</td>
+        <td class="mono">${t.fecha_limite?this.fmtDate(t.fecha_limite):'—'}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  },
+
+  proyectoTabAlcances(id){
+    const alcances = cache.alcances.filter(a=> a.proyecto_id===id);
+    if(!alcances.length) return '<div class="empty">Sin alcances. <a onclick="App.openAlcance()" style="color:var(--accent);cursor:pointer">Crear el primero</a></div>';
+    return `<div class="table-wrap" style="max-height:300px"><table class="table">
+      <thead><tr><th>Código</th><th>Título</th><th>Estado</th><th>Responsable</th><th>Horas</th></tr></thead>
+      <tbody>${alcances.map(a=>`<tr>
+        <td class="mono">${a.codigo||'—'}</td>
+        <td><b>${a.titulo}</b></td>
+        <td>${this.pillAlcance(a.estado)}</td>
+        <td>${a.profiles?.full_name||'—'}</td>
+        <td class="mono">${a.horas_reales||0}/${a.horas_estimadas||0}h</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  },
+
+  proyectoTabCotizacion(id){
+    const cot = cache.cotizaciones.find(c=> c.proyecto_id===id);
+    if(!cot){
+      return `<div class="empty">
+        <p>Este proyecto no tiene cotización asociada.</p>
+        <button class="btn btn-primary" onclick="App.openCotizacionParaProyecto(${id})" style="margin-top:10px">+ Crear cotización para este proyecto</button>
+      </div>`;
+    }
+    const items = cache.cot_items.filter(i=>i.cotizacion_id===cot.id);
+    const subtotal = items.reduce((s,i)=>s+(i.subtotal||0),0);
+    const desc = subtotal*(cot.descuento_pct||0)/100;
+    const iva = (subtotal-desc)*(cot.iva_pct||21)/100;
+    const total = subtotal-desc+iva;
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div><b>${cot.titulo}</b> · v${cot.version}</div>
+          <div class="t-meta">${this.pillEstado ? '' : ''}Estado: ${cot.estado} · ${cot.moneda} · ${items.length} ítems</div>
+        </div>
+        <div class="row-actions">
+          <button class="btn" onclick="App.openCotizacionEditor(${cot.id})">📝 Abrir editor</button>
+          <button class="btn" onclick="App.cotImprimirPDF(${cot.id})">🖨️ PDF</button>
+        </div>
+      </div>
+      <div class="table-wrap" style="max-height:200px"><table class="table">
+        <thead><tr><th>Tipo</th><th>Cant</th><th>Descripción</th><th class="right">P.U.</th><th class="right">Subtotal</th></tr></thead>
+        <tbody>${items.map(i=>`<tr class="tr-${i.tipo}">
+          <td><span class="cot-tipo-pill cot-tipo-${i.tipo}">${(this.TIPOS_COT.find(t=>t.id===i.tipo)||{}).label||i.tipo}</span></td>
+          <td class="mono">${i.cantidad}</td>
+          <td>${i.descripcion}</td>
+          <td class="right mono">${this.fmt(i.precio_unitario)}</td>
+          <td class="right mono"><b>${this.fmt(i.subtotal)}</b></td>
+        </tr>`).join('')}</tbody>
+      </table></div>
+      <div class="cot-summary" style="margin-top:10px">
+        <div class="row"><span>Subtotal</span><b class="mono">${this.fmt(subtotal)} ${cot.moneda}</b></div>
+        ${desc>0?`<div class="row"><span>Descuento</span><b class="mono">-${this.fmt(desc)}</b></div>`:''}
+        <div class="row"><span>IVA</span><b class="mono">${this.fmt(iva)}</b></div>
+        <div class="row total"><span>TOTAL</span><b class="mono">${this.fmt(total)} ${cot.moneda}</b></div>
+      </div>`;
+  },
+
+  proyectoTabTimeline(id){
+    const eventos = cache.log.filter(l=> l.detalle && (l.detalle.includes(cache.proyectos.find(p=>p.id===id)?.codigo||'__nada__') || l.ref_codigo==id+'')).slice(0,20);
+    if(!eventos.length) return '<div class="empty">Sin actividad registrada para este proyecto</div>';
+    return '<div class="timeline">' + eventos.map(l=>`
+      <div class="t-item">
+        <div class="t-head"><b>${l.accion}</b><span class="chip" style="padding:1px 6px">${l.tipo}</span></div>
+        <div class="t-meta">${l.usuario_email||'—'} · ${this.fmtDate(l.created_at,true)}</div>
+        <div class="t-body">${l.detalle||''}</div>
+      </div>`).join('') + '</div>';
+  },
+
+  openCotizacionParaProyecto(proyectoId){
+    this.closeModal();
+    const prys = cache.proyectos.filter(p=>p.id===proyectoId);
+    if(!prys.length) return;
+    this.openModal('Nueva cotización', `
+      <div class="field"><label>Proyecto</label>
+        <select id="cot_proy" disabled><option value="${proyectoId}">${prys[0].codigo} · ${prys[0].nombre}</option></select>
+      </div>
+      <div class="field" style="margin-top:10px"><label>Título</label><input id="cot_tit" placeholder="Cotización inicial / Revisión 1"/></div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="field"><label>Moneda</label>
+          <select id="cot_mon"><option value="USD">USD - Dólar</option><option value="ARS">ARS - Peso argentino</option></select>
+        </div>
+        <div class="field"><label>Tipo de cambio</label><input type="number" id="cot_tc" value="1" step="0.01"/></div>
       </div>
       <div class="form-row" style="margin-top:10px">
-        <div><div class="label" style="color:var(--muted);font-size:12px">Inicio</div><div>${p.fecha_inicio?this.fmtDate(p.fecha_inicio):'—'}</div></div>
-        <div><div class="label" style="color:var(--muted);font-size:12px">Fin estimado</div><div>${p.fecha_fin_estimada?this.fmtDate(p.fecha_fin_estimada):'—'}</div></div>
+        <div class="field"><label>Vigencia (días)</label><input type="number" id="cot_vig" value="15"/></div>
+        <div class="field"><label>Descuento (%)</label><input type="number" id="cot_desc" value="0" step="0.01"/></div>
       </div>
-      ${p.descripcion?`<div class="t-body" style="margin-top:10px">${p.descripcion}</div>`:''}
-    `, [{label:'Cerrar', cls:'btn', fn:()=> this.closeModal()}]);
+      <div class="field" style="margin-top:10px"><label>Notas</label><textarea id="cot_notas"></textarea></div>
+    `, [
+      {label:'Cancelar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Crear y abrir', cls:'btn btn-primary', fn:()=> this.saveCotizacionParaProyecto(proyectoId)}
+    ]);
+  },
+
+  async saveCotizacionParaProyecto(proyectoId){
+    const data = {
+      proyecto_id: proyectoId,
+      titulo: document.getElementById('cot_tit').value.trim() || 'Cotización',
+      moneda: document.getElementById('cot_mon').value,
+      tipo_cambio: parseFloat(document.getElementById('cot_tc').value)||1,
+      vigencia_dias: parseInt(document.getElementById('cot_vig').value)||15,
+      descuento_pct: parseFloat(document.getElementById('cot_desc').value)||0,
+      notas: document.getElementById('cot_notas').value,
+      version: 1
+    };
+    const { data: cot, error } = await db.from('cotizaciones').insert(data).select().single();
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    await this.logEvent('cotizacion','Cotización creada',`${data.titulo} · v1 · ${data.moneda}`, cot.id+'');
+    this.closeModal();
+    await this.renderAll();
+    this.openCotizacionEditor(cot.id);
+  },
+
+  /* ----- AVANCE AUTOMATICO DE PROYECTO ----- */
+  calcAvanceProyecto(proyectoId){
+    const tareas = cache.tareas.filter(t=> t.proyecto_id===proyectoId);
+    const alcances = cache.alcances.filter(a=> a.proyecto_id===proyectoId);
+    let tareaPct = 0, alcancePct = 0;
+    if(tareas.length){
+      const completadas = tareas.filter(t=> t.estado==='completada' || t.estado==='cancelada').length;
+      tareaPct = (completadas / tareas.length) * 100;
+    }
+    if(alcances.length){
+      const validados = alcances.filter(a=> a.estado==='validado' || a.estado==='entregado').length;
+      alcancePct = (validados / alcances.length) * 100;
+    }
+    let auto;
+    if(tareas.length && alcances.length) auto = Math.round((tareaPct + alcancePct) / 2);
+    else if(tareas.length) auto = Math.round(tareaPct);
+    else if(alcances.length) auto = Math.round(alcancePct);
+    else auto = 0;
+    return { auto, tareaPct: Math.round(tareaPct), alcancePct: Math.round(alcancePct) };
+  },
+
+  async setAvanceOverride(proyectoId, valor){
+    const { error } = await db.from('proyectos').update({ avance: valor }).eq('id', proyectoId);
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    if(valor === null){
+      await this.logEvent('proyecto','Avance override quitado','Vuelve a cálculo automático');
+      this.toast('Aviene vuelve a cálculo automático','ok');
+    } else {
+      await this.logEvent('proyecto','Avance manual',`Override a ${valor}%`);
+      this.toast('Avance fijo en '+valor+'%','ok');
+    }
+    this.closeModal();
+    this.renderAll();
+  },
+
+  async openEditarProyecto(id){
+    const p = cache.proyectos.find(x=> x.id===id);
+    if(!p) return;
+    const clis = cache.clientes.map(c=>`<option value="${c.id}" ${c.id==p.cliente_id?'selected':''}>${c.razon}</option>`).join('');
+    this.openModal(`Editar ${p.codigo}`, `
+      <div class="form-row">
+        <div class="field"><label>Código</label><input id="epy_cod" value="${p.codigo}"/></div>
+        <div class="field"><label>Nombre</label><input id="epy_nom" value="${p.nombre}"/></div>
+      </div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="field"><label>Cliente</label><select id="epy_cli">${clis}</select></div>
+        <div class="field"><label>Estado</label>
+          <select id="epy_est">
+            <option value="planificacion" ${p.estado==='planificacion'?'selected':''}>Planificación</option>
+            <option value="en_curso" ${p.estado==='en_curso'?'selected':''}>En curso</option>
+            <option value="pausado" ${p.estado==='pausado'?'selected':''}>Pausado</option>
+            <option value="finalizado" ${p.estado==='finalizado'?'selected':''}>Finalizado</option>
+            <option value="cancelado" ${p.estado==='cancelado'?'selected':''}>Cancelado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="field"><label>Prioridad</label>
+          <select id="epy_pri">
+            <option value="baja" ${p.prioridad==='baja'?'selected':''}>Baja</option>
+            <option value="media" ${p.prioridad==='media'?'selected':''}>Media</option>
+            <option value="alta" ${p.prioridad==='alta'?'selected':''}>Alta</option>
+            <option value="critica" ${p.prioridad==='critica'?'selected':''}>Crítica</option>
+          </select>
+        </div>
+        <div class="field"><label>Avance (%)</label>
+          <input type="number" id="epy_avance" value="${p.avance!=null?p.avance:''}" min="0" max="100" placeholder="Auto"/>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="field"><label>Inicio</label><input type="date" id="epy_ini" value="${p.fecha_inicio||''}"/></div>
+        <div class="field"><label>Fin estimado</label><input type="date" id="epy_fin" value="${p.fecha_fin_estimada||''}"/></div>
+      </div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="field"><label>Presupuesto</label><input type="number" id="epy_pres" value="${p.presupuesto||0}"/></div>
+        <div class="field"><label>Horas estimadas</label><input type="number" id="epy_hrs" value="${p.horas_estimadas||0}"/></div>
+      </div>
+      <div class="field" style="margin-top:10px"><label>Descripción</label><textarea id="epy_desc">${p.descripcion||''}</textarea></div>
+    `, [
+      {label:'Cancelar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Guardar', cls:'btn btn-primary', fn:()=> this.saveEditarProyecto(id)}
+    ]);
+  },
+
+  async saveEditarProyecto(id){
+    const av = document.getElementById('epy_avance').value;
+    const data = {
+      codigo: document.getElementById('epy_cod').value.trim(),
+      nombre: document.getElementById('epy_nom').value.trim(),
+      cliente_id: parseInt(document.getElementById('epy_cli').value),
+      cliente_nombre: cache.clientes.find(c=>c.id==document.getElementById('epy_cli').value)?.razon,
+      estado: document.getElementById('epy_est').value,
+      prioridad: document.getElementById('epy_pri').value,
+      avance: av===''? null : parseInt(av),
+      fecha_inicio: document.getElementById('epy_ini').value||null,
+      fecha_fin_estimada: document.getElementById('epy_fin').value||null,
+      presupuesto: parseFloat(document.getElementById('epy_pres').value)||0,
+      horas_estimadas: parseFloat(document.getElementById('epy_hrs').value)||0,
+      descripcion: document.getElementById('epy_desc').value
+    };
+    if(!data.codigo || !data.nombre){ this.toast('Código y nombre obligatorios','err'); return; }
+    const { error } = await db.from('proyectos').update(data).eq('id', id);
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    await this.logEvent('proyecto','Proyecto editado',`${data.codigo} · ${data.nombre}`);
+    this.toast('Proyecto actualizado','ok');
+    this.closeModal();
+    this.renderAll();
   },
   openProyecto(){
     const clis = cache.clientes.map(c=>`<option value="${c.id}">${c.razon}</option>`).join('');
@@ -1733,8 +2022,21 @@ const App = {
     const next = idx>=0 && idx<flujo.length-1 ? flujo[idx+1] : 'completada';
     await db.from('tareas').update({ estado: next }).eq('id', id);
     await this.logEvent('proyecto','Tarea actualizada',`"${t.titulo}" → ${next}`);
+    // Recalcular avance del proyecto
+    if(t.proyecto_id) await this.recalcProyectoAvance(t.proyecto_id);
     this.toast('Tarea: '+next,'ok');
     this.renderAll();
+  },
+
+  async recalcProyectoAvance(proyectoId){
+    const p = cache.proyectos.find(x=>x.id===proyectoId);
+    if(!p) return;
+    // Solo recalcular si NO tiene override manual (avance = null)
+    if(p.avance != null) return;
+    const av = this.calcAvanceProyecto(proyectoId);
+    if(av.auto !== p.avance){
+      await db.from('proyectos').update({ avance: av.auto }).eq('id', proyectoId);
+    }
   },
   openTarea(){
     const prys = cache.proyectos.map(p=>`<option value="${p.id}">${p.codigo} · ${p.nombre}</option>`).join('');
