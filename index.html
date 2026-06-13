@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>SUMIPANEL · Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -110,6 +111,9 @@
 
   .grid-2{display:grid;grid-template-columns:2fr 1fr;gap:14px}
   .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .grid-4{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .chart-wrap{position:relative;height:220px}
+  .chart-wrap canvas{max-height:100%}
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
   .panel-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
   .panel-title{font-size:14px;font-weight:600}
@@ -405,6 +409,25 @@
           <div class="panel">
             <div class="panel-head"><div class="panel-title">Actividad reciente</div></div>
             <div class="panel-body"><div class="timeline" id="dashTimeline"><div class="empty">Cargando…</div></div></div>
+          </div>
+        </div>
+
+        <div class="grid-4" style="margin-top:14px">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Ventas por mes</div><div class="panel-sub">Últimos 6 meses</div></div>
+            <div class="panel-body"><div class="chart-wrap"><canvas id="chartVentas"></canvas></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">OC por estado</div><div class="panel-sub">Kanban general</div></div>
+            <div class="panel-body"><div class="chart-wrap"><canvas id="chartOC"></canvas></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Proyectos por estado</div></div>
+            <div class="panel-body"><div class="chart-wrap"><canvas id="chartProy"></canvas></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Stock por categoría</div><div class="panel-sub">Unidades</div></div>
+            <div class="panel-body"><div class="chart-wrap"><canvas id="chartStock"></canvas></div></div>
           </div>
         </div>
       </section>
@@ -1147,6 +1170,7 @@ const App = {
   },
 
   /* ----- DASHBOARD ----- */
+  charts:{},
   renderDashboard(){
     const today = new Date().toDateString();
     const pedHoy = cache.pedidos.filter(p=> new Date(p.created_at).toDateString()===today).length;
@@ -1181,6 +1205,85 @@ const App = {
         </div>`).join('');
     } else {
       tl.innerHTML = '<div class="empty">Sin actividad reciente</div>';
+    }
+
+    this.renderCharts();
+  },
+
+  renderCharts(){
+    if(typeof Chart === 'undefined') return;
+    const isDark = getComputedStyle(document.body).backgroundColor === 'rgb(11, 13, 18)';
+    const gridColor = 'rgba(255,255,255,.06)';
+    const textColor = '#8a93a8';
+
+    // Ventas por mes (ultimos 6)
+    const months = [];
+    const ventasPorMes = [];
+    for(let i=5; i>=0; i--){
+      const d = new Date();
+      d.setMonth(d.getMonth()-i);
+      const key = d.toISOString().slice(0,7);
+      const label = d.toLocaleDateString('es-AR',{month:'short'});
+      months.push(label);
+      const total = cache.ventas.filter(v=> v.fecha && v.fecha.startsWith(key)).reduce((s,v)=>s+(v.total||0),0);
+      ventasPorMes.push(total);
+    }
+    if(this.charts.ventas) this.charts.ventas.destroy();
+    const ctxV = document.getElementById('chartVentas');
+    if(ctxV){
+      this.charts.ventas = new Chart(ctxV, {
+        type:'bar',
+        data:{labels:months, datasets:[{label:'Ventas', data:ventasPorMes, backgroundColor:'rgba(124,92,255,.6)', borderColor:'#7c5cff', borderWidth:1, borderRadius:4}]},
+        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:textColor}, grid:{display:false}}, y:{ticks:{color:textColor, callback:v=>'$'+this.fmt(v)}, grid:{color:gridColor}}}}
+      });
+    }
+
+    // OC por estado
+    const ocEstados = ['solicitada','aprobada','enviada','transito','aduana','recibida','cerrada','cancelada','rechazada'];
+    const ocData = ocEstados.map(e=> cache.compras.filter(c=>c.estado===e).length);
+    const ocLabels = ocEstados.map(e=>(this.ESTADOS_KANBAN?this.ESTADOS_KANBAN.find(x=>x.id===e):null)?.label || e);
+    const ocColors = ['#8a93a8','#38bdf8','#7c5cff','#f5a524','#fb923c','#22d3a4','#22c55e','#ef4444','#ef4444'];
+    if(this.charts.oc) this.charts.oc.destroy();
+    const ctxOC = document.getElementById('chartOC');
+    if(ctxOC){
+      this.charts.oc = new Chart(ctxOC, {
+        type:'doughnut',
+        data:{labels:ocLabels, datasets:[{data:ocData, backgroundColor:ocColors, borderColor:'#141822', borderWidth:2}]},
+        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right', labels:{color:textColor, font:{size:10}, boxWidth:10}}}}
+      });
+    }
+
+    // Proyectos por estado
+    const prEstados = ['planificacion','en_curso','pausado','finalizado','cancelado'];
+    const prData = prEstados.map(e=> cache.proyectos.filter(p=>p.estado===e).length);
+    const prLabels = ['Planificación','En curso','Pausado','Finalizado','Cancelado'];
+    const prColors = ['#38bdf8','#22d3a4','#f5a524','#22c55e','#ef4444'];
+    if(this.charts.proy) this.charts.proy.destroy();
+    const ctxP = document.getElementById('chartProy');
+    if(ctxP){
+      this.charts.proy = new Chart(ctxP, {
+        type:'doughnut',
+        data:{labels:prLabels, datasets:[{data:prData, backgroundColor:prColors, borderColor:'#141822', borderWidth:2}]},
+        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right', labels:{color:textColor, font:{size:10}, boxWidth:10}}}}
+      });
+    }
+
+    // Stock por categoria
+    const stockPorCat = {};
+    cache.productos.forEach(p=>{
+      const c = p.categoria || 'Otros';
+      stockPorCat[c] = (stockPorCat[c]||0) + (p.stock||0);
+    });
+    const stkLabels = Object.keys(stockPorCat);
+    const stkData = Object.values(stockPorCat);
+    if(this.charts.stock) this.charts.stock.destroy();
+    const ctxS = document.getElementById('chartStock');
+    if(ctxS){
+      this.charts.stock = new Chart(ctxS, {
+        type:'bar',
+        data:{labels:stkLabels, datasets:[{label:'Stock', data:stkData, backgroundColor:'rgba(34,211,164,.6)', borderColor:'#22d3a4', borderWidth:1, borderRadius:4}]},
+        options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:textColor, callback:v=>this.fmt(v)}, grid:{color:gridColor}}, y:{ticks:{color:textColor}, grid:{display:false}}}}
+      });
     }
   },
 
