@@ -1,0 +1,402 @@
+[
+  {
+    "id": 1,
+    "cat": "OSI",
+    "q": "Un usuario reporta que puede hacer ping a la IP del servidor pero no puede abrir la página web en el navegador. ¿En qué capa del modelo OSI está el problema más probablemente?",
+    "opts": ["Capa 1 - Física", "Capa 2 - Enlace de datos", "Capa 3 - Red", "Capa 7 - Aplicación"],
+    "ans": 3,
+    "explain": "Si responde al ping (capa 3) pero no carga la web (HTTP/HTTPS, capa 7), el problema está en la capa de aplicación: servicio caído, puerto 80/443 bloqueado, DNS que no resuelve el nombre, o problema del propio server web. Las otras capas funcionan porque el ping ICMP tiene eco-respuesta."
+  },
+  {
+    "id": 2,
+    "cat": "OSI",
+    "q": "¿Qué capa del modelo OSI se encarga del direccionamiento lógico y del ruteo de paquetes entre redes distintas?",
+    "opts": ["Capa 2 - Enlace", "Capa 3 - Red", "Capa 4 - Transporte", "Capa 5 - Sesión"],
+    "ans": 1,
+    "explain": "La capa 3 (Red) maneja el direccionamiento lógico (IP) y el ruteo entre redes. La capa 2 solo direcciona dentro del mismo segmento (MAC), la capa 4 se ocupa de puertos y confiabilidad extremo a extremo, y la capa 5 maneja diálogos entre aplicaciones."
+  },
+  {
+    "id": 3,
+    "cat": "OSI",
+    "q": "En una traza de Wireshark ves que el campo 'Next Header' cambia entre tramas y los routers decrementan un contador salto a salto. ¿De qué protocolo hablamos?",
+    "opts": ["IPv4 con TTL", "IPv6 con Hop Limit", "TCP con Window Size", "UDP con Length"],
+    "ans": 1,
+    "explain": "El campo 'Next Header' es propio de IPv6 (reemplaza al 'Protocol' de IPv4) y el 'Hop Limit' cumple la misma función que el TTL de IPv4: lo decrementa cada router. TCP y UDP son capa 4 y no tienen un contador de saltos visible en el header."
+  },
+  {
+    "id": 4,
+    "cat": "OSI",
+    "q": "Al hacer `debug ip packet` en un router Cisco, ¿en qué capa del modelo OSI está trabajando principalmente ese debug?",
+    "opts": ["Capa 2", "Capa 3", "Capa 4", "Capa 7"],
+    "ans": 1,
+    "explain": "`debug ip packet` opera a nivel de capa 3 (paquetes IP). Muestra el procesamiento de los paquetes IP en el route processor, incluyendo decisiones de ruteo. No decodifica encabezados de capa 2 ni de capa 4 por sí solo."
+  },
+  {
+    "id": 5,
+    "cat": "OSI",
+    "q": "¿Cuál de estas PDU corresponde correctamente a capa 2, 3 y 4 respectivamente?",
+    "opts": ["Bit, Paquete, Segmento", "Trama, Segmento, Paquete", "Trama, Paquete, Segmento", "Segmento, Paquete, Trama"],
+    "ans": 2,
+    "explain": "La PDU de capa 2 es la trama (frame), la de capa 3 es el paquete (packet/datagram) y la de capa 4 es el segmento (TCP) o datagrama (UDP). Recordalo así: cuando bajás en el modelo, la PDU se encapsula (capa 7 = datos, 4 = segmento, 3 = paquete, 2 = trama, 1 = bits)."
+  },
+  {
+    "id": 6,
+    "cat": "OSI",
+    "q": "Te llega un ticket: 'Los teléfonos IP no se registran contra el CallManager, pero las PCs navegan bien en la misma boca de red'. ¿Qué capa OSI sospechás primero?",
+    "opts": ["Capa 1 - cableado o PoE", "Capa 2 - VLAN de voz mal etiquetada", "Capa 3 - falta de gateway", "Capa 4 - puerto SIP bloqueado"],
+    "ans": 1,
+    "explain": "Si las PCs navegan, la capa 1 (cable, PoE) está OK y la capa 3 también (hay gateway). Lo clásico en VoIP es que la boca esté en la VLAN de datos en vez de la VLAN de voz, o que el `switchport voice vlan` no esté configurado. La opción 4 también podría ser, pero primero revisás la VLAN."
+  },
+  {
+    "id": 7,
+    "cat": "OSI",
+    "q": "¿Qué capa del modelo OSI introduce la noción de 'sesión' entre dos hosts y maneja checkpoints/diálogos?",
+    "opts": ["Capa 4 - Transporte", "Capa 5 - Sesión", "Capa 6 - Presentación", "Capa 7 - Aplicación"],
+    "ans": 1,
+    "explain": "La capa 5 (Sesión) es la responsable de establecer, mantener y terminar diálogos entre aplicaciones. Ejemplos clásicos son NetBIOS, RPC y SQL Sessions. En la práctica actual, muchas funciones de sesión las absorbió la capa 7 (TLS, autenticación)."
+  },
+  {
+    "id": 8,
+    "cat": "OSI",
+    "q": "Durante la encapsulación, ¿en qué orden se agregan los headers a medida que el dato baja por las capas del modelo OSI?",
+    "opts": ["IP -> TCP -> Ethernet", "TCP -> IP -> Ethernet", "Ethernet -> IP -> TCP", "TCP -> Ethernet -> IP"],
+    "ans": 1,
+    "explain": "El dato se genera en capa 7, se le agrega el header de capa 4 (TCP/UDP = segmento), después el header de capa 3 (IP = paquete) y finalmente el header/trailer de capa 2 (Ethernet = trama). De arriba hacia abajo: Segmento -> Paquete -> Trama -> Bits."
+  },
+  {
+    "id": 9,
+    "cat": "TCP/IP",
+    "q": "En un three-way handshake TCP, ¿cuántos paquetes se intercambian y cuáles son los flags?",
+    "opts": ["2 paquetes: SYN, SYN-ACK", "3 paquetes: SYN, SYN-ACK, ACK", "3 paquetes: SYN, ACK, FIN", "4 paquetes: SYN, SYN-ACK, ACK, FIN"],
+    "ans": 1,
+    "explain": "El three-way handshake son 3 paquetes: el cliente envía SYN, el server responde SYN-ACK y el cliente cierra con ACK. Recién después de ese ACK la conexión está establecida (estado ESTABLISHED). FIN aparece recién en el cierre normal de la conexión (four-way teardown)."
+  },
+  {
+    "id": 10,
+    "cat": "TCP/IP",
+    "q": "En una captura tcpdump ves un paquete con flags 'S' solamente, sin 'A'. ¿Qué significa la 'S' en la salida de tcpdump?",
+    "opts": ["SYN (inicio de conexión)", "RST (reset)", "PSH (push)", "URG (urgente)"],
+    "ans": 0,
+    "explain": "En la notación de tcpdump, 'S' es SYN, '.' es ACK, 'F' es FIN, 'R' es RST, 'P' es PSH. Un paquete con 'S' sin '.' indica el primer SYN del handshake, sin ACK previo. Esto es típico del inicio de toda conexión TCP."
+  },
+  {
+    "id": 11,
+    "cat": "TCP/IP",
+    "q": "Tu MTU de la interfaz es 1500 bytes y el server manda un paquete de 8000 bytes. ¿Qué sucede en un router con 'ip mtu 1500' y sin fragmentación permitida por el host?",
+    "opts": ["El router lo fragmenta igual", "El router descarta y manda ICMPv4 Type 3 Code 4 (Fragmentation Needed)", "El paquete pasa igual por la interfaz", "El router hace PMTUD y baja el MSS"],
+    "ans": 1,
+    "explain": "Si el bit 'Don't Fragment' está seteado y el paquete excede la MTU, el router descarta y manda ICMPv4 Type 3 Code 4 ('Fragmentation Needed and DF set'). En IPv6 no hay fragmentación en routers y se usa ICMPv6 Packet Too Big. El PMTUD lo dispara el host origen cuando recibe ese ICMP."
+  },
+  {
+    "id": 12,
+    "cat": "TCP/IP",
+    "q": "¿Cuál es la diferencia principal entre TCP y UDP a nivel de entrega?",
+    "opts": ["TCP es conexión, UDP no", "TCP usa ventana deslizante, UDP no", "TCP retransmite, UDP no", "Todas las anteriores son correctas"],
+    "ans": 3,
+    "explain": "Las tres son características que diferencian TCP de UDP. TCP es orientado a conexión (handshake), usa ventana deslizante para control de flujo y retransmite segmentos perdidos. UDP es best-effort: manda y se olvida, por eso se usa en DNS, VoIP y video donde la latencia importa más que la pérdida."
+  },
+  {
+    "id": 13,
+    "cat": "TCP/IP",
+    "q": "En una conexión TCP, ¿qué flag se usa para cerrar la sesión de manera ordenada?",
+    "opts": ["RST", "FIN", "SYN", "URG"],
+    "ans": 1,
+    "explain": "FIN se usa en el cierre ordenado de la conexión (four-way teardown: FIN, ACK, FIN, ACK). RST es un cierre abrupto (reset) que descarta buffers y se usa ante errores o conexiones a puertos cerrados."
+  },
+  {
+    "id": 14,
+    "cat": "TCP/IP",
+    "q": "Tenés una captura con 50 retransmisiones de SYN contra un server que no responde. ¿Qué flag/psh esperás ver crecer en la salida de `netstat -s`?",
+    "opts": ["Active Opens", "Passive Opens", "Failed Connection Attempts", "Resets Sent"],
+    "ans": 2,
+    "explain": "'Failed Connection Attempts' cuenta SYN retransmitidos sin completar handshake. 'Active Opens' sube cuando el cliente inicia (al primer SYN), 'Passive Opens' cuando el server acepta (al SYN-ACK) y 'Resets Sent' son RSTs, que no es el caso si el server no responde."
+  },
+  {
+    "id": 15,
+    "cat": "IPv4",
+    "q": "Necesitás subnetear 192.168.10.0/24 en 4 subredes iguales. ¿Qué máscara usás y cuántas direcciones útiles por subred?",
+    "opts": ["/25, 126 hosts", "/26, 62 hosts", "/27, 30 hosts", "/28, 14 hosts"],
+    "ans": 1,
+    "explain": "Para 4 subredes necesitás 2 bits adicionales (2^2 = 4), pasás de /24 a /26. Con /26 te quedan 6 bits de host, o sea 2^6 - 2 = 62 direcciones útiles. Las subredes son 192.168.10.0/26, .64/26, .128/26 y .192/26."
+  },
+  {
+    "id": 16,
+    "cat": "IPv4",
+    "q": "En una red con VLSM, asignás /30 entre dos routers punto a punto, /27 para una oficina con 25 hosts y /28 para otra con 10 hosts. ¿Qué principio estás aplicando?",
+    "opts": ["Classful routing", "Classless Inter-Domain Routing (CIDR) con VLSM", "Subnetting de longitud fija", "Supernetting"],
+    "ans": 1,
+    "explain": "VLSM (Variable Length Subnet Masking) permite máscaras de distinto tamaño dentro del mismo bloque, optimizando el uso de direcciones. Se combina con CIDR (classless) para anunciar máscaras variables. En subnetting de longitud fija todas las subredes tienen la misma máscara."
+  },
+  {
+    "id": 17,
+    "cat": "IPv4",
+    "q": "El router Cisco recibe el paquete con destino 10.5.5.5. Tenés una ruta estática 'ip route 10.0.0.0 255.0.0.0' y otra 'ip route 10.5.0.0 255.255.0.0'. ¿Qué ruta elige y por qué?",
+    "opts": ["La 10.0.0.0/8 por orden de configuración", "La 10.5.0.0/16 por ser más específica (longest prefix match)", "Carga balancea entre ambas", "La que tenga menor AD"],
+    "ans": 1,
+    "explain": "El router siempre aplica 'longest prefix match': gana la máscara más larga que contenga al destino. /16 es más específica que /8, así que va por 10.5.0.0/16. Esto es independiente del orden de configuración. Si las máscaras fueran iguales, desempatarían por distancia administrativa y luego por métrica."
+  },
+  {
+    "id": 18,
+    "cat": "IPv4",
+    "q": "¿Cuál de estas redes es classful clase B?",
+    "opts": ["10.0.0.0/8", "172.20.0.0/16", "192.168.1.0/24", "224.0.0.0/4"],
+    "ans": 1,
+    "explain": "Las clases classful son: A = 1.0.0.0 a 126.255.255.255 (/8), B = 128.0.0.0 a 191.255.255.255 (/16), C = 192.0.0.0 a 223.255.255.255 (/24). 172.20.0.0 cae en B. 10.x es clase A, 192.168.x es clase C y 224.x es clase D (multicast)."
+  },
+  {
+    "id": 19,
+    "cat": "IPv4",
+    "q": "Hacés `show ip interface brief` y ves 'GigabitEthernet0/0 ... up/up'. ¿Qué significa el segundo 'up'?",
+    "opts": ["La interfaz tiene link físico", "La interfaz tiene línea y protocolo (L1+L2)", "La interfaz tiene dirección IP configurada", "La interfaz está enrutando tráfico"],
+    "ans": 1,
+    "explain": "El formato 'up/up' significa: primer 'up' = line protocol up (capa 1, señal física del transceiver) y segundo 'up' = protocolo up (capa 2, keepalives OK, por ejemplo PPP o HDLC). Si dice 'up/down' es problema de capa 2; 'down/down' es capa 1."
+  },
+  {
+    "id": 20,
+    "cat": "IPv6",
+    "q": "En una interfaz Ethernet con MAC 00:1A:2B:3C:4D:5E, ¿cuál es el Identificador de Interfaz (IID) EUI-64 generado?",
+    "opts": ["021A:2BFF:FE3C:4D5E", "001A:2BFF:FE3C:4D5E", "021A:2B3C:4D5E:0000", "FE80::001A:2B3C:4D5E"],
+    "ans": 0,
+    "explain": "EUI-64 parte de la MAC de 48 bits, la parte en dos (00:1A:2B | 3C:4D:5E), inserta FFFE en el medio y flipea el bit U/L del primer octeto (0x00 -> 0x02). El link-local sería FE80::021A:2BFF:FE3C:4D5E. La opción B no flipeó el bit, la D no insertó FFFE."
+  },
+  {
+    "id": 21,
+    "cat": "IPv6",
+    "q": "Tu PC con Windows obtiene la dirección IPv6 2001:db8:1:200::1234 automáticamente, sin DHCPv6. ¿Qué mecanismo usó?",
+    "opts": ["DHCPv6 stateful", "SLAAC con EUI-64", "SLAAC con random interface ID (RFC 7217)", "Manual estática"],
+    "ans": 2,
+    "explain": "Los sistemas operativos modernos (Windows 10+, macOS, Linux recientes) usan RFC 7217: SLAAC con IID aleatorio, no el derivado de la MAC. Esto mejora la privacidad porque el IID no expone la MAC. Si la red tiene el flag O en los RA, también pueden obtener info adicional vía DHCPv6 stateless."
+  },
+  {
+    "id": 22,
+    "cat": "IPv6",
+    "q": "En un Router Advertisement (RA) con los flags M=1 y O=0, ¿qué le está diciendo al host?",
+    "opts": ["No usar DHCPv6, usar solo SLAAC", "Usar DHCPv6 stateful para dirección y otros parámetros", "SLAAC para dirección, sin DHCPv6", "DHCPv6 solo para DNS, SLAAC para dirección"],
+    "ans": 1,
+    "explain": "M=1 (Managed) indica DHCPv6 stateful: el cliente debe pedir dirección, prefijo y demás parámetros al DHCPv6. O=0 (Other) significa que no hay info adicional vía DHCPv6. M=0, O=1 es SLAAC + DHCPv6 stateless (solo DNS, etc)."
+  },
+  {
+    "id": 23,
+    "cat": "IPv6",
+    "q": "¿Cuál es el prefijo típico de una dirección link-local IPv6 y para qué sirve?",
+    "opts": ["FE80::/10, comunicación dentro del mismo segmento L2", "FC00::/7, Unique Local Addresses", "2000::/3, Global Unicast", "FF02::/16, Multicast"],
+    "ans": 0,
+    "explain": "FE80::/10 es link-local: solo válida en el segmento local, no se rutea. Sirve para NDP (Neighbor Discovery), routing protocols (OSPFv3 usa link-local como next-hop) y como source address inicial. FC00::/7 es ULA (uso privado), 2000::/3 es global unicast y FF00::/8 es multicast."
+  },
+  {
+    "id": 24,
+    "cat": "IPv6",
+    "q": "En IPv6, ¿qué reemplazo cumple NDP respecto a ARP en IPv4?",
+    "opts": ["ARP sigue funcionando encapsulado en IPv6", "Neighbor Solicitation (NS) y Neighbor Advertisement (NA) usando ICMPv6", "DHCPv6 reemplaza a ARP", "NDP opera sobre UDP puerto 547"],
+    "ans": 1,
+    "explain": "ARP no existe en IPv6. NDP usa mensajes ICMPv6 tipo 135 (Neighbor Solicitation) y 136 (Neighbor Advertisement) para resolver MAC a partir de IPv6. Todo va sobre ICMPv6, no sobre un protocolo de capa 2 separado como ARP. Las direcciones multicast usadas son solicited-node (FF02::1:FFxx:xxxx)."
+  },
+  {
+    "id": 25,
+    "cat": "Switching",
+    "q": "Necesitás que dos switches compartan VLANs y que el tráfico de varias VLANs pase por un único link troncal. ¿Qué protocolo de encapsulación usás en Cisco?",
+    "opts": ["ISL", "802.1Q", "MPLS", "LACP"],
+    "ans": 1,
+    "explain": "802.1Q es el estándar IEEE para trunking, inserta una tag de 4 bytes en la trama Ethernet y es interoperable con otros vendors. ISL era propietario de Cisco y encapsulaba la trama entera (deprecated). En switches modernos solo se usa 802.1Q. El trunk nativo (VLAN 1 por default) se negocia con DTP."
+  },
+  {
+    "id": 26,
+    "cat": "Switching",
+    "q": "Hacés `show vlan brief` y la VLAN 10 no aparece listada. ¿Por qué motivo?",
+    "opts": ["El switch no la soporta", "La VLAN no fue creada y no tiene puertos asignados", "Está en estado suspendido", "Está bloqueada por STP"],
+    "ans": 1,
+    "explain": "`show vlan brief` solo lista VLANs existentes en la VLAN database. Si nadie creó la VLAN 10 (`vlan 10`) ni se asignó un puerto a ella, no aparece. En VTP client/server también depende de si el switch recibió el advertisement. La solución típica es `vlan 10` en modo config y asignar puertos."
+  },
+  {
+    "id": 27,
+    "cat": "Switching",
+    "q": "Configurás `switchport mode dynamic desirable` en ambos switches. ¿Qué协议 de trunk negocian?",
+    "opts": ["LACP", "DTP", "VTP", "STP"],
+    "ans": 1,
+    "explain": "DTP (Dynamic Trunking Protocol) negocia si la interfaz pasa a trunk. Con 'dynamic desirable' o 'dynamic auto' en ambos lados, se forma trunk. Si los dos están en 'auto', no se forma (ambos esperan). 'nonegotiate' desactiva DTP y hay que poner el otro lado en 'on' o 'trunk' manual."
+  },
+  {
+    "id": 28,
+    "cat": "Switching",
+    "q": "Conectás un host a un puerto y querés que pase a forwarding STP de inmediato, sin esperar 30-50 segundos. ¿Qué comando aplicás?",
+    "opts": ["spanning-tree portfast bpduguard", "spanning-tree portfast", "spanning-tree link-type point-to-point", "spanning-tree vlan 1 priority 0"],
+    "ans": 1,
+    "explain": "`spanning-tree portfast` (o `spanning-tree portfast edge` en NX-OS) saca al puerto del estado blocking/listening y lo pone en forwarding apenas link up. Pensado solo para puertos de acceso de hosts, nunca en uplinks. La opción A también lo activa, pero además blinda el puerto contra BPDUs."
+  },
+  {
+    "id": 29,
+    "cat": "Switching",
+    "q": "¿Cuál es el Bridge ID (BID) que se usa en STP para elegir el root bridge?",
+    "opts": ["Prioridad (16 bits) + MAC address (48 bits)", "Prioridad (4 bits) extendida + System ID de VLAN (12 bits) + MAC", "Solo la MAC más baja", "IP + MAC del switch"],
+    "ans": 1,
+    "explain": "El BID es Priority (4 bits) + Extended System ID (12 bits que codifican la VLAN) + MAC address (48 bits) = 64 bits. El de menor valor gana como root. Por default, prioridad 32768 + VLAN ID. Para forzar un root, bajás prioridad con `spanning-tree vlan X priority 0` o `spanning-tree vlan X root primary`."
+  },
+  {
+    "id": 30,
+    "cat": "Routing",
+    "q": "En OSPF, ¿qué tipo de LSA se genera dentro de un área para describir los prefijos propios del router?",
+    "opts": ["Type 1 - Router LSA", "Type 3 - Summary LSA", "Type 5 - External LSA", "Type 7 - NSSA External"],
+    "ans": 0,
+    "explain": "Type 1 (Router LSA) lo genera cada router OSPF para anunciar sus enlaces dentro del área. No sale del área. Type 3 (Summary) la generan los ABRs para anunciar prefijos inter-área. Type 5 (External) la genera el ASBR para redistribución y se propaga por todas las áreas menos stub/NSSA."
+  },
+  {
+    "id": 31,
+    "cat": "Routing",
+    "q": "En una red Ethernet multiacceso con OSPF, ¿qué router se elige como Designated Router (DR)?",
+    "opts": ["El de mayor Router ID", "El de mayor prioridad OSPF (default 1)", "El de mayor Router ID; empate se rompe por mayor IP de loopback", "El de menor costo al área 0"],
+    "ans": 2,
+    "explain": "OSPF elige el DR por mayor Router ID, no por menor como muchos creen. El Router ID se elige: manual (router-id X.X.X.X), o si no, la mayor IP de loopback, o la mayor IP de interfaz física. La prioridad OSPF (default 1) se usa para declarar preferencia, pero no gana automáticamente; un router con prioridad 0 nunca será DR/BDR."
+  },
+  {
+    "id": 32,
+    "cat": "Routing",
+    "q": "Tenés un router Cisco corriendo EIGRP y otro corriendo OSPF en la misma red. Querés inyectar las rutas EIGRP en OSPF. ¿Cómo se llama ese proceso?",
+    "opts": ["Summarization", "Redistribution", "Route leaking", "Stub area"],
+    "ans": 1,
+    "explain": "Redistribución. En Cisco IOS se hace con 'router ospf 1' + 'redistribute eigrp 100' (donde 100 es el AS number de EIGRP). Hay que poner 'default-metric' para que las rutas externas tengan métrica válida, y suele ser buena práctica usar 'route-map' o 'distribute-list' para filtrar."
+  },
+  {
+    "id": 33,
+    "cat": "Routing",
+    "q": "En BGP, un prefijo recibido de un neighbor eBGP se propaga por defecto a otros iBGP peers?",
+    "opts": ["Sí, siempre", "No, se requiere 'next-hop-self' o full-mesh iBGP para asegurar alcanzabilidad", "Solo si es mejor que la local", "Solo si tiene MED definido"],
+    "ans": 1,
+    "explain": "BGP no propaga una ruta aprendida por iBGP a otro iBGP por la regla de 'iBGP split horizon' (loop prevention). Para que funcione necesitás full-mesh iBGP, route reflectors o confederations. Además, BGP no modifica el next-hop de un anuncio iBGP, por eso los routers internos suelen usar 'next-hop-self' en sus advertisements."
+  },
+  {
+    "id": 34,
+    "cat": "Routing",
+    "q": "Querés llegar a 10.0.0.0/8 por 192.168.1.1. ¿Qué ruta estática configurás en un router Cisco?",
+    "opts": ["ip route 10.0.0.0 255.0.0.0 192.168.1.1", "ip route 10.0.0.0 /8 192.168.1.1", "ip static-route 10.0.0.0/8 via 192.168.1.1", "ip route 0.0.0.0 0.0.0.0 10.0.0.0"],
+    "ans": 0,
+    "explain": "La sintaxis Cisco IOS es: 'ip route <red> <máscara> <next-hop> [distancia administrativa]'. La máscara se expresa en dotted decimal, no en /8. La opción D es una default route mal armada: 0.0.0.0/0 con next-hop 10.0.0.0 (que es una red, no una IP). Para grabar: 'ip route prefix mask next-hop'."
+  },
+  {
+    "id": 35,
+    "cat": "FHRP",
+    "q": "¿Cuál es la principal diferencia entre HSRP y VRRP?",
+    "opts": ["VRRP es propietario de Cisco, HSRP es estándar IEEE", "HSRP usa MAC virtual 0000.0C07.ACxx, VRRP usa 0000.5E00.01xx", "HSRP solo funciona en IPv4, VRRP solo en IPv6", "VRRP no soporta autenticación"],
+    "ans": 1,
+    "explain": "HSRP es Cisco propietario, VRRP es estándar IEEE (RFC 5798). Las MAC virtuales son distintas: HSRP usa 0000.0C07.ACxx (donde xx es el grupo), VRRP usa 0000.5E00.01xx. VRRP además funciona en IPv4 e IPv6, HSRP v2 también IPv6. Ambos ofrecen first-hop redundancy, GLBP es el que además balancea."
+  },
+  {
+    "id": 36,
+    "cat": "FHRP",
+    "q": "Tu gateway default es 192.168.1.1 y tenés dos routers en HSRP grupo 1, activo y standby. ¿Qué IP usa el host como gateway?",
+    "opts": ["La IP física del router activo", "La IP virtual 192.168.1.1 (que no está en ninguna interfaz física)", "La IP del router standby", "Una IP de multicast"],
+    "ans": 1,
+    "explain": "El host usa la IP virtual (VIP) configurada en el grupo HSRP, que es 192.168.1.1. Esa IP no está asignada a una interfaz física; es la que ambos routers comparten. El router activo contiende las respuestas ARP por esa IP. Si el activo cae, el standby pasa a activo y el host no nota nada (failover transparente)."
+  },
+  {
+    "id": 37,
+    "cat": "FHRP",
+    "q": "Querés redundancia de gateway y, además, que los dos routers sean usados en simultáneo para distribuir hosts. ¿Qué protocolo usás?",
+    "opts": ["HSRP", "VRRP", "GLBP", "CARP"],
+    "ans": 2,
+    "explain": "GLBP (Gateway Load Balancing Protocol) es propietario Cisco y permite load balancing real: hasta 4 routers (AVG + 3 AVFs) comparten la VIP, pero cada uno responde ARP por una MAC virtual distinta. HSRP/VRRP dejan un solo router activo, los demás quedan ociosos. CARP es el equivalente open source de VRRP."
+  },
+  {
+    "id": 38,
+    "cat": "FHRP",
+    "q": "En VRRP, ¿qué router se vuelve Master si los dos tienen la misma prioridad 100?",
+    "opts": ["El de mayor IP en la interfaz del grupo VRRP", "El de menor IP", "El que se prendió primero", "Ninguno, hay conflicto"],
+    "ans": 0,
+    "explain": "VRRP elige al Master por mayor IP de las que participan en el grupo, si las prioridades empatan. HSRP clásico elegía por mayor IP también, pero con HSRP v2 el comportamiento es idéntico. Por eso se suele poner prioridad mayor (110, 120) en el router que querés que sea Master por default."
+  },
+  {
+    "id": 39,
+    "cat": "Seguridad",
+    "q": "Necesitás una ACL que sólo bloquee tráfico HTTP (puerto 80) desde la red 10.0.0.0/24 hacia 172.16.0.0/16, dejando pasar el resto. ¿Qué tipo de ACL usás?",
+    "opts": ["Standard numerada", "Extended numerada", "Standard con nombre", "Reflexive"],
+    "ans": 1,
+    "explain": "Para filtrar por red de origen Y red/puerto de destino necesitás una extended ACL. Standard (1-99, 1300-1999) solo filtra por IP de origen. La pones cerca del destino para no afectar tráfico que no va a esa red. Sintaxis: 'access-list 101 deny tcp 10.0.0.0 0.0.0.255 172.16.0.0 0.0.255.255 eq 80'."
+  },
+  {
+    "id": 40,
+    "cat": "Seguridad",
+    "q": "Hacés `show ip access-lists` y la cuenta de matches en una ACE está en 0. ¿Qué conclusión sacás?",
+    "opts": ["La ACL no está aplicada a ninguna interfaz", "El tráfico que matchea esa ACE nunca pasó por la interfaz donde está aplicada", "La ACE está mal escrita", "El switch la bloqueó"],
+    "ans": 1,
+    "explain": "El contador de matches solo sube cuando hay tráfico que matchea esa ACE Y la ACL está aplicada a una interfaz en la dirección correcta. Si la ACE tiene 0 hits, o la ACL no está aplicada, o el tráfico simplemente no llegó. Para verificar aplicación: `show ip interface X | include access-list`."
+  },
+  {
+    "id": 41,
+    "cat": "Seguridad",
+    "q": "Configurás `switchport port-security` con `maximum 2` y `violation shutdown`. Conectás una tercera MAC distinta al mismo puerto. ¿Qué pasa?",
+    "opts": ["El puerto sigue up, solo loguea", "El puerto entra en err-disabled y debe levantarse a mano", "La MAC se aprende igual", "Se reinicia el switch"],
+    "ans": 1,
+    "explain": "Con 'violation shutdown' (default), al superar el máximo de MACs aprendidas el puerto se pone en err-disabled, apaga el link, genera log y SNMP trap. Para recuperarlo: 'shutdown' + 'no shutdown' en la interfaz, o configurar 'errdisable recovery cause psecure-violation'. Otras opciones: protect (descarta silencioso) y restrict (log + drop, no shutdown)."
+  },
+  {
+    "id": 42,
+    "cat": "Seguridad",
+    "q": "En un switch Cisco, DHCP Snooping está habilitado y llega un DHCP Offer desde un puerto de acceso. ¿Qué hace el switch?",
+    "opts": ["Lo reenvía al cliente", "Lo descarta porque los Offers solo deben venir de trusted ports (el server o uplink)", "Lo reenvía y loguea", "Lo convierte en DHCP Ack"],
+    "ans": 1,
+    "explain": "DHCP Snooping clasifica puertos en trusted y untrusted. Solo los trusted pueden enviar DHCP Offers/ACKs (los que vienen del server DHCP o del uplink). En un puerto de acceso de host, que es untrusted por default, un Offer se descarta como防御 contra un rogue DHCP server. Esto, junto con ARP Inspection, mitiga ataques de L2."
+  },
+  {
+    "id": 43,
+    "cat": "WAN",
+    "q": "Necesitás autenticación mutua y soporte multiprotocolo en un link serial punto a punto entre dos routers. ¿Qué encapsulación usás?",
+    "opts": ["HDLC", "PPP", "Frame Relay", "MPLS"],
+    "ans": 1,
+    "explain": "PPP soporta autenticación (PAP y CHAP), compresión y multiprotocolo (IP, IPX, AppleTalk). HDLC de Cisco es propietario, no autentica. Frame Relay es packet-switched y de capa 2, ya no se usa en diseños nuevos. PPP es la opción correcta para seriales punto a punto con autenticación."
+  },
+  {
+    "id": 44,
+    "cat": "WAN",
+    "q": "En una nube MPLS, ¿qué hace el provider con tu paquete IP etiquetado?",
+    "opts": ["Lo desencapsula y lee la IP de destino", "Lo conmuta por etiquetas (label switching) sin mirar la IP de destino", "Lo encripta con MPLS-VPN", "Lo descarta si no es IPv6"],
+    "ans": 1,
+    "explain": "MPLS hace label switching: el PE ingress pone una label al paquete, los P routers (core) solo switchean por label, sin inspeccionar la IP. En el PE egress se hace penultimate hop popping o PHP y se entrega al CE. Esto permite VPNs (L3VPN, L2VPN) y TE (Traffic Engineering)."
+  },
+  {
+    "id": 45,
+    "cat": "WAN",
+    "q": "Frame Relay se reemplaza hoy en día en la mayoría de las WANs. ¿Cuál es la tecnología típica de reemplazo para conectar una oficina remota con un sitio central?",
+    "opts": ["HDLC síncrono", "MetroEthernet / MPLS L2VPN (pseudowire)", "Token Ring", "ISDN BRI"],
+    "ans": 1,
+    "explain": "Frame Relay se considera tecnología heredada. Hoy se reemplazó por MetroEthernet (carrier Ethernet, E-Line, E-LAN) o MPLS L2VPN (pseudowires tipo EoMPLS). Ambas ofrecen servicios Ethernet administrados con SLAs, reemplazo natural de los PVCs de Frame Relay."
+  },
+  {
+    "id": 46,
+    "cat": "Servicios",
+    "q": "En el proceso DORA de DHCP, ¿cuáles son los 4 mensajes en orden?",
+    "opts": ["Discover, Offer, Request, Acknowledge", "Discover, Acknowledge, Request, Offer", "Request, Offer, Discover, Acknowledge", "Offer, Discover, Acknowledge, Request"],
+    "ans": 0,
+    "explain": "DORA: 1) Discover (broadcast cliente -> server), 2) Offer (server -> cliente con IP propuesta), 3) Request (cliente confirma), 4) Acknowledge (server confirma y manda lease). Todo va por UDP 67/68. En IPv6 el proceso equivalente es Solicit/Advertise/Request/Reply (SARR) sobre UDP 546/547."
+  },
+  {
+    "id": 47,
+    "cat": "Servicios",
+    "q": "Un registro DNS del tipo MX sirve para:",
+    "opts": ["Mapear un nombre a una dirección IPv4", "Mapear un nombre a un alias (CNAME)", "Indicar el servidor de correo para un dominio", "Servicio de descubrimiento de servicios"],
+    "ans": 2,
+    "explain": "MX (Mail Exchange) indica qué server recibe correo para el dominio e incluye el valor de preferencia. A = IPv4, AAAA = IPv6, CNAME = alias, NS = servidores de autoridad, PTR = resolución inversa, SRV = servicios (usado en SIP, XMPP, LDAP), TXT = SPF/DKIM/verificación."
+  },
+  {
+    "id": 48,
+    "cat": "Servicios",
+    "q": "Configurás NTP en un router Cisco y ponés `ntp server 200.100.50.1`. ¿En qué estrato queda el router si no tiene referencia local?",
+    "opts": ["Stratum 1", "Stratum 2", "Stratum 3", "Stratum 16 (invalido)"],
+    "ans": 1,
+    "explain": "Si el server remoto es stratum 1 (con referencia directa, por ejemplo GPS), tu router sincroniza a stratum 2 (un nivel más abajo). Si el server fuera stratum 2, vos quedás en stratum 3, y así. Stratum 0 es referencia de hardware, stratum 16 indica no sincronizado y NTP lo descarta."
+  },
+  {
+    "id": 49,
+    "cat": "Servicios",
+    "q": "Configurás `snmp-server community SOLOLECTURA RO` en un router. ¿Qué efecto tiene?",
+    "opts": ["Permite lectura y escritura desde cualquier manager", "Permite solo lectura y solo desde el manager con esa community string", "Solo el router inicia traps", "Desactiva SNMP"],
+    "ans": 1,
+    "explain": "Define una community string ('SOLOLECTURA') con permiso RO (read-only). Cualquier NMS que conozca esa string puede hacer GETs sobre la MIB del router, pero no SETs. En producción se suele combinar con ACL: 'snmp-server community SOLOLECTURA RO NMS_ACL'. Para notificaciones, configurás 'snmp-server host X.X.X traps COMUNIDAD'."
+  },
+  {
+    "id": 50,
+    "cat": "Servicios",
+    "q": "En Cisco IOS, ¿qué nivel de severity de Syslog representa 'condición de error' que requiere intervención?",
+    "opts": ["Level 0 - emergencies", "Level 3 - errors", "Level 6 - informational", "Level 7 - debugging"],
+    "ans": 1,
+    "explain": "Los niveles Syslog (severity) Cisco son: 0 emergencies, 1 alerts, 2 critical, 3 errors, 4 warnings, 5 notifications, 6 informational, 7 debugging. 'Errors' (3) es cuando algo falló y hay que mirarlo. 'Emergencies' (0) es cuando el sistema está inutilizable. La mayoría de los equipos operan en 'warnings' o 'errors' por default."
+  }
+]

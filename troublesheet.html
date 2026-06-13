@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Troubleshooting Sheet — Red interactiva · OSI · TCP/IP · VLAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root { --bg: #0a1428; --bg-2: #0d1a2f; --bg-3: #122139; --panel: #0f1c33; --border: #1e3a5f; --border-2: #2a4a73; --txt: #e0f2fe; --txt-dim: #94a3b8; --txt-mute: #64748b; --accent: #00d4ff; --accent-2: #7dd3fc; --accent-glow: rgba(0, 212, 255, 0.25); --warn: #ff6b9d; --ok: #34d399; --warn-bg: rgba(255, 107, 157, 0.1); --ok-bg: rgba(52, 211, 153, 0.1); --code-bg: #050b18; --shadow: 0 4px 24px rgba(0, 0, 0, 0.4); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--txt); font-family: 'Inter', -apple-system, sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: 0; }
+body::after { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 100vh; background: radial-gradient(ellipse at top, rgba(0, 212, 255, 0.08), transparent 70%); pointer-events: none; z-index: 0; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-2); }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+.app { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; position: relative; z-index: 1; }
+.sidebar { background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.brand { padding: 0 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.brand-name { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 600; color: var(--accent); letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+.brand-name::before { content: ''; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.brand-sub { font-size: 11px; color: var(--txt-mute); margin-top: 4px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px; }
+.nav { list-style: none; }
+.nav-section { font-size: 10px; color: var(--txt-mute); text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 20px 6px; font-family: 'JetBrains Mono', monospace; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: var(--txt-dim); cursor: pointer; font-size: 14px; border-left: 3px solid transparent; transition: all 0.15s; user-select: none; }
+.nav-item:hover { color: var(--txt); background: rgba(0, 212, 255, 0.05); }
+.nav-item.active { color: var(--accent); background: rgba(0, 212, 255, 0.08); border-left-color: var(--accent); }
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.main { padding: 40px 56px; max-width: 1200px; width: 100%; }
+.page-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 32px; }
+.page-title { font-size: 32px; font-weight: 600; color: var(--txt); margin-bottom: 8px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.page-title-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; }
+.page-subtitle { color: var(--txt-dim); font-size: 15px; }
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
+.card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); opacity: 0.5; }
+.card-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: var(--txt); }
+.card-sub { font-size: 12px; color: var(--txt-mute); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+code, pre, .code { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+code { background: var(--code-bg); color: var(--accent-2); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border); }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; overflow-x: auto; margin: 12px 0; position: relative; color: var(--txt); }
+pre code { background: none; border: none; padding: 0; color: var(--txt); }
+.cmd-cisco::before { content: 'cisco#'; color: var(--accent); margin-right: 8px; font-weight: 600; }
+.cmd-linux::before { content: '$'; color: var(--ok); margin-right: 8px; font-weight: 600; }
+.cmd-win::before { content: '>'; color: var(--warn); margin-right: 8px; font-weight: 600; }
+.copy-btn { position: absolute; top: 8px; right: 8px; background: var(--bg-3); border: 1px solid var(--border-2); color: var(--txt-dim); padding: 4px 8px; font-size: 10px; border-radius: 4px; cursor: pointer; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; }
+.copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+.copy-btn.copied { color: var(--ok); border-color: var(--ok); }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+th { background: var(--bg-3); color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+td { color: var(--txt-dim); }
+tr:hover td { background: rgba(0, 212, 255, 0.03); }
+.btn { background: var(--bg-3); border: 1px solid var(--border-2); color: var(--txt); padding: 10px 16px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; border-radius: 6px; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.btn-primary:hover { background: var(--accent-2); color: var(--bg); }
+.btn-warn { border-color: var(--warn); color: var(--warn); }
+.btn-warn:hover { background: var(--warn-bg); }
+.btn-sm { padding: 6px 10px; font-size: 12px; }
+input, select, textarea { background: var(--code-bg); border: 1px solid var(--border-2); color: var(--txt); padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: 14px; border-radius: 6px; width: 100%; transition: border-color 0.15s; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+label { display: block; font-size: 12px; color: var(--txt-dim); margin-bottom: 6px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .app { grid-template-columns: 1fr; } .sidebar { position: static; height: auto; } .main { padding: 24px; } }
+.badge { display: inline-block; padding: 3px 8px; font-size: 11px; font-family: 'JetBrains Mono', monospace; border-radius: 4px; background: var(--bg-3); border: 1px solid var(--border-2); color: var(--txt-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-ok { color: var(--ok); border-color: var(--ok); background: var(--ok-bg); }
+.badge-warn { color: var(--warn); border-color: var(--warn); background: var(--warn-bg); }
+.badge-accent { color: var(--accent); border-color: var(--accent); background: rgba(0, 212, 255, 0.1); }
+.hero { background: linear-gradient(135deg, var(--panel) 0%, var(--bg-3) 100%); border: 1px solid var(--border); border-radius: 12px; padding: 40px; margin-bottom: 32px; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -50%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); pointer-events: none; }
+.hero-tag { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+.hero h1 { font-size: 42px; font-weight: 600; line-height: 1.2; margin-bottom: 16px; }
+.hero h1 span { color: var(--accent); }
+.hero p { color: var(--txt-dim); font-size: 16px; max-width: 600px; margin-bottom: 24px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.stat-tile { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.stat-label { font-size: 11px; color: var(--txt-mute); text-transform: uppercase; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; }
+.stat-value { font-size: 28px; font-weight: 600; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+.osi-stack { display: flex; flex-direction: column; gap: 8px; margin: 24px 0; }
+.osi-layer { display: grid; grid-template-columns: 80px 1fr auto; align-items: center; gap: 16px; padding: 16px 20px; background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+.osi-layer:hover { background: var(--bg-3); transform: translateX(4px); box-shadow: 0 0 20px var(--accent-glow); }
+.osi-num { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; color: var(--accent); }
+.osi-info { flex: 1; }
+.osi-name { font-size: 16px; font-weight: 600; color: var(--txt); margin-bottom: 2px; }
+.osi-desc { font-size: 13px; color: var(--txt-dim); }
+.osi-protocols { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--txt-mute); }
+.osi-layer-detail { display: none; padding: 20px 24px; background: var(--bg-3); border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); }
+.osi-layer-detail.open { display: block; animation: fadeIn 0.3s; }
+.osi-diagram { display: flex; flex-direction: column-reverse; gap: 4px; padding: 20px; background: var(--code-bg); border-radius: 8px; border: 1px solid var(--border); margin: 20px 0; position: relative; }
+.osi-band { height: 44px; display: flex; align-items: center; justify-content: center; color: var(--txt); font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; border-radius: 4px; border: 1px solid transparent; }
+.osi-band[data-layer="7"] { background: rgba(255, 107, 157, 0.15); border-color: rgba(255, 107, 157, 0.4); }
+.osi-band[data-layer="6"] { background: rgba(255, 184, 77, 0.15); border-color: rgba(255, 184, 77, 0.4); }
+.osi-band[data-layer="5"] { background: rgba(255, 217, 61, 0.15); border-color: rgba(255, 217, 61, 0.4); }
+.osi-band[data-layer="4"] { background: rgba(125, 211, 252, 0.15); border-color: rgba(125, 211, 252, 0.4); }
+.osi-band[data-layer="3"] { background: rgba(52, 211, 153, 0.15); border-color: rgba(52, 211, 153, 0.4); }
+.osi-band[data-layer="2"] { background: rgba(0, 212, 255, 0.15); border-color: rgba(0, 212, 255, 0.4); }
+.osi-band[data-layer="1"] { background: rgba(167, 139, 250, 0.15); border-color: rgba(167, 139, 250, 0.4); }
+.packet-dot { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; }
+.diagram-controls { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+.topo-svg { width: 100%; height: auto; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; display: block; margin: 16px 0; }
+.topo-link { stroke: var(--border-2); stroke-width: 2; fill: none; }
+.topo-label { fill: var(--txt); font-family: 'JetBrains Mono', monospace; font-size: 11px; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+.wizard-step { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 16px; }
+.wizard-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--txt-mute); }
+.progress-bar { flex: 1; height: 4px; background: var(--bg-3); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+.wizard-question { font-size: 18px; color: var(--txt); margin-bottom: 20px; font-weight: 500; }
+.wizard-options { display: flex; flex-direction: column; gap: 10px; }
+.wizard-option { background: var(--bg-3); border: 1px solid var(--border-2); border-radius: 6px; padding: 14px 18px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 12px; }
+.wizard-option:hover { border-color: var(--accent); background: rgba(0, 212, 255, 0.05); }
+.wizard-option .opt-icon { font-size: 20px; }
+.quiz-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 28px; margin-bottom: 16px; }
+.quiz-q { font-size: 17px; color: var(--txt); margin-bottom: 20px; font-weight: 500; }
+.quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+.quiz-opt { background: var(--bg-3); border: 1px solid var(--border-2); border-radius: 6px; padding: 12px 16px; cursor: pointer; transition: all 0.15s; text-align: left; color: var(--txt); font-family: inherit; font-size: 14px; }
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: var(--ok); background: var(--ok-bg); }
+.quiz-opt.wrong { border-color: var(--warn); background: var(--warn-bg); }
+.quiz-explain { margin-top: 16px; padding: 14px; background: var(--bg-3); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 13px; color: var(--txt-dim); display: none; }
+.quiz-explain.show { display: block; }
+.quiz-meta { display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--txt-mute); margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+.calc-result { background: var(--code-bg); border: 1px solid var(--accent); border-radius: 6px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; margin-top: 16px; }
+.calc-result .row { display: flex; justify-content: space-between; padding: 4px 0; gap: 8px; flex-wrap: wrap; }
+.calc-result .row .k { color: var(--txt-mute); }
+.calc-result .row .v { color: var(--accent-2); }
+.calc-result .v.warn { color: var(--warn); }
+.calc-result .v.ok { color: var(--ok); }
+.callout { background: var(--bg-3); border-left: 3px solid var(--accent); border-radius: 4px; padding: 14px 18px; margin: 12px 0; font-size: 14px; }
+.callout.warn { border-color: var(--warn); background: var(--warn-bg); }
+.callout.ok { border-color: var(--ok); background: var(--ok-bg); }
+.callout strong { color: var(--accent); }
+.callout.warn strong { color: var(--warn); }
+.callout.ok strong { color: var(--ok); }
+.case-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
+.case-card:hover { border-color: var(--accent); transform: translateX(4px); }
+.case-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.case-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.case-summary { font-size: 13px; color: var(--txt-dim); }
+.case-tags { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+.pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.pill { padding: 6px 12px; background: var(--bg-3); border: 1px solid var(--border-2); border-radius: 999px; font-size: 12px; color: var(--txt-dim); cursor: pointer; font-family: 'JetBrains Mono', monospace; }
+.pill.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.hidden { display: none !important; }
+.mobile-menu-btn { display: none; position: fixed; top: 12px; left: 12px; z-index: 100; background: var(--panel); border: 1px solid var(--border); color: var(--accent); width: 40px; height: 40px; border-radius: 6px; font-size: 20px; cursor: pointer; }
+@media (max-width: 900px) { .mobile-menu-btn { display: block; } .sidebar { display: none; position: fixed; z-index: 99; width: 260px; box-shadow: var(--shadow); } .sidebar.open { display: block; } }
+@media print { .sidebar, .mobile-menu-btn, .no-print { display: none !important; } .app { grid-template-columns: 1fr; } .main { padding: 0; max-width: 100%; } body::before, body::after { display: none; } .page { display: none; } .page.print-active { display: block; page-break-after: always; } .card { break-inside: avoid; } pre { white-space: pre-wrap; } }
+</style>
+</head>
+<body>
+<button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-name">troubleshoot</div>
+      <div class="brand-sub">sheet // v2.0</div>
+    </div>
+    <div style="padding:8px 20px 0;font-size:10px;color:var(--txt-mute);font-family:'JetBrains Mono',monospace;letter-spacing:0.5px">by Hernandez Claudio</div>
+    <div class="nav-section">Inicio</div>
+    <ul class="nav"><li class="nav-item active" data-page="home">⌂<span>Home</span></li></ul>
+    <div class="nav-section">Teoría</div>
+    <ul class="nav">
+      <li class="nav-item" data-page="osi">▤<span>Modelo OSI</span></li>
+      <li class="nav-item" data-page="tcpip">⇄<span>TCP / IP</span></li>
+      <li class="nav-item" data-page="vlans">⎙<span>VLAN & Segmentación</span></li>
+    </ul>
+    <div class="nav-section">Herramientas</div>
+    <ul class="nav">
+      <li class="nav-item" data-page="calc">⊕<span>Calculadora Subredes</span></li>
+      <li class="nav-item" data-page="wizard">⚙<span>Troubleshooting Wizard</span></li>
+    </ul>
+    <div class="nav-section">Práctica</div>
+    <ul class="nav">
+      <li class="nav-item" data-page="casos">⚡<span>Casos Reales (23)</span></li>
+      <li class="nav-item" data-page="quiz">⊟<span>Quiz / Examen</span></li>
+      <li class="nav-item" data-page="cheat">▣<span>Cheatsheet</span></li>
+    </ul>
+    <div class="nav-section">Telecom</div>
+    <ul class="nav">
+      <li class="nav-item" data-page="telecom">📡<span>Telecom (radio, VHF, sat)</span></li>
+    </ul>
+    <div class="nav-section">Exportar</div>
+    <ul class="nav">
+      <li class="nav-item" id="btnExportPDF">⎙<span>Exportar a PDF</span></li>
+      <li class="nav-item" id="btnExportMD">↓<span>Descargar .md</span></li>
+    </ul>
+  </aside>
+  <main class="main">
+    <section class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-tag">// v2.0 · CCNP & enterprise-grade</div>
+        <h1>Troubleshooting <span>Sheet</span></h1>
+        <p>Una guía interactiva de troubleshooting de redes con modelo OSI, TCP/IP, VLAN, segmentación, telecom (radioenlaces, VHF/UHF, satelital) y un wizard paso a paso.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-goto="wizard">▶ Iniciar Wizard</button>
+          <button class="btn" data-goto="casos">⚡ Casos Reales</button>
+          <button class="btn" data-goto="osi">▤ Modelo OSI</button>
+          <button class="btn" data-goto="telecom">📡 Telecom</button>
+        </div>
+        <div style="position:absolute;bottom:16px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--txt-mute);letter-spacing:1px">// by <span style="color:var(--accent)">Hernandez Claudio</span></div>
+      </div>
+      <div class="grid-4" style="margin-bottom:32px">
+        <div class="stat-tile"><div class="stat-label">Secciones</div><div class="stat-value">10</div></div>
+        <div class="stat-tile"><div class="stat-label">Casos Reales</div><div class="stat-value">23</div></div>
+        <div class="stat-tile"><div class="stat-label">Preguntas Quiz</div><div class="stat-value">50</div></div>
+        <div class="stat-tile"><div class="stat-label">Comandos</div><div class="stat-value">200+</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">⌂ ¿Cómo usar esta guía?</div>
+        <p style="color:var(--txt-dim);margin-bottom:12px">Tres modos de uso según la situación:</p>
+        <div class="grid-3">
+          <div><div class="badge badge-accent" style="margin-bottom:8px">MODO EMERGENCIA</div><p style="font-size:13px;color:var(--txt-dim)">Problema en producción. Andá al <strong>Wizard</strong> o a <strong>Casos Reales</strong>.</p></div>
+          <div><div class="badge badge-ok" style="margin-bottom:8px">MODO ESTUDIO</div><p style="font-size:13px;color:var(--txt-dim)">Repasando CCNA/CCNP. <strong>OSI</strong>, <strong>TCP/IP</strong>, <strong>VLAN</strong>, <strong>Telecom</strong>, después <strong>Casos</strong> y <strong>Quiz</strong>.</p></div>
+          <div><div class="badge badge-warn" style="margin-bottom:8px">MODO LAB</div><p style="font-size:13px;color:var(--txt-dim)">Estás en Packet Tracer / GNS3. Usá la <strong>Calculadora</strong> y la <strong>Cheatsheet</strong>.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="page" id="page-osi">
+      <div class="page-header">
+        <div class="page-title">▤ Modelo OSI <span class="page-title-tag">teoría · 7 capas</span></div>
+        <div class="page-subtitle">El marco mental fundamental para cualquier troubleshooting de red. <code>bottom-up</code>: empezás por la capa 1, subís hasta aislar la falla.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">⬇ Diagrama animado — paquete descendiendo por las capas</div>
+        <div class="diagram-controls">
+          <button class="btn btn-sm btn-primary" id="osiDown">▶ Descender (encapsular)</button>
+          <button class="btn btn-sm" id="osiUp">▲ Ascender (desencapsular)</button>
+          <button class="btn btn-sm" id="osiReset">↺ Reset</button>
+        </div>
+        <div class="osi-diagram" id="osiDiagram">
+          <div class="osi-band" data-layer="1">1 · Física · bits · cables, conectores, SFP, señal</div>
+          <div class="osi-band" data-layer="2">2 · Enlace · tramas · MAC, switch, VLAN, STP, ARP</div>
+          <div class="osi-band" data-layer="3">3 · Red · paquetes · IP, ICMP, router, OSPF, BGP</div>
+          <div class="osi-band" data-layer="4">4 · Transporte · segmentos · TCP, UDP, puertos, NAT</div>
+          <div class="osi-band" data-layer="5">5 · Sesión · diálogos · NetBIOS, RPC, SIP</div>
+          <div class="osi-band" data-layer="6">6 · Presentación · cifrado/formato · TLS, SSL, ASCII, JPEG</div>
+          <div class="osi-band" data-layer="7">7 · Aplicación · servicios · HTTP, DNS, SSH, SMTP</div>
+          <div class="packet-dot" id="packetDot"></div>
+        </div>
+        <div class="callout">
+          <strong>Mnemotecnia:</strong> <em>All People Seem To Need Data Processing</em> (7→1) o <em>Please Do Not Throw Sausage Pizza Away</em> (1→7).
+        </div>
+      </div>
+      <h3 style="color:var(--accent);margin:24px 0 16px;font-size:18px">▸ Capas en detalle</h3>
+      <div class="osi-stack" id="osiStack"></div>
+    </section>
+
+    <section class="page" id="page-tcpip">
+      <div class="page-header">
+        <div class="page-title">⇄ Pila TCP/IP <span class="page-title-tag">4 capas · práctico</span></div>
+        <div class="page-subtitle">El modelo que realmente se usa en internet. Más simple que OSI pero igual de potente para diagnosticar.</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">▤ TCP/IP vs OSI</div>
+          <table>
+            <thead><tr><th>Capa OSI</th><th>Capa TCP/IP</th><th>Ejemplos</th></tr></thead>
+            <tbody>
+              <tr><td>7 · Aplicación</td><td rowspan="3">Aplicación</td><td rowspan="3">HTTP, DNS, SSH, FTP, SMTP, TLS</td></tr>
+              <tr><td>6 · Presentación</td></tr>
+              <tr><td>5 · Sesión</td></tr>
+              <tr><td>4 · Transporte</td><td>Transporte</td><td>TCP, UDP, QUIC</td></tr>
+              <tr><td>3 · Red</td><td>Internet</td><td>IP, ICMP, ARP, OSPF, BGP</td></tr>
+              <tr><td>2 · Enlace</td><td rowspan="2">Acceso a red</td><td rowspan="2">Ethernet, Wi-Fi, PPP, VLAN, STP</td></tr>
+              <tr><td>1 · Física</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">⊕ ¿Qué revisar en cada capa TCP/IP?</div>
+          <p style="font-size:13px;color:var(--txt-dim);margin-bottom:10px"><strong style="color:var(--accent)">Aplicación:</strong> ¿El servicio está corriendo? ¿Puerto abierto? ¿Cert TLS válido?</p>
+          <p style="font-size:13px;color:var(--txt-dim);margin-bottom:10px"><strong style="color:var(--accent)">Transporte:</strong> ¿TCP/UDP al puerto correcto? ¿Firewall intermedio? ¿SYN/ACK fluyen?</p>
+          <p style="font-size:13px;color:var(--txt-dim);margin-bottom:10px"><strong style="color:var(--accent)">Internet:</strong> ¿Hay ruta? ¿Ping al destino? ¿Routing asimétrico?</p>
+          <p style="font-size:13px;color:var(--txt-dim)"><strong style="color:var(--accent)">Acceso a red:</strong> ¿Link up? ¿ARP resuelve? ¿VLAN/tag correcto?</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">⊟ Protocolos clave — qué son y cuándo sospechar</div>
+        <div class="grid-2">
+          <div>
+            <h4 style="color:var(--accent-2);font-size:14px;margin-bottom:6px">ARP (Address Resolution Protocol)</h4>
+            <p style="font-size:13px;color:var(--txt-dim);margin-bottom:12px">Resuelve IP → MAC. Si falla, tenés un problema L2 o de VLAN. Comando clave: <code>arp -a</code>, <code>show arp</code>.</p>
+            <h4 style="color:var(--accent-2);font-size:14px;margin-bottom:6px">ICMP (Internet Control Message Protocol)</h4>
+            <p style="font-size:13px;color:var(--txt-dim);margin-bottom:12px">Lo que usa <code>ping</code> y <code>traceroute</code>. Si ping falla pero traceroute muestra saltos, hay un firewall bloqueando ICMP, no routing roto.</p>
+          </div>
+          <div>
+            <h4 style="color:var(--accent-2);font-size:14px;margin-bottom:6px">TCP vs UDP</h4>
+            <p style="font-size:13px;color:var(--txt-dim);margin-bottom:12px"><strong>TCP</strong> = confiable, handshake 3-way. <strong>UDP</strong> = sin conexión, rápido.</p>
+            <h4 style="color:var(--accent-2);font-size:14px;margin-bottom:6px">DNS</h4>
+            <p style="font-size:13px;color:var(--txt-dim)">Resuelve nombres → IPs. Falla típica: ping al IP anda, ping al hostname no. Revisar <code>/etc/resolv.conf</code>, <code>nslookup</code>, <code>dig</code>.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">⎘ Three-way handshake — TCP</div>
+        <p style="font-size:13px;color:var(--txt-dim);margin-bottom:12px">Antes de mandar datos, TCP negocia:</p>
+        <ol style="margin-left:24px;color:var(--txt-dim);font-size:14px;line-height:1.9">
+          <li><strong style="color:var(--accent)">SYN</strong> — el cliente pide conexión</li>
+          <li><strong style="color:var(--accent)">SYN-ACK</strong> — el servidor acepta y pide su turno</li>
+          <li><strong style="color:var(--accent)">ACK</strong> — el cliente confirma</li>
+        </ol>
+        <div class="callout warn">
+          <strong>Si ves SYN retransmitido sin SYN-ACK:</strong> el server no escucha, firewall, RST, o MTU blackhole.
+        </div>
+        <pre><button class="copy-btn">copy</button><code class="cmd-linux">tcpdump -i eth0 -nn -S port 80
+# Flags: [S] = SYN, [S.] = SYN-ACK, [.] = ACK, [R] = RST, [F] = FIN</code></pre>
+      </div>
+    </section>
+
+    <section class="page" id="page-vlans">
+      <div class="page-header">
+        <div class="page-title">⎙ VLAN & Segmentación <span class="page-title-tag">L2 · broadcast domain</span></div>
+        <div class="page-subtitle">Cómo dividir una red física en redes lógicas, qué cambia en el broadcast domain, trunking, y problemas típicos.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">▣ ¿Qué es una VLAN?</div>
+        <p style="color:var(--txt-dim);font-size:14px;margin-bottom:10px">Una VLAN = un <strong>broadcast domain</strong> independiente.</p>
+        <div class="grid-3">
+          <div class="callout ok"><strong>Beneficio 1:</strong> Reducir tamaño del broadcast domain.</div>
+          <div class="callout ok"><strong>Beneficio 2:</strong> Seguridad: aislar grupos.</div>
+          <div class="callout ok"><strong>Beneficio 3:</strong> Flexibilidad al mover usuarios.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">⊕ Tipos de enlace</div>
+        <table>
+          <thead><tr><th>Tipo</th><th>Uso</th><th>Tag 802.1Q</th><th>Ejemplo</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Access</strong></td><td>Host final</td><td>No (untagged)</td><td>Puerto de PC</td></tr>
+            <tr><td><strong>Trunk</strong></td><td>Switch↔switch o switch↔router</td><td>Sí (tagged)</td><td>Uplink entre switches</td></tr>
+            <tr><td><strong>Voice</strong></td><td>Teléfono IP + PC en mismo puerto</td><td>Dos VLANs</td><td>PC untagged, tel tagged</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">⚙ Configuración típica (Cisco IOS)</div>
+        <pre><button class="copy-btn">copy</button><code class="cmd-cisco">vlan 10
+ name RRHH
+vlan 20
+ name Ventas
+vlan 99
+ name NATIVA
+!
+interface GigabitEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+!
+interface GigabitEthernet0/24
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,99
+ switchport trunk native vlan 99</code></pre>
+        <div class="callout warn">
+          <strong>Cuidado con la VLAN nativa:</strong> default es la 1. Si no configurás native en AMBOS lados del trunk, riesgo de VLAN hopping.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">⊟ Inter-VLAN routing</div>
+        <h4 style="color:var(--accent);font-size:14px;margin:12px 0 6px">Opción 1: Router-on-a-stick</h4>
+        <pre><button class="copy-btn">copy</button><code class="cmd-cisco">interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+!
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0</code></pre>
+        <h4 style="color:var(--accent);font-size:14px;margin:12px 0 6px">Opción 2: Switch L3 con SVI</h4>
+        <pre><button class="copy-btn">copy</button><code class="cmd-cisco">ip routing
+!
+interface vlan 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown</code></pre>
+      </div>
+      <div class="card">
+        <div class="card-title">⚠ Problemas típicos de VLAN</div>
+        <table>
+          <thead><tr><th>Síntoma</th><th>Causa probable</th><th>Verificar</th></tr></thead>
+          <tbody>
+            <tr><td>No llega a gateway de su VLAN</td><td>Puerto en VLAN equivocada o SVI down</td><td><code>show vlan brief</code></td></tr>
+            <tr><td>Misma VLAN en distintos switches no se ven</td><td>Trunk no permite VLAN o native mismatch</td><td><code>show interfaces trunk</code></td></tr>
+            <tr><td>CPU switch al 100%</td><td>Broadcast storm, loop L2</td><td><code>show spanning-tree</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="page" id="page-calc">
+      <div class="page-header">
+        <div class="page-title">⊕ Calculadora de Subredes <span class="page-title-tag">IPv4 · VLSM · IPv6</span></div>
+        <div class="page-subtitle">Calculá máscaras, redes, broadcast, wildcard y VLSM automático.</div>
+      </div>
+      <div class="pills">
+        <div class="pill active" data-calc-tab="basic">Básica</div>
+        <div class="pill" data-calc-tab="vlsm">VLSM</div>
+        <div class="pill" data-calc-tab="ipv6">IPv6</div>
+        <div class="pill" data-calc-tab="wildcard">Wildcard</div>
+      </div>
+      <div class="calc-pane" data-pane="basic">
+        <div class="card">
+          <div class="card-title">▣ Subred única</div>
+          <div class="grid-2">
+            <div><label>Dirección IP / CIDR</label><input id="calcIp" type="text" value="192.168.1.50/24" /></div>
+            <div><label>Tipo</label><select id="calcType"><option value="classful">Classful</option><option value="cidr" selected>CIDR</option></select></div>
+          </div>
+          <button class="btn btn-primary" id="btnCalcBasic" style="margin-top:16px">▶ Calcular</button>
+          <div class="calc-result" id="calcBasicResult"></div>
+        </div>
+      </div>
+      <div class="calc-pane hidden" data-pane="vlsm">
+        <div class="card">
+          <div class="card-title">⊟ VLSM</div>
+          <div class="grid-2">
+            <div><label>Red base</label><input id="vlsmBase" type="text" value="10.0.0.0/16" /></div>
+            <div><label>Subredes (formato: nombre,hosts)</label><textarea id="vlsmNeeds" rows="6" style="font-family:'JetBrains Mono',monospace">RRHH,120
+Ventas,60
+WiFi,30
+Invitados,10
+Enlace-WAN,2</textarea></div>
+          </div>
+          <button class="btn btn-primary" id="btnCalcVLSM" style="margin-top:16px">▶ Calcular VLSM</button>
+          <div class="calc-result" id="vlsmResult" style="white-space:pre-wrap"></div>
+        </div>
+      </div>
+      <div class="calc-pane hidden" data-pane="ipv6">
+        <div class="card">
+          <div class="card-title">⊕ IPv6</div>
+          <div><label>Dirección IPv6 / Prefijo</label><input id="ipv6Addr" type="text" value="2001:db8:acad::1/64" /></div>
+          <button class="btn btn-primary" id="btnCalcIPv6" style="margin-top:16px">▶ Calcular</button>
+          <div class="calc-result" id="ipv6Result"></div>
+        </div>
+      </div>
+      <div class="calc-pane hidden" data-pane="wildcard">
+        <div class="card">
+          <div class="card-title">▣ Wildcard mask para ACLs</div>
+          <div class="grid-2">
+            <div><label>Máscara normal</label><input id="wcMask" type="text" value="255.255.255.252" /></div>
+            <div><label>Resultado wildcard</label><input id="wcOut" type="text" readonly /></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-wizard">
+      <div class="page-header">
+        <div class="page-title">⚙ Troubleshooting Wizard <span class="page-title-tag">bottom-up · OSI</span></div>
+        <div class="page-subtitle">Asistente de diagnóstico paso a paso. Responde las preguntas y te lleva por la ruta del problema hasta identificar la capa y el comando clave.</div>
+      </div>
+      <div id="wizardContainer"></div>
+    </section>
+
+    <section class="page" id="page-casos">
+      <div class="page-header">
+        <div class="page-title">⚡ Casos Reales <span class="page-title-tag">23 escenarios · CCNP+ y telecom</span></div>
+        <div class="page-subtitle">Escenarios de la vida real: lo que te vas a encontrar en producción. Cada caso tiene topología animada, síntomas, diagnóstico, solución y comandos.</div>
+      </div>
+      <div class="pills" id="casosFilterBar">
+        <div class="pill active" data-cat="all">Todos</div>
+        <div class="pill" data-cat="L1">Capa 1</div>
+        <div class="pill" data-cat="L2">Capa 2</div>
+        <div class="pill" data-cat="L3">Capa 3</div>
+        <div class="pill" data-cat="L4">Capa 4</div>
+        <div class="pill" data-cat="L7">Aplicación</div>
+        <div class="pill" data-cat="adv">Avanzado</div>
+        <div class="pill" data-cat="tel">Telecom</div>
+      </div>
+      <div id="casosList"></div>
+    </section>
+
+    <section class="page" id="page-quiz">
+      <div class="page-header">
+        <div class="page-title">⊟ Quiz / Examen <span class="page-title-tag">CCNA + CCNP · 50 preguntas</span></div>
+        <div class="page-subtitle">Poné a prueba lo que sabés. Progreso se guarda automáticamente en tu navegador.</div>
+      </div>
+      <div class="grid-4" style="margin-bottom:24px">
+        <div class="stat-tile"><div class="stat-label">Respondidas</div><div class="stat-value" id="quizProgress">0/50</div></div>
+        <div class="stat-tile"><div class="stat-label">Correctas</div><div class="stat-value" id="quizCorrect" style="color:var(--ok)">0</div></div>
+        <div class="stat-tile"><div class="stat-label">Score</div><div class="stat-value" id="quizScore">0%</div></div>
+        <div class="stat-tile" style="display:flex;align-items:center;justify-content:center;gap:8px">
+          <button class="btn btn-warn btn-sm" id="btnQuizReset">↺ Reset</button>
+          <button class="btn btn-primary btn-sm" id="btnQuizNext">▶ Siguiente</button>
+        </div>
+      </div>
+      <div id="quizContainer"></div>
+    </section>
+
+    <section class="page" id="page-cheat">
+      <div class="page-header">
+        <div class="page-title">▣ Cheatsheet <span class="page-title-tag">referencia rápida</span></div>
+        <div class="page-subtitle">Tablas, comandos y equivalencias para tener a mano en el lab o en producción.</div>
+      </div>
+      <div class="pills" id="cheatFilterBar">
+        <div class="pill active" data-cheat-tab="all">Todo</div>
+        <div class="pill" data-cheat-tab="stp">STP</div>
+        <div class="pill" data-cheat-tab="ospf">OSPF</div>
+        <div class="pill" data-cheat-tab="bgp">BGP</div>
+        <div class="pill" data-cheat-tab="nat">NAT / ACL</div>
+        <div class="pill" data-cheat-tab="ipv6">IPv6</div>
+        <div class="pill" data-cheat-tab="vlan">VLAN</div>
+        <div class="pill" data-cheat-tab="equiv">Equivalencias</div>
+      </div>
+      <div class="card" data-cheat-section="stp">
+        <div class="card-title">▣ STP — Estados y roles de puerto</div>
+        <div class="grid-2">
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Estados</h4>
+            <table>
+              <thead><tr><th>Estado</th><th>Tráfico</th><th>MAC learning</th></tr></thead>
+              <tbody>
+                <tr><td>Disabled</td><td>No</td><td>No</td></tr>
+                <tr><td>Blocking</td><td>No</td><td>No</td></tr>
+                <tr><td>Listening</td><td>No</td><td>No</td></tr>
+                <tr><td>Learning</td><td>No</td><td>Sí</td></tr>
+                <tr><td>Forwarding</td><td>Sí</td><td>Sí</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Roles</h4>
+            <table>
+              <thead><tr><th>Rol</th><th>Función</th></tr></thead>
+              <tbody>
+                <tr><td>Root</td><td>Puerto hacia el root bridge</td></tr>
+                <tr><td>Designated</td><td>Reenvía tráfico del segmento</td></tr>
+                <tr><td>Alternate</td><td>Backup del root port</td></tr>
+                <tr><td>Backup</td><td>Backup del designated</td></tr>
+                <tr><td>Disabled</td><td>Administrativamente apagado</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card" data-cheat-section="ospf">
+        <div class="card-title">⊕ Estados OSPF</div>
+        <table>
+          <thead><tr><th>Estado</th><th>Significado</th></tr></thead>
+          <tbody>
+            <tr><td><code>Down</code></td><td>No se recibe Hello</td></tr>
+            <tr><td><code>Init</code></td><td>Hola recibido, no confirmado</td></tr>
+            <tr><td><code>2-Way</code></td><td>Bidireccional</td></tr>
+            <tr><td><code>Exstart</code></td><td>Master/Slave negociados</td></tr>
+            <tr><td><code>Exchange</code></td><td>DBD packets intercambiados</td></tr>
+            <tr><td><code>Loading</code></td><td>LSR/LSU/LSAck</td></tr>
+            <tr><td><code>Full</code></td><td>Adjacencia completa ✅</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" data-cheat-section="bgp">
+        <div class="card-title">⇄ Estados BGP</div>
+        <table>
+          <thead><tr><th>Estado</th><th>Significado</th></tr></thead>
+          <tbody>
+            <tr><td><code>Idle</code></td><td>No intentando conectar</td></tr>
+            <tr><td><code>Connect</code></td><td>TCP connect en progreso</td></tr>
+            <tr><td><code>Active</code></td><td>TCP falló, reintenta ⚠</td></tr>
+            <tr><td><code>OpenSent</code></td><td>OPEN enviado</td></tr>
+            <tr><td><code>OpenConfirm</code></td><td>OPEN OK</td></tr>
+            <tr><td><code>Established</code></td><td>Sesión activa ✅</td></tr>
+          </tbody>
+        </table>
+        <h4 style="color:var(--accent);font-size:14px;margin:12px 0 6px">Path selection — orden de preferencia</h4>
+        <ol style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.9">
+          <li>Weight (mayor es mejor, Cisco-propietario, local)</li>
+          <li>Local Preference (mayor es mejor, iBGP)</li>
+          <li>Locally originated</li>
+          <li>AS Path (más corto es mejor)</li>
+          <li>Origin code (IGP &lt; EGP &lt; incomplete)</li>
+          <li>MED (menor es mejor)</li>
+          <li>eBGP sobre iBGP</li>
+          <li>IGP metric al next-hop</li>
+        </ol>
+      </div>
+      <div class="card" data-cheat-section="nat">
+        <div class="card-title">⊟ NAT — Tipos y comandos</div>
+        <table>
+          <thead><tr><th>Tipo</th><th>Descripción</th><th>Cisco</th></tr></thead>
+          <tbody>
+            <tr><td>Static NAT</td><td>1:1, IP pública fija</td><td><code>ip nat inside source static 192.168.1.10 200.0.0.10</code></td></tr>
+            <tr><td>Dynamic NAT</td><td>Pool dinámico</td><td><code>ip nat pool POOL 200.0.0.1 200.0.0.50 netmask 255.255.255.0</code></td></tr>
+            <tr><td>PAT (overload)</td><td>Muchos a 1, con port</td><td><code>ip nat inside source list 1 pool POOL overload</code></td></tr>
+            <tr><td>Port forwarding</td><td>Static NAT con puerto</td><td><code>ip nat inside source static tcp 192.168.1.10 80 200.0.0.10 80</code></td></tr>
+          </tbody>
+        </table>
+        <h4 style="color:var(--accent);font-size:14px;margin:12px 0 6px">ACL por tipo</h4>
+        <table>
+          <thead><tr><th>Tipo</th><th>Rango</th><th>Uso</th></tr></thead>
+          <tbody>
+            <tr><td>Standard</td><td>1-99, 1300-1999</td><td>Solo source IP</td></tr>
+            <tr><td>Extended</td><td>100-199, 2000-2699</td><td>Src/Dst IP, puerto, protocolo</td></tr>
+            <tr><td>Named</td><td>texto</td><td>Standard o extended</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" data-cheat-section="ipv6">
+        <div class="card-title">⊕ IPv6 — Cheatsheet</div>
+        <table>
+          <thead><tr><th>Tipo</th><th>Prefijo</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td>Global unicast</td><td>2000::/3</td><td>Pública, routable</td></tr>
+            <tr><td>Link-local</td><td>fe80::/10</td><td>Solo segmento L2</td></tr>
+            <tr><td>Unique local (ULA)</td><td>fc00::/7</td><td>RFC 1918 equivalente</td></tr>
+            <tr><td>Multicast</td><td>ff00::/8</td><td>Uno a muchos</td></tr>
+            <tr><td>Loopback</td><td>::1/128</td><td>Equivalente a 127.0.0.1</td></tr>
+          </tbody>
+        </table>
+        <pre><button class="copy-btn">copy</button><code class="cmd-cisco">show ipv6 interface brief
+show ipv6 route
+show ipv6 neighbors
+show ipv6 ospf neighbor
+show ipv6 bgp summary</code></pre>
+      </div>
+      <div class="card" data-cheat-section="vlan">
+        <div class="card-title">▣ VLANs reservadas y comandos</div>
+        <table>
+          <thead><tr><th>Rango</th><th>Uso</th></tr></thead>
+          <tbody>
+            <tr><td>0, 4095</td><td>Reservadas</td></tr>
+            <tr><td>1</td><td>VLAN nativa default (Cisco)</td></tr>
+            <tr><td>2-1001</td><td>VLANs normales</td></tr>
+            <tr><td>1002-1005</td><td>Token Ring/FDDI (legacy)</td></tr>
+            <tr><td>1006-4094</td><td>VLANs extendidas (VTP v3)</td></tr>
+          </tbody>
+        </table>
+        <pre><button class="copy-btn">copy</button><code class="cmd-cisco">vlan 10
+ name RRHH
+!
+interface GigabitEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+!
+show vlan brief
+show interfaces trunk
+show spanning-tree</code></pre>
+      </div>
+      <div class="card" data-cheat-section="equiv">
+        <div class="card-title">▣ Equivalencias Cisco ↔ Linux ↔ Windows</div>
+        <table>
+          <thead><tr><th>Tarea</th><th>Cisco IOS</th><th>Linux</th><th>Windows</th></tr></thead>
+          <tbody>
+            <tr><td>Ver interfaces e IPs</td><td><code>show ip interface brief</code></td><td><code>ip a</code> / <code>ifconfig</code></td><td><code>ipconfig</code> / <code>ipconfig /all</code></td></tr>
+            <tr><td>Tabla de routing</td><td><code>show ip route</code></td><td><code>ip route</code></td><td><code>route print</code></td></tr>
+            <tr><td>Tabla ARP</td><td><code>show arp</code></td><td><code>ip neigh</code></td><td><code>arp -a</code></td></tr>
+            <tr><td>DNS lookup</td><td><code>nslookup HOST</code></td><td><code>dig HOST</code></td><td><code>nslookup HOST</code></td></tr>
+            <tr><td>Traceroute</td><td><code>traceroute IP</code></td><td><code>traceroute</code> / <code>mtr</code></td><td><code>tracert IP</code></td></tr>
+            <tr><td>Test TCP</td><td><code>telnet IP PORT</code></td><td><code>nc -zv IP PORT</code></td><td><code>Test-NetConnection IP -Port PORT</code></td></tr>
+            <tr><td>Captura tráfico</td><td><code>monitor session</code></td><td><code>tcpdump -i eth0 -w out.pcap</code></td><td><code>netsh trace start</code></td></tr>
+            <tr><td>Vecinos L2</td><td><code>show cdp neighbor</code></td><td><code>lldpd</code></td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="page" id="page-telecom">
+      <div class="page-header">
+        <div class="page-title">📡 Telecom <span class="page-title-tag">radio · VHF/UHF · satelital</span></div>
+        <div class="page-subtitle">Introducción a las tecnologías inalámbricas: radioenlaces PTP, sistemas PMP, radio VHF/UHF y enlaces satelitales.</div>
+      </div>
+      <div class="pills" id="telecomFilterBar">
+        <div class="pill active" data-telecom-tab="all">Visión general</div>
+        <div class="pill" data-telecom-tab="ptp">Radio PTP</div>
+        <div class="pill" data-telecom-tab="pmp">PMP</div>
+        <div class="pill" data-telecom-tab="vhf">VHF / UHF</div>
+        <div class="pill" data-telecom-tab="sat">Satelital</div>
+      </div>
+      <div class="card" data-telecom-section="all">
+        <div class="card-title">▣ ¿Por qué telecom en una guía de redes?</div>
+        <p style="color:var(--txt-dim);font-size:14px;margin-bottom:10px">La fibra y el cobre no llegan a todos lados: zonas rurales, mar, montañas, plantas industriales distribuidas. Una red moderna combina <strong>cableado + inalámbrico</strong>.</p>
+        <div class="grid-2">
+          <div class="callout ok"><strong>Cuándo usar radio:</strong> distancias de 100m a 50+ km sin fibra, topologías rurales, redundancia de uplink.</div>
+          <div class="callout warn"><strong>Cuándo NO usar radio:</strong> alta densidad, interferencia RF masiva, requisitos de QoS estrictos.</div>
+        </div>
+        <h4 style="color:var(--accent);margin:16px 0 8px;font-size:15px">▸ Comparativa rápida</h4>
+        <table>
+          <thead><tr><th>Tecnología</th><th>Alcance</th><th>Throughput</th><th>Latencia</th><th>Uso típico</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Radioenlace PTP</strong></td><td>1–50 km</td><td>100 Mbps – 10 Gbps</td><td>&lt; 5 ms</td><td>Backhaul entre sites</td></tr>
+            <tr><td><strong>PMP</strong></td><td>1–15 km</td><td>50–500 Mbps</td><td>5–20 ms</td><td>WISP, suscriptores</td></tr>
+            <tr><td><strong>VHF / UHF / HF</strong></td><td>5–500 km</td><td>9.6 kbps – 1 Mbps</td><td>Alta</td><td>Marina, aviación, emergencias</td></tr>
+            <tr><td><strong>Satelital</strong></td><td>Global</td><td>10 Mbps – 1 Gbps</td><td>600 ms (GEO) / 20–50 ms (LEO)</td><td>Sitios remotos, marítimo</td></tr>
+          </tbody>
+        </table>
+        <h4 style="color:var(--accent);margin:16px 0 8px;font-size:15px">▸ Conceptos clave compartidos</h4>
+        <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.9">
+          <li><strong style="color:var(--accent)">Línea de vista (LOS):</strong> las antenas se "ven" sin obstáculos. Requisito #1 de cualquier radioenlace.</li>
+          <li><strong style="color:var(--accent)">Zona de Fresnel:</strong> elipsoide entre antenas. Si hay obstáculos dentro del 60%, el enlace se degrada.</li>
+          <li><strong style="color:var(--accent)">PIRE / EIRP:</strong> Potencia Isótropa Radiada Equivalente. Suma ganancia de antena + pérdidas de cable.</li>
+          <li><strong style="color:var(--accent)">RSSI / SNR:</strong> intensidad de señal y relación señal/ruido.</li>
+          <li><strong style="color:var(--accent)">Modulación adaptativa:</strong> baja automáticamente de 256-QAM a QPSK cuando la señal empeora.</li>
+        </ul>
+      </div>
+      <div class="card" data-telecom-section="ptp">
+        <div class="card-title">⊕ Radioenlace Punto a Punto (PTP)</div>
+        <p style="color:var(--txt-dim);font-size:14px;margin-bottom:12px">Un enlace dedicado entre <strong>dos puntos</strong> con antenas direccionales. Es la forma más común de conectar dos edificios o dos torres.</p>
+        <div class="grid-2">
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Bandas de frecuencia</h4>
+            <table>
+              <thead><tr><th>Banda</th><th>Característica</th></tr></thead>
+              <tbody>
+                <tr><td>5 GHz</td><td>Licencia exenta, alcance medio, sensible a lluvia</td></tr>
+                <tr><td>23 GHz</td><td>Microondas, requiere licencia, alta capacidad, corto alcance</td></tr>
+                <tr><td>60 GHz</td><td>V-band, multigigabit, alcance muy corto</td></tr>
+                <tr><td>70/80 GHz</td><td>E-band, 1–10 Gbps, distancia corta</td></tr>
+                <tr><td>6-42 GHz licenciadas</td><td>Carriers, sin interferencia</td></tr>
+              </tbody>
+            </table>
+            <h4 style="color:var(--accent);font-size:14px;margin:12px 0 8px">Equipos típicos</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.8">
+              <li><strong>Mikrotik:</strong> Wireless Wire, NetMetal — para WISP y enlaces económicos</li>
+              <li><strong>Ubiquiti:</strong> airFiber, PowerBeam — buen precio/rendimiento</li>
+              <li><strong>Cambium Networks:</strong> ePMP, PTP 650/670 — referencia para WISP profesional</li>
+              <li><strong>Cisco / Ericsson / Nokia:</strong> soluciones carrier</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Componentes de un enlace</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.9">
+              <li><strong>ODU (Outdoor Unit):</strong> la radio propiamente dicha</li>
+              <li><strong>Antena:</strong> direccional, parábola o planar. Ganancia en dBi</li>
+              <li><strong>Cable guíaondas / coaxil / Ethernet:</strong> conexión ODU-IDU</li>
+              <li><strong>IDU (Indoor Unit):</strong> conversor a Ethernet/FO, PoE, gestión</li>
+              <li><strong>Torres / herrajes:</strong> soporte físico</li>
+            </ul>
+            <h4 style="color:var(--accent);font-size:14px;margin:12px 0 8px">Troubleshooting típico</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.8">
+              <li><strong>Throughput bajo:</strong> revisar alineación, RSSI/SNR, modulación actual</li>
+              <li><strong>Caídas cada X tiempo:</strong> interferencia horaria, saturación, batería far end</li>
+              <li><strong>Link no levanta:</strong> antena desalineada, problema eléctrico, config errónea</li>
+              <li><strong>Pérdida con lluvia:</strong> rain fade, especialmente en 23+ GHz</li>
+            </ul>
+          </div>
+        </div>
+        <h4 style="color:var(--accent);font-size:14px;margin:16px 0 8px">Comandos típicos</h4>
+        <pre><button class="copy-btn">copy</button><code class="cmd-linux"># Mikrotik
+/interface wireless monitor 0
+/interface wireless registration-table print
+/interface wireless print stats
+/interface wireless scan 0
+/system resource print</code></pre>
+        <pre><button class="copy-btn">copy</button><code class="cmd-linux"># Cambium (cnMaestro / CLI)
+show radio
+show rf
+show interface
+show throughput
+show ethernet</code></pre>
+      </div>
+      <div class="card" data-telecom-section="pmp">
+        <div class="card-title">⊟ PMP — Punto a Multipunto</div>
+        <p style="color:var(--txt-dim);font-size:14px;margin-bottom:12px">Un <strong>Access Point (AP)</strong> central con antena sectorial que sirve a múltiples <strong>suscriptores (CPE/SM)</strong>. Modelo clásico de un WISP.</p>
+        <div class="grid-2">
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Componentes</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.9">
+              <li><strong>AP / Base Station:</strong> en torre, antena sectorial (60°, 90°, 120°)</li>
+              <li><strong>SM / CPE:</strong> antena del cliente, direccional apuntando al AP</li>
+              <li><strong>GPS Sync:</strong> sincroniza APs en misma torre para que no se interfieran</li>
+              <li><strong>Backhaul:</strong> conexión AP-core (fibra, otro PTP, satélite)</li>
+            </ul>
+            <h4 style="color:var(--accent);font-size:14px;margin:12px 0 8px">Planificación</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.8">
+              <li>Sectorización: 3-4 sectores por torre, frecuencias distintas</li>
+              <li>Capacidad: throughput agregado se reparte entre usuarios</li>
+              <li>Throughput real depende de modulación, distancia, interferencia</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Tecnologías de acceso</h4>
+            <table>
+              <thead><tr><th>Estándar</th><th>Banda</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td>802.11 Wi-Fi</td><td>2.4/5/6 GHz</td><td>Local, low-cost</td></tr>
+                <tr><td>802.16 WiMAX</td><td>2-66 GHz</td><td>Histórico, en desuso</td></tr>
+                <tr><td>LTE / 5G NR</td><td>700 MHz-6 GHz</td><td>Carrier, eNodeB + UE</td></tr>
+                <tr><td>Proprietary (Cambium, Mimosa)</td><td>5/60 GHz</td><td>WISP, TDMA</td></tr>
+              </tbody>
+            </table>
+            <h4 style="color:var(--accent);font-size:14px;margin:12px 0 8px">Troubleshooting</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.8">
+              <li><strong>SM no se asocia:</strong> revisar controlador, autenticación, distancia</li>
+              <li><strong>Throughput bajo global:</strong> SNR de los SMs, interferencia entre sectores</li>
+              <li><strong>Caídas masivas:</strong> problema en AP, GPS sync, alimentación</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card" data-telecom-section="vhf">
+        <div class="card-title">⎘ VHF / UHF / HF — Radio convencional</div>
+        <p style="color:var(--txt-dim);font-size:14px;margin-bottom:12px">Las bandas "clásicas" de radio: HF (3-30 MHz), VHF (30-300 MHz), UHF (300 MHz-3 GHz). Marina, aviación, emergencias, radioafición, militar.</p>
+        <div class="grid-2">
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Bandas y propagación</h4>
+            <table>
+              <thead><tr><th>Banda</th><th>Propagación</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td>HF</td><td>Ionosférica (rebota en ionosfera)</td><td>Radioafición, broadcasting internacional</td></tr>
+                <tr><td>VHF</td><td>Línea de vista</td><td>Marina, aviación, FM comercial</td></tr>
+                <tr><td>UHF</td><td>LOS, mejor en ciudades</td><td>TV digital, trunking, GPS</td></tr>
+              </tbody>
+            </table>
+            <h4 style="color:var(--accent);font-size:14px;margin:12px 0 8px">Sistemas digitales modernos</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.8">
+              <li><strong>DMR:</strong> dos time slots TDMA en 12.5 kHz</li>
+              <li><strong>P25:</strong> emergencias y seguridad pública</li>
+              <li><strong>TETRA:</strong> trunking digital europeo</li>
+              <li><strong>dPMR / NXDN:</strong> FDMA digital económico</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Conceptos importantes</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.9">
+              <li><strong>Repetidora:</strong> receptor+transmisor en torre, repite señal</li>
+              <li><strong>Trunking:</strong> asigna canales dinámicamente</li>
+              <li><strong>CTCSS / DCS:</strong> sub-tonos para que varios grupos compartan frecuencia</li>
+              <li><strong>Canalización:</strong> 12.5 kHz (narrowband) o 25 kHz (wideband)</li>
+              <li><strong>Cobertura:</strong> modelada con software (Radio Mobile, ICS Telecom)</li>
+            </ul>
+            <h4 style="color:var(--accent);font-size:14px;margin:12px 0 8px">Troubleshooting</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.8">
+              <li><strong>No se escucha la repetidora:</strong> frecuencia, offset, sub-tono, antena</li>
+              <li><strong>Audio cortado/robotizado:</strong> RSSI bajo, o clipping por señal muy fuerte</li>
+              <li><strong>Interferencia:</strong> otro servicio en la banda, ruido industrial, splatter adyacente</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card" data-telecom-section="sat">
+        <div class="card-title">🛰 Satelital — VSAT, GEO y LEO</div>
+        <p style="color:var(--txt-dim);font-size:14px;margin-bottom:12px">Para lugares donde no llega nada: mar, desiertos, zonas selváticas, aeronaves, disaster recovery. Cobertura global a cambio de latencia y costo.</p>
+        <div class="grid-2">
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Tipos de órbita</h4>
+            <table>
+              <thead><tr><th>Tipo</th><th>Altitud</th><th>Latencia</th><th>Ejemplos</th></tr></thead>
+              <tbody>
+                <tr><td><strong>LEO</strong></td><td>300–2000 km</td><td>20–50 ms</td><td>Starlink, OneWeb, Kuiper</td></tr>
+                <tr><td><strong>MEO</strong></td><td>5000–20000 km</td><td>100–150 ms</td><td>O3b, GPS, Galileo</td></tr>
+                <tr><td><strong>GEO</strong></td><td>35.786 km</td><td>600+ ms</td><td>Hughes, iDirect, VSAT</td></tr>
+              </tbody>
+            </table>
+            <h4 style="color:var(--accent);font-size:14px;margin:12px 0 8px">VSAT</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.8">
+              <li>Antena parabólica chica (0.6 a 2.4 m)</li>
+              <li>Modem satelital (BUC + LNB, o modem integrado)</li>
+              <li>Hub central en teleport del operador</li>
+              <li>Bandas: Ku (12-18 GHz), Ka (26-40 GHz), C (4-8 GHz)</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:var(--accent);font-size:14px;margin-bottom:8px">Cuándo usar cada uno</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.9">
+              <li><strong>GEO/VSAT:</strong> empresarial estable, voz, datos críticos</li>
+              <li><strong>LEO (Starlink):</strong> residencial, internet genérico, baja latencia</li>
+              <li><strong>MEO (O3b):</strong> marítimo, cruceros, offshore</li>
+              <li><strong>Iridium / Inmarsat:</strong> global extremo, handy satelitales</li>
+            </ul>
+            <h4 style="color:var(--accent);font-size:14px;margin:12px 0 8px">Troubleshooting</h4>
+            <ul style="margin-left:20px;color:var(--txt-dim);font-size:13px;line-height:1.8">
+              <li><strong>No link:</strong> antena desalineada, BUC sin alimentación, vista obstruida</li>
+              <li><strong>Lento con lluvia:</strong> rain fade, especialmente en Ka</li>
+              <li><strong>Ping alto en GEO:</strong> es normal (600+ ms), es física</li>
+              <li><strong>Caídas intermitentes:</strong> satélite cambiando de beam (LEO), handover entre haces</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">▣ Glosario telecom rápido</div>
+        <table>
+          <thead><tr><th>Término</th><th>Significado</th></tr></thead>
+          <tbody>
+            <tr><td>LOS (Line of Sight)</td><td>Línea de vista directa entre antenas</td></tr>
+            <tr><td>NLOS (Near LOS)</td><td>Sin LOS total, con algo de difracción</td></tr>
+            <tr><td>Fresnel Zone</td><td>Elipsoide entre antenas. Si se obstruye &gt;40%, degrada</td></tr>
+            <tr><td>PIRE / EIRP</td><td>Potencia Isótropa Radiada Equivalente</td></tr>
+            <tr><td>RSSI</td><td>Received Signal Strength Indicator</td></tr>
+            <tr><td>SNR / SINR</td><td>Relación señal/ruido (con o sin interferencia)</td></tr>
+            <tr><td>BUC</td><td>Block Up Converter: convierte a frecuencia de TX</td></tr>
+            <tr><td>LNB</td><td>Low Noise Block: amplifica señal recibida del satélite</td></tr>
+            <tr><td>TDMA</td><td>Time Division Multiple Access</td></tr>
+            <tr><td>FDMA</td><td>Frequency Division Multiple Access</td></tr>
+            <tr><td>Rain Fade</td><td>Atenuación por lluvia (más fuerte en frecuencias altas)</td></tr>
+            <tr><td>Link Budget</td><td>Cálculo de potencias y ganancias</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+<footer style="text-align:center;padding:24px 16px 40px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--txt-mute);letter-spacing:1px;border-top:1px solid var(--border);margin:40px auto 0;max-width:1200px">
+  Troubleshooting Sheet v2.0 · creado por <span style="color:var(--accent)">Hernandez Claudio</span> · 2026
+</footer>
+
+<script>
+var wizardTree = {
+  start: { q: '¿Cuál es el síntoma principal?', options: [
+    { label: '🚫 No hay conectividad a un destino específico', next: 'conn-down' },
+    { label: '🐌 Conectividad intermitente / lentitud', next: 'slow' },
+    { label: '🔁 Una VLAN no se comunica con otra', next: 'vlan-issue' },
+    { label: '🌐 DNS no resuelve', next: 'dns' },
+    { label: '🔐 Sesión TCP no levanta', next: 'tcp-fail' },
+    { label: '⚠ Vecino OSPF/BGP no levanta', next: 'routing' }
+  ]},
+  'conn-down': { q: 'Capa 1 (Física). ¿El indicador de link del puerto está prendido?', options: [
+    { label: '✅ Sí, link up', next: 'l2-check' },
+    { label: '❌ No, link down', next: 'l1-fix', terminal: true }
+  ]},
+  'l1-fix': { title: '🔧 Problema de Capa 1', severity: 'Capa 1', terminal: true,
+    diagnosis: 'Sin enlace físico. Posibles causas: cable cortado, SFP mal sentado/quemado, puerto en err-disable, fibra sucia.',
+    actions: [
+      { cisco: 'show interfaces status | include notconnect', linux: 'ethtool eth0 | grep Link', win: 'Get-NetAdapter' },
+      { cisco: 'show interfaces counters errors', linux: 'dmesg | grep -i eth', win: '' }
+    ],
+    final: 'Si el contador CRC/input errors sube rápido: cambiar cable/SFP. Si está err-disabled: revisar storm-control / bpduguard, levantar con shutdown / no shutdown.' },
+  'l2-check': { q: 'Capa 2: ¿ARP resuelve?', options: [
+    { label: '✅ Sí', next: 'l3-check' },
+    { label: '❌ No, ARP falla', next: 'l2-fix', terminal: true }
+  ]},
+  'l2-fix': { title: '🔧 Problema de Capa 2', severity: 'Capa 2', terminal: true,
+    diagnosis: 'ARP no resuelve. VLAN mal asignada, trunk no permite la VLAN, native VLAN mismatch, STP bloqueando el puerto.',
+    actions: [
+      { cisco: 'show vlan brief', linux: 'cat /proc/net/vlan', win: '' },
+      { cisco: 'show interfaces trunk', linux: '', win: '' },
+      { cisco: 'show spanning-tree blockedports', linux: '', win: '' }
+    ],
+    final: 'Verificar: puerto de origen en VLAN correcta, trunk permita esa VLAN, native VLAN coincida en ambos lados.' },
+  'l3-check': { q: 'Capa 3: ¿Ping al default gateway funciona?', options: [
+    { label: '✅ Sí', next: 'l3-route' },
+    { label: '❌ No', next: 'l3-fix-gw', terminal: true }
+  ]},
+  'l3-fix-gw': { title: '🔧 Gateway inalcanzable', severity: 'Capa 3', terminal: true,
+    diagnosis: 'El host no llega a su gateway. SVI del switch down, default gateway mal configurado, máscara incorrecta.',
+    actions: [
+      { cisco: 'show ip interface brief | include Vlan', linux: 'ip route show default', win: 'ipconfig' },
+      { cisco: 'show running-config interface vlan 10', linux: '', win: '' }
+    ],
+    final: 'Confirmar: SVI up/up, host con gateway correcto, ip routing habilitado, puerto del switch en VLAN correcta.' },
+  'l3-route': { q: 'Capa 3: ¿Ping al destino final llega?', options: [
+    { label: '✅ Sí', next: 'final-ok', terminal: true },
+    { label: '❌ No', next: 'l3-route-fix', terminal: true }
+  ]},
+  'l3-route-fix': { title: '🔧 Routing al destino', severity: 'Capa 3', terminal: true,
+    diagnosis: 'Falla la ruta al destino. Ruta estática faltante, ACL bloqueando, routing protocol no convergido, next-hop inalcanzable.',
+    actions: [
+      { cisco: 'show ip route DEST_IP', linux: 'ip route get DEST_IP', win: 'route print DEST_IP' },
+      { cisco: 'traceroute DEST_IP', linux: 'traceroute -n DEST_IP', win: 'tracert DEST_IP' }
+    ],
+    final: 'Si traceroute muere en un salto: ese hop es el problema. Destination unreachable: ver show ip route. Ping al IP del router OK pero al host detrás no: ACL, NAT, firewall en el host.' },
+  'final-ok': { title: '✅ Conectividad OK', severity: 'Sin problemas', terminal: true,
+    diagnosis: 'Las capas 1, 2 y 3 funcionan. Si el servicio sigue sin responder: problema en 4-7.',
+    actions: [{ cisco: '', linux: 'nc -zv DEST_IP DEST_PORT', win: 'Test-NetConnection DEST_IP -Port DEST_PORT' }],
+    final: 'Probar capa aplicación: telnet/nc al puerto, DNS, logs del servicio.' },
+  'slow': { q: 'Pérdida o latencia: ¿traceroute muestra saltos con * * *?', options: [
+    { label: 'Sí, hay * * *', next: 'slow-loss', terminal: true },
+    { label: 'No, completo pero lento', next: 'slow-latency', terminal: true }
+  ]},
+  'slow-loss': { title: '🐌 Pérdida de paquetes', severity: 'Capa 3/4', terminal: true,
+    diagnosis: 'Saltos con * * * indican router no responde a ICMP TTL o pérdida real.',
+    actions: [{ cisco: '', linux: 'mtr -rwc 100 DEST_IP', win: 'pathping DEST_IP' }],
+    final: 'Con mtr identificás el primer hop con pérdida significativa. Si la pérdida aumenta en un hop específico: problema de ese enlace.' },
+  'slow-latency': { title: '🐌 Alta latencia sin pérdida', severity: 'Capa 3', terminal: true,
+    diagnosis: 'Traceroute completo pero lento. Causas: enlace congestionado, ruteo subóptimo, MTU que fuerza fragmentación.',
+    actions: [
+      { cisco: 'show interfaces | include drops', linux: 'sar -n DEV 1 5', win: '' },
+      { cisco: 'ping -s 1472 -M do DEST_IP', linux: 'ping -M do -s 1472 DEST_IP', win: 'ping -f -l 1472 DEST_IP' }
+    ],
+    final: 'Probar MTU con DF-bit: si falla con 1472, MTU blackhole.' },
+  'vlan-issue': { q: 'VLAN routing: ¿SVIs up/up?', options: [
+    { label: '✅ Sí', next: 'vlan-route' },
+    { label: '❌ SVI down', next: 'vlan-svi-fix', terminal: true }
+  ]},
+  'vlan-svi-fix': { title: '🔧 SVI down', severity: 'Capa 2/3', terminal: true,
+    diagnosis: 'SVI down/down. Ningún puerto en esa VLAN está up, VLAN no existe, STP bloqueando el último puerto.',
+    actions: [
+      { cisco: 'show vlan brief | include X', linux: '', win: '' },
+      { cisco: 'show spanning-tree vlan X', linux: '', win: '' }
+    ],
+    final: 'Confirmar VLAN existe y hay al menos un puerto access o trunk que la permita.' },
+  'vlan-route': { q: '¿Ping llega al gateway y luego se pierde?', options: [
+    { label: 'Sí, llega al gateway y se pierde', next: 'vlan-acl', terminal: true },
+    { label: 'No llega ni al gateway', next: 'vlan-svi-fix', terminal: true }
+  ]},
+  'vlan-acl': { title: '🔧 Inter-VLAN — posible ACL', severity: 'Capa 3', terminal: true,
+    diagnosis: 'Sale del host, llega al gateway pero no se reenvía. ACL en SVI, ACL en router, subinterface mal configurada.',
+    actions: [
+      { cisco: 'show ip access-lists', linux: '', win: '' },
+      { cisco: 'show ip interface vlan X', linux: '', win: '' }
+    ],
+    final: 'Test: desactivar ACL temporalmente con no ip access-group.' },
+  'dns': { q: 'DNS: ¿nslookup/dig resuelve?', options: [
+    { label: '✅ Sí', next: 'dns-ok', terminal: true },
+    { label: '❌ No', next: 'dns-fix', terminal: true }
+  ]},
+  'dns-fix': { title: '🔧 DNS no resuelve', severity: 'Capa 7', terminal: true,
+    diagnosis: 'DNS server inalcanzable, firewall bloqueando UDP/53, recursión deshabilitada.',
+    actions: [
+      { cisco: '', linux: 'dig @8.8.8.8 hostname', win: 'nslookup hostname 8.8.8.8' },
+      { cisco: '', linux: 'cat /etc/resolv.conf', win: 'ipconfig /all | findstr DNS' }
+    ],
+    final: 'Test con DNS público: si resuelve → DNS interno roto. Si no → upstream.' },
+  'dns-ok': { title: '✅ DNS funciona', severity: 'Sin problemas', terminal: true,
+    diagnosis: 'DNS resuelve. Si la app no conecta: TCP, aplicación, auth, cert.',
+    actions: [{ cisco: '', linux: 'curl -v https://hostname', win: '' }],
+    final: 'Probar con curl -v para ver el handshake TLS.' },
+  'tcp-fail': { q: 'TCP: ¿Puerto abierto?', options: [
+    { label: '✅ Sí', next: 'tcp-ok', terminal: true },
+    { label: '❌ No', next: 'tcp-fix', terminal: true }
+  ]},
+  'tcp-fix': { title: '🔧 Puerto cerrado', severity: 'Capa 4', terminal: true,
+    diagnosis: 'Puerto inalcanzable. Servicio no corriendo, firewall, NAT mal configurado.',
+    actions: [
+      { cisco: '', linux: 'nc -zv IP PORT', win: 'Test-NetConnection IP -Port PORT' },
+      { cisco: '', linux: 'ss -tlnp | grep PORT', win: 'netstat -an | findstr :PORT' }
+    ],
+    final: 'Si server escucha pero nc desde afuera falla: firewall/ACL/NAT.' },
+  'tcp-ok': { title: '✅ Puerto abierto', severity: 'Sin problemas', terminal: true,
+    diagnosis: 'Puerto accesible. Si la sesión no levanta: TLS, auth.',
+    actions: [{ cisco: '', linux: 'openssl s_client -connect IP:PORT', win: '' }],
+    final: 'openssl s_client -verify 1 para ver handshake.' },
+  'routing': { q: 'OSPF/BGP: ¿Estado del neighbor?', options: [
+    { label: 'Active / Down / stuck', next: 'routing-fix', terminal: true },
+    { label: '2-Way / Loading / Exchange', next: 'routing-partial', terminal: false },
+    { label: 'Full / Established', next: 'routing-ok', terminal: true }
+  ]},
+  'routing-fix': { title: '🔧 Vecino no levanta', severity: 'Capa 3', terminal: true,
+    diagnosis: 'OSPF: mismatch hello/dead, area ID, network type, authentication. BGP: peering source IP, AS number, MD5.',
+    actions: [
+      { cisco: 'show ip ospf neighbor', linux: '', win: '' },
+      { cisco: 'show ip ospf interface g0/0', linux: '', win: '' },
+      { cisco: 'show ip bgp summary', linux: '', win: '' }
+    ],
+    final: 'Comparar Hello interval, Dead timer, Area ID, Network type. BGP: ver columna State/PfxRcd en summary.' },
+  'routing-partial': { title: '⚠ Vecino parcial', severity: 'Capa 3', terminal: false,
+    diagnosis: '2-Way es NORMAL entre DROthers. Loading = sincronizando LSDB, esperar.',
+    actions: [{ cisco: 'show ip ospf neighbor detail', linux: '', win: '' }],
+    final: 'Esperar 30-60s. Si se queda: mtu interface (ip ospf mtu-ignore como workaround).' },
+  'routing-ok': { title: '✅ Sesión routing estable', severity: 'Sin problemas', terminal: true,
+    diagnosis: 'OSPF Full o BGP Established.',
+    actions: [{ cisco: 'show ip route | include D EX', linux: '', win: '' }],
+    final: 'Sesión up. Verificar rutas correctas en la tabla.' }
+};
+
+var wizardHistory = ['start'];
+function renderWizard() {
+  var container = document.getElementById('wizardContainer');
+  if (!container) return;
+  var current = wizardTree[wizardHistory[wizardHistory.length - 1]];
+  if (!current) { wizardHistory = ['start']; current = wizardTree.start; }
+  var step = wizardHistory.length;
+  var total = 7;
+  var progress = Math.min(100, (step / total) * 100);
+  var html = '<div class="wizard-progress"><span>Paso ' + step + ' de ~' + total + '</span><div class="progress-bar"><div class="progress-fill" style="width:' + progress + '%"></div></div><span>' + Math.round(progress) + '%</span></div>';
+  if (current.terminal) {
+    html += '<div class="wizard-step"><div class="badge badge-accent" style="margin-bottom:12px">' + (current.severity || 'Diagnóstico') + '</div><h2 style="margin-bottom:12px">' + current.title + '</h2><div class="callout"><strong>Diagnóstico:</strong> ' + current.diagnosis + '</div><h3 style="color:var(--accent);margin:16px 0 8px;font-size:15px">▣ Comandos</h3>';
+    for (var i = 0; i < (current.actions || []).length; i++) {
+      var a = current.actions[i];
+      if (a.cisco) html += '<pre><button class="copy-btn">copy</button><code class="cmd-cisco">' + a.cisco + '</code></pre>';
+      if (a.linux) html += '<pre><button class="copy-btn">copy</button><code class="cmd-linux">' + a.linux + '</code></pre>';
+      if (a.win) html += '<pre><button class="copy-btn">copy</button><code class="cmd-win">' + a.win + '</code></pre>';
+    }
+    html += '<div class="callout ok"><strong>Resolución:</strong> ' + current.final + '</div><div style="margin-top:20px;display:flex;gap:8px"><button class="btn" id="wizBack"' + (wizardHistory.length === 1 ? ' disabled' : '') + '>← Volver</button><button class="btn btn-primary" id="wizReset">↺ Empezar</button></div></div>';
+  } else {
+    html += '<div class="wizard-step"><div class="wizard-question">' + current.q + '</div><div class="wizard-options">';
+    for (var k = 0; k < current.options.length; k++) {
+      var opt = current.options[k];
+      html += '<div class="wizard-option" data-next="' + opt.next + '"><span class="opt-icon">▸</span><span>' + opt.label + '</span></div>';
+    }
+    html += '</div><div style="margin-top:20px"><button class="btn" id="wizBack"' + (wizardHistory.length === 1 ? ' disabled' : '') + '>← Volver</button></div></div>';
+  }
+  container.innerHTML = html;
+  container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  var back = document.getElementById('wizBack');
+  if (back) back.addEventListener('click', function() { if (wizardHistory.length > 1) { wizardHistory.pop(); renderWizard(); } });
+  var reset = document.getElementById('wizReset');
+  if (reset) reset.addEventListener('click', function() { wizardHistory = ['start']; renderWizard(); });
+  var opts = container.querySelectorAll('.wizard-option');
+  Array.from(opts).forEach(function(o) { o.addEventListener('click', function() { wizardHistory.push(o.dataset.next); renderWizard(); }); });
+}
+try { renderWizard(); } catch (e) { console.error('renderWizard init:', e); }
+
+// ============ NAVEGACION (router) ============
+function navTo(pageId) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.nav-item[data-page]').forEach(function(n) { n.classList.remove('active'); });
+  var target = document.getElementById('page-' + pageId);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.nav-item[data-page="' + pageId + '"]').forEach(function(n) { n.classList.add('active'); });
+  var sb = document.getElementById('sidebar'); if (sb) sb.classList.remove('open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.querySelectorAll('.nav-item[data-page]').forEach(function(item) { item.addEventListener('click', function() { navTo(item.dataset.page); }); });
+document.querySelectorAll('[data-goto]').forEach(function(b) { b.addEventListener('click', function() { navTo(b.dataset.goto); }); });
+var mm = document.getElementById('mobileMenuBtn'); if (mm) mm.addEventListener('click', function() { document.getElementById('sidebar').classList.toggle('open'); });
+
+// ============ COPY BUTTON ============
+function copyCmd(btn) {
+  var code = btn.parentElement.querySelector('code').textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(function() {
+      btn.textContent = 'copied'; btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1200);
+    });
+  } else {
+    var ta = document.createElement('textarea'); ta.value = code; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); btn.textContent = 'copied'; } catch (e) {}
+    document.body.removeChild(ta);
+    setTimeout(function() { btn.textContent = 'copy'; }, 1200);
+  }
+}
+document.addEventListener('click', function(e) { if (e.target && e.target.classList && e.target.classList.contains('copy-btn')) copyCmd(e.target); });
+
+// ============ OSI LAYERS + ANIMACION ============
+var osiLayers = [
+  { n: 7, name: 'Aplicación', desc: 'Interfaz con el usuario. Servicios: HTTP, DNS, SMTP, FTP, SSH.', protocols: 'HTTP, DNS, TLS, FTP, SSH, SMTP, SNMP', fails: 'Cert expirado, DNS no resuelve, puerto cerrado. <strong>Detección:</strong> curl -v, dig, logs.', devices: 'Hosts, servidores, proxies' },
+  { n: 6, name: 'Presentación', desc: 'Formato, cifrado, compresión.', protocols: 'TLS/SSL, ASCII, JPEG, MPEG', fails: 'TLS handshake falla, cert mismatch. <strong>Detección:</strong> openssl s_client.', devices: 'TLS accelerators' },
+  { n: 5, name: 'Sesión', desc: 'Control de diálogos entre hosts.', protocols: 'NetBIOS, RPC, SIP, PPTP', fails: 'Session timeout, RPC binding fail. <strong>Detección:</strong> net session.', devices: 'Gateways' },
+  { n: 4, name: 'Transporte', desc: 'Entrega extremo a extremo. TCP y UDP.', protocols: 'TCP, UDP, QUIC, SCTP', fails: 'Puerto bloqueado, SYN retransmits, RST. <strong>Detección:</strong> netstat, ss, nc, TNC.', devices: 'Firewalls, LB L4' },
+  { n: 3, name: 'Red', desc: 'Direccionamiento lógico y routing.', protocols: 'IP, ICMP, ARP, OSPF, BGP, MPLS', fails: 'Sin ruta, ACL, MTU mismatch, TTL excedido. <strong>Detección:</strong> ping, traceroute, show ip route.', devices: 'Routers, sw L3' },
+  { n: 2, name: 'Enlace de datos', desc: 'Acceso al medio, MAC, switching.', protocols: 'Ethernet, Wi-Fi, ARP, STP, VLAN, LACP', fails: 'MAC flap, broadcast storm, VLAN mismatch. <strong>Detección:</strong> show interfaces, show vlan, show mac.', devices: 'Switches, bridges' },
+  { n: 1, name: 'Física', desc: 'Señales, cables, conectores.', protocols: 'Cobre, fibra, wireless, SFP', fails: 'Cable cortado, SFP quemado, err-disable. <strong>Detección:</strong> link lights, OTDR.', devices: 'Cables, SFPs, antenas' }
+];
+
+(function renderOSI() {
+  var stack = document.getElementById('osiStack'); if (!stack) return;
+  stack.innerHTML = osiLayers.map(function(L) {
+    return '<div class="osi-layer" data-n="' + L.n + '"><div class="osi-num">L' + L.n + '</div><div class="osi-info"><div class="osi-name">' + L.name + '</div><div class="osi-desc">' + L.desc + '</div></div><div class="osi-protocols">' + L.protocols + '</div></div><div class="osi-layer-detail" data-detail="' + L.n + '"><div class="grid-2"><div><div class="card-sub">▣ Protocolos</div><p style="font-size:13px;color:var(--txt-dim)">' + L.protocols + '</p><div class="card-sub" style="margin-top:12px">▣ Dispositivos</div><p style="font-size:13px;color:var(--txt-dim)">' + L.devices + '</p></div><div><div class="card-sub">⚠ Fallas típicas</div><p style="font-size:13px;color:var(--txt-dim)">' + L.fails + '</p></div></div></div>';
+  }).join('');
+  Array.from(stack.querySelectorAll('.osi-layer')).forEach(function(el) {
+    el.addEventListener('click', function() {
+      var detail = stack.querySelector('.osi-layer-detail[data-detail="' + el.dataset.n + '"]');
+      var wasOpen = detail.classList.contains('open');
+      stack.querySelectorAll('.osi-layer-detail').forEach(function(d) { d.classList.remove('open'); });
+      if (!wasOpen) detail.classList.add('open');
+    });
+  });
+})();
+
+var osiAnimInterval = null;
+function setPacketToLayer(layer) {
+  var dot = document.getElementById('packetDot'); if (!dot) return;
+  var band = document.querySelector('.osi-band[data-layer="' + layer + '"]'); if (!band) return;
+  var parentRect = band.parentElement.getBoundingClientRect();
+  var bandRect = band.getBoundingClientRect();
+  dot.style.top = (bandRect.top - parentRect.top + bandRect.height / 2) + 'px';
+}
+function animateOsi(dir) {
+  if (osiAnimInterval) { clearInterval(osiAnimInterval); osiAnimInterval = null; }
+  if (dir === 'reset') { setPacketToLayer(7); return; }
+  var step = dir === 'up' ? 7 : 1;
+  setPacketToLayer(step);
+  osiAnimInterval = setInterval(function() {
+    step = dir === 'up' ? (step - 1) : (step + 1);
+    if (step < 1 || step > 7) { clearInterval(osiAnimInterval); osiAnimInterval = null; return; }
+    setPacketToLayer(step);
+  }, 900);
+}
+var btnOsiDown = document.getElementById('osiDown'); if (btnOsiDown) btnOsiDown.addEventListener('click', function() { animateOsi('down'); });
+var btnOsiUp = document.getElementById('osiUp'); if (btnOsiUp) btnOsiUp.addEventListener('click', function() { animateOsi('up'); });
+var btnOsiReset = document.getElementById('osiReset'); if (btnOsiReset) btnOsiReset.addEventListener('click', function() { animateOsi('reset'); });
+setPacketToLayer(7);
+
+// ============ CALCULADORA ============
+function ipToInt(ip) { return ip.split('.').reduce(function(acc, oct) { return (acc << 8) + parseInt(oct, 10); }, 0) >>> 0; }
+function intToIp(n) { return [(n >>> 24), (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join('.'); }
+function intToBinary(n, bits) { return n.toString(2).padStart(bits || 8, '0'); }
+
+document.querySelectorAll('[data-calc-tab]').forEach(function(pill) {
+  pill.addEventListener('click', function() {
+    document.querySelectorAll('[data-calc-tab]').forEach(function(p) { p.classList.remove('active'); });
+    pill.classList.add('active');
+    document.querySelectorAll('.calc-pane').forEach(function(pane) { pane.classList.add('hidden'); });
+    var target = document.querySelector('.calc-pane[data-pane="' + pill.dataset.calcTab + '"]');
+    if (target) target.classList.remove('hidden');
+  });
+});
+
+function calcBasic() {
+  var inputEl = document.getElementById('calcIp');
+  var out = document.getElementById('calcBasicResult');
+  if (!inputEl || !out) return;
+  var input = inputEl.value.trim();
+  var m = input.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\/(\d{1,2})$/);
+  if (!m) { out.innerHTML = '<div class="row"><span class="v warn">⚠ Formato inválido. Usá IP/CIDR, ej: 192.168.1.50/24</span></div>'; return; }
+  var ip = m[1], prefix = parseInt(m[2], 10);
+  if (prefix < 0 || prefix > 32) { out.innerHTML = '<div class="row"><span class="v warn">⚠ CIDR fuera de rango (0-32)</span></div>'; return; }
+  var octs = ip.split('.');
+  for (var i = 0; i < octs.length; i++) { if (parseInt(octs[i], 10) > 255) { out.innerHTML = '<div class="row"><span class="v warn">⚠ Octeto > 255</span></div>'; return; } }
+  var ipInt = ipToInt(ip);
+  var maskInt = prefix === 0 ? 0 : (0xFFFFFFFF << (32 - prefix)) >>> 0;
+  var wildcard = (~maskInt) >>> 0;
+  var network = (ipInt & maskInt) >>> 0;
+  var broadcast = (network | wildcard) >>> 0;
+  var total = Math.pow(2, 32 - prefix);
+  var usable = prefix >= 31 ? (prefix === 32 ? 1 : 2) : total - 2;
+  var firstHost = prefix >= 31 ? network : network + 1;
+  var lastHost = prefix >= 31 ? broadcast : broadcast - 1;
+  var maskDotted = [(maskInt >>> 24), (maskInt >>> 16) & 255, (maskInt >>> 8) & 255, maskInt & 255].join('.');
+  var classIdx = (ipInt >>> 29) || 0;
+  var className = ['A', 'B', 'C', 'D', 'E'][classIdx] || '?';
+  var classColor = classIdx === 3 ? 'warn' : 'ok';
+  var isPrivate = ((network >>> 24) === 10) || ((network >>> 20) === 0xAC1) || ((network >>> 16) === 0xC0A8);
+  var wcDotted = [(wildcard >>> 24), (wildcard >>> 16) & 255, (wildcard >>> 8) & 255, wildcard & 255].join('.');
+  out.innerHTML =
+    '<div class="row"><span class="k">Dirección IP</span><span class="v">' + ip + '</span></div>' +
+    '<div class="row"><span class="k">Máscara (decimal)</span><span class="v">' + maskDotted + '</span></div>' +
+    '<div class="row"><span class="k">Máscara (binario /' + prefix + ')</span><span class="v" style="font-size:11px">' + intToBinary(maskInt >>> 24, 8) + ' . ' + intToBinary((maskInt >>> 16) & 255, 8) + ' . ' + intToBinary((maskInt >>> 8) & 255, 8) + ' . ' + intToBinary(maskInt & 255, 8) + '</span></div>' +
+    '<div class="row"><span class="k">Wildcard (ACL)</span><span class="v">' + wcDotted + '</span></div>' +
+    '<div class="row"><span class="k">Red</span><span class="v ok">' + intToIp(network) + '</span></div>' +
+    '<div class="row"><span class="k">Broadcast</span><span class="v warn">' + intToIp(broadcast) + '</span></div>' +
+    '<div class="row"><span class="k">Primer host usable</span><span class="v">' + intToIp(firstHost) + '</span></div>' +
+    '<div class="row"><span class="k">Último host usable</span><span class="v">' + intToIp(lastHost) + '</span></div>' +
+    '<div class="row"><span class="k">Hosts usables</span><span class="v">' + usable.toLocaleString() + '</span></div>' +
+    '<div class="row"><span class="k">Total direcciones</span><span class="v">' + total.toLocaleString() + '</span></div>' +
+    '<div class="row"><span class="k">Clase</span><span class="v ' + classColor + '">Clase ' + className + (isPrivate ? ' · Privada (RFC 1918)' : '') + '</span></div>';
+}
+var btnCB = document.getElementById('btnCalcBasic'); if (btnCB) btnCB.addEventListener('click', calcBasic);
+
+function calcVLSM() {
+  var base = document.getElementById('vlsmBase').value.trim();
+  var needsRaw = document.getElementById('vlsmNeeds').value.trim();
+  var out = document.getElementById('vlsmResult'); if (!out) return;
+  var baseMatch = base.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\/(\d{1,2})$/);
+  if (!baseMatch) { out.innerHTML = '<div class="row"><span class="v warn">⚠ Red base inválida</span></div>'; return; }
+  var baseIp = ipToInt(baseMatch[1]);
+  var basePrefix = parseInt(baseMatch[2], 10);
+  var lines = needsRaw.split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
+  var needs = [];
+  for (var i = 0; i < lines.length; i++) {
+    var parts = lines[i].split(',').map(function(x) { return x.trim(); });
+    if (parts.length !== 2) { out.innerHTML = '<div class="row"><span class="v warn">⚠ Formato: ' + lines[i] + '</span></div>'; return; }
+    var h = parseInt(parts[1], 10);
+    if (isNaN(h) || h < 0) { out.innerHTML = '<div class="row"><span class="v warn">⚠ Hosts inválidos: ' + lines[i] + '</span></div>'; return; }
+    needs.push({ name: parts[0], hosts: h });
+  }
+  needs.sort(function(a, b) { return b.hosts - a.hosts; });
+  var results = [];
+  var cursor = baseIp;
+  for (var j = 0; j < needs.length; j++) {
+    var n = needs[j];
+    var needed = n.hosts + (n.hosts > 0 ? 2 : 0);
+    var hostBits = Math.max(0, Math.ceil(Math.log2(Math.max(2, needed))));
+    var newPrefix = 32 - hostBits;
+    if (newPrefix < basePrefix) { results.push({ name: n.name, hosts: n.hosts, error: 'excede la red base' }); continue; }
+    var size = Math.pow(2, hostBits);
+    var network = cursor;
+    var broadcast = cursor + size - 1;
+    var firstHost = n.hosts >= 1 ? network + 1 : network;
+    var lastHost = n.hosts >= 1 ? broadcast - 1 : broadcast;
+    var maskInt = (0xFFFFFFFF << (32 - newPrefix)) >>> 0;
+    var maskDotted = [(maskInt >>> 24), (maskInt >>> 16) & 255, (maskInt >>> 8) & 255, maskInt & 255].join('.');
+    results.push({ name: n.name, hosts: n.hosts, network: intToIp(network), broadcast: intToIp(broadcast), firstHost: intToIp(firstHost), lastHost: intToIp(lastHost), mask: maskDotted, prefix: newPrefix });
+    cursor = broadcast + 1;
+  }
+  var html = '<strong style="color:var(--accent)">Resultado VLSM (mayor a menor):</strong>\n\n';
+  for (var k = 0; k < results.length; k++) {
+    var r = results[k];
+    var pad = (r.name + '                ').slice(0, 15);
+    if (r.error) { html += '❌ ' + pad + ' ERROR: ' + r.error + '\n\n'; continue; }
+    html += '✓ ' + pad + ' ' + r.network + '/' + r.prefix + '  hosts:' + r.hosts + '\n  Rango: ' + r.firstHost + ' - ' + r.lastHost + '\n  Broadcast: ' + r.broadcast + '\n  Máscara: ' + r.mask + '\n\n';
+  }
+  out.innerHTML = html;
+}
+var btnCV = document.getElementById('btnCalcVLSM'); if (btnCV) btnCV.addEventListener('click', calcVLSM);
+
+function calcIPv6() {
+  var input = document.getElementById('ipv6Addr').value.trim();
+  var out = document.getElementById('ipv6Result'); if (!out) return;
+  var m = input.match(/^([0-9a-fA-F:]+)\/(\d{1,3})$/);
+  if (!m) { out.innerHTML = '<div class="row"><span class="v warn">⚠ Formato inválido. Ej: 2001:db8::/64</span></div>'; return; }
+  var prefix = parseInt(m[2], 10);
+  if (prefix < 0 || prefix > 128) { out.innerHTML = '<div class="row"><span class="v warn">⚠ Prefijo fuera de rango (0-128)</span></div>'; return; }
+  var addr = m[1];
+  if (addr === '::') addr = '0:0:0:0:0:0:0:0';
+  var hasDouble = addr.indexOf('::') !== -1;
+  if (hasDouble) {
+    var sides = addr.split('::');
+    var leftParts = sides[0] ? sides[0].split(':') : [];
+    var rightParts = sides[1] ? sides[1].split(':') : [];
+    var missing = 8 - leftParts.length - rightParts.length;
+    var middle = []; for (var mi = 0; mi < missing; mi++) middle.push('0');
+    addr = leftParts.concat(middle).concat(rightParts).join(':');
+  } else {
+    addr = addr.split(':').map(function(p) { return p.padStart(4, '0'); }).join(':');
+  }
+  var groups = addr.split(':');
+  if (groups.length !== 8) { out.innerHTML = '<div class="row"><span class="v warn">⚠ Dirección no expande a 8 grupos</span></div>'; return; }
+  var hex = groups.map(function(g) { return g.padStart(4, '0'); });
+  var binary = hex.map(function(g) { return parseInt(g, 16).toString(2).padStart(16, '0'); }).join('');
+  var networkBits = binary.substring(0, prefix);
+  var networkPadded = networkBits.padEnd(128, '0');
+  var networkGroups = [];
+  for (var gi = 0; gi < 8; gi++) networkGroups.push(parseInt(networkPadded.substring(gi * 16, (gi + 1) * 16), 2).toString(16));
+  var tipo = prefix === 64 ? 'LAN estándar' : (prefix === 48 ? 'Sitio' : (prefix === 128 ? 'Host único' : 'Otro'));
+  var html = '<div class="row"><span class="k">Dirección completa</span><span class="v">' + networkGroups.join(':') + '</span></div><div class="row"><span class="k">Prefijo</span><span class="v">/' + prefix + '</span></div><div class="row"><span class="k">Red</span><span class="v ok">' + networkGroups.join(':') + '::/' + prefix + '</span></div><div class="row"><span class="k">Tipo</span><span class="v">' + tipo + '</span></div>';
+  out.innerHTML = html;
+}
+var btnCI6 = document.getElementById('btnCalcIPv6'); if (btnCI6) btnCI6.addEventListener('click', calcIPv6);
+
+var wcMask = document.getElementById('wcMask');
+if (wcMask) {
+  function updateWildcard() {
+    var v = wcMask.value;
+    var m = v.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    var out = document.getElementById('wcOut'); if (!out) return;
+    if (!m) { out.value = ''; return; }
+    var o = [m[1], m[2], m[3], m[4]].map(function(x) { return 255 - parseInt(x, 10); });
+    out.value = o.join('.');
+  }
+  wcMask.addEventListener('input', updateWildcard);
+  updateWildcard();
+}
+try { calcBasic(); } catch (e) { console.error('calcBasic init:', e); }
+
+// ============ QUIZ (50 preguntas CCNA + CCNP) ============
+var quizData = [];
+var quizState = { idx: 0, answers: {}, streak: 0, bestStreak: 0 };
+var QUIZ_STORAGE = 'trbsht-quiz-v1';
+
+function loadQuizState() {
+  try {
+    var raw = localStorage.getItem(QUIZ_STORAGE);
+    if (raw) {
+      var saved = JSON.parse(raw);
+      quizState.idx = saved.idx || 0;
+      quizState.answers = saved.answers || {};
+      quizState.streak = saved.streak || 0;
+      quizState.bestStreak = saved.bestStreak || 0;
+    }
+  } catch (e) { console.warn('quiz state load:', e); }
+}
+function saveQuizState() {
+  try { localStorage.setItem(QUIZ_STORAGE, JSON.stringify(quizState)); } catch (e) {}
+}
+function quizUpdateStats() {
+  var total = quizData.length;
+  var answered = Object.keys(quizState.answers).length;
+  var correct = 0;
+  Object.keys(quizState.answers).forEach(function(k) {
+    var i = parseInt(k, 10);
+    if (quizState.answers[k] === quizData[i].ans) correct++;
+  });
+  var score = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  var prog = document.getElementById('quizProgress');
+  var corr = document.getElementById('quizCorrect');
+  var sc = document.getElementById('quizScore');
+  if (prog) prog.textContent = answered + '/' + total;
+  if (corr) corr.textContent = correct;
+  if (sc) sc.textContent = score + '%';
+}
+function renderQuiz() {
+  var c = document.getElementById('quizContainer');
+  if (!c) return;
+  if (quizData.length === 0) { c.innerHTML = '<div class="card"><p>Cargando preguntas...</p></div>'; return; }
+  if (quizState.idx >= quizData.length) quizState.idx = 0;
+  var q = quizData[quizState.idx];
+  var userAns = quizState.answers[quizState.idx];
+  var answered = userAns !== undefined;
+  var html = '<div class="quiz-card">';
+  html += '<div class="quiz-meta">';
+  html += '<span>' + (quizState.idx + 1) + ' / ' + quizData.length + ' · <span class="badge badge-accent">' + q.cat + '</span></span>';
+  html += '<span>Racha: ' + quizState.streak + ' 🔥 · Mejor: ' + quizState.bestStreak + '</span>';
+  html += '</div>';
+  html += '<div class="quiz-q">' + escapeHtml(q.q) + '</div>';
+  html += '<div class="quiz-opts">';
+  for (var i = 0; i < q.opts.length; i++) {
+    var cls = 'quiz-opt';
+    if (answered) {
+      if (i === q.ans) cls += ' correct';
+      else if (i === userAns) cls += ' wrong';
+    }
+    var letter = ['A', 'B', 'C', 'D'][i];
+    var marker = '';
+    if (answered && i === q.ans) marker = ' ✓';
+    else if (answered && i === userAns) marker = ' ✗';
+    var disabled = answered ? ' style="cursor:default"' : '';
+    html += '<button class="' + cls + '" data-opt="' + i + '"' + disabled + '><strong>' + letter + '.</strong> ' + escapeHtml(q.opts[i]) + marker + '</button>';
+  }
+  html += '</div>';
+  if (answered) {
+    html += '<div class="quiz-explain show"><strong>' + (userAns === q.ans ? '¡Correcto!' : 'Incorrecto.') + '</strong> ' + escapeHtml(q.explain) + '</div>';
+  }
+  html += '</div>';
+  c.innerHTML = html;
+  var btns = c.querySelectorAll('.quiz-opt');
+  Array.from(btns).forEach(function(b) {
+    b.addEventListener('click', function() {
+      if (quizState.answers[quizState.idx] !== undefined) return;
+      var opt = parseInt(b.dataset.opt, 10);
+      quizState.answers[quizState.idx] = opt;
+      if (opt === q.ans) {
+        quizState.streak++;
+        if (quizState.streak > quizState.bestStreak) quizState.bestStreak = quizState.streak;
+      } else {
+        quizState.streak = 0;
+      }
+      saveQuizState();
+      quizUpdateStats();
+      renderQuiz();
+    });
+  });
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function initQuiz() {
+  loadQuizState();
+  fetch('quiz-data.json').then(function(r) { return r.json(); }).then(function(data) {
+    quizData = data;
+    renderQuiz();
+    quizUpdateStats();
+  }).catch(function(e) {
+    var c = document.getElementById('quizContainer');
+    if (c) c.innerHTML = '<div class="card"><p class="badge badge-warn">⚠ No se pudo cargar quiz-data.json: ' + escapeHtml(String(e)) + '</p></div>';
+  });
+  var btnNext = document.getElementById('btnQuizNext');
+  var btnReset = document.getElementById('btnQuizReset');
+  if (btnNext) btnNext.addEventListener('click', function() {
+    quizState.idx = (quizState.idx + 1) % quizData.length;
+    saveQuizState(); renderQuiz();
+  });
+  if (btnReset) btnReset.addEventListener('click', function() {
+    if (!confirm('¿Resetear progreso del quiz? Se pierden respuestas y racha.')) return;
+    quizState = { idx: 0, answers: {}, streak: 0, bestStreak: 0 };
+    saveQuizState(); renderQuiz(); quizUpdateStats();
+  });
+}
+try { initQuiz(); } catch (e) { console.error('quiz init:', e); }
+
+// ============ CASOS REALES (23 escenarios) ============
+var casosData = [];
+var casosFilter = 'all';
+
+function renderCasos() {
+  var list = document.getElementById('casosList');
+  if (!list) return;
+  if (casosData.length === 0) { list.innerHTML = '<div class="card"><p>Cargando casos...</p></div>'; return; }
+  var filtered = casosFilter === 'all' ? casosData : casosData.filter(function(c) { return c.cat === casosFilter; });
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="card"><p style="color:var(--txt-dim)">No hay casos en esta categoría.</p></div>';
+    return;
+  }
+  var html = '';
+  filtered.forEach(function(c) {
+    html += '<div class="case-card" data-case="' + c.id + '">';
+    html += '<div class="case-num">CASO #' + c.id + ' · ' + c.cat + '</div>';
+    html += '<div class="case-title">' + escapeHtml(c.title) + '</div>';
+    html += '<div class="case-summary">' + escapeHtml(c.sintoma) + '</div>';
+    html += '<div class="case-tags">';
+    html += '<span class="badge">Topología: ' + escapeHtml((c.topo || '').substring(0, 60)) + (c.topo && c.topo.length > 60 ? '…' : '') + '</span>';
+    html += '<span class="badge">' + (c.comandos ? c.comandos.length : 0) + ' comandos</span>';
+    html += '<span class="badge badge-accent">▶ Ver detalle</span>';
+    html += '</div>';
+    html += '<div class="case-detail" id="caseDetail' + c.id + '" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">';
+    html += '<div class="grid-2">';
+    html += '<div><div class="card-sub">Topología</div><div style="font-size:13px;color:var(--txt-dim)">' + escapeHtml(c.topo) + '</div></div>';
+    html += '<div><div class="card-sub">Síntoma reportado</div><div style="font-size:13px;color:var(--txt-dim)">' + escapeHtml(c.sintoma) + '</div></div>';
+    html += '</div>';
+    html += '<div class="card-sub" style="margin-top:14px">Diagnóstico paso a paso</div><ol style="margin-left:20px;font-size:13px;color:var(--txt-dim)">';
+    (c.diag || []).forEach(function(d) { html += '<li style="margin-bottom:4px">' + escapeHtml(d) + '</li>'; });
+    html += '</ol>';
+    html += '<div class="card-sub" style="margin-top:14px">Causa raíz</div>';
+    html += '<div class="callout warn"><strong>🎯</strong> ' + escapeHtml(c.causa) + '</div>';
+    html += '<div class="card-sub" style="margin-top:14px">Solución aplicada</div><ol style="margin-left:20px;font-size:13px;color:var(--txt-dim)">';
+    (c.solucion || []).forEach(function(s) { html += '<li style="margin-bottom:4px">' + escapeHtml(s) + '</li>'; });
+    html += '</ol>';
+    if (c.comandos && c.comandos.length > 0) {
+      html += '<div class="card-sub" style="margin-top:14px">Comandos clave</div><pre><code class="cmd-cisco">';
+      c.comandos.forEach(function(cmd) { html += escapeHtml(cmd) + '\n'; });
+      html += '</code></pre>';
+    }
+    html += '<div class="card-sub" style="margin-top:14px">Prevención</div>';
+    html += '<div class="callout ok"><strong>🛡</strong> ' + escapeHtml(c.prevencion || '') + '</div>';
+    html += '</div></div>';
+  });
+  list.innerHTML = html;
+  list.querySelectorAll('.case-card').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      if (e.target.classList.contains('copy-btn')) return;
+      var id = card.dataset.case;
+      var d = document.getElementById('caseDetail' + id);
+      if (d) {
+        var open = d.style.display !== 'none';
+        d.style.display = open ? 'none' : 'block';
+        var tag = card.querySelector('.badge-accent');
+        if (tag) tag.textContent = open ? '▶ Ver detalle' : '▼ Ocultar detalle';
+      }
+    });
+  });
+  list.querySelectorAll('.copy-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) { e.stopPropagation(); });
+  });
+}
+function initCasos() {
+  fetch('casos-data.json').then(function(r) { return r.json(); }).then(function(data) {
+    casosData = data;
+    renderCasos();
+  }).catch(function(e) {
+    var list = document.getElementById('casosList');
+    if (list) list.innerHTML = '<div class="card"><p class="badge badge-warn">⚠ No se pudo cargar casos-data.json: ' + escapeHtml(String(e)) + '</p></div>';
+  });
+  document.querySelectorAll('#casosFilterBar .pill').forEach(function(p) {
+    p.addEventListener('click', function() {
+      document.querySelectorAll('#casosFilterBar .pill').forEach(function(x) { x.classList.remove('active'); });
+      p.classList.add('active');
+      casosFilter = p.dataset.cat;
+      renderCasos();
+    });
+  });
+}
+try { initCasos(); } catch (e) { console.error('casos init:', e); }
+</script>

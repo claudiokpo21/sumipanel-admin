@@ -1,0 +1,558 @@
+[
+  {
+    "id": 1,
+    "cat": "L1",
+    "title": "SFP down en uplink core router",
+    "topo": "Dos Cisco Catalyst 9500-48Y4C en stack, uplink fibra LC-LC de 10km hacia core router ASR9001. SFP+ Finisar FTLX1471D3BCL en ambos extremos, longitud de onda 1310nm.",
+    "sintoma": "A las 03:17AM recibo alerta de NMS: 'Interface GigabitEthernet1/0/48 down - linkDown trap'. Cliente llama a las 03:22AM reportando que el site quedó sin salida a MPLS.",
+    "diag": [
+      "show interface Te1/1/48 — salida: 'GigabitEthernet1/0/48 is down, line protocol is down', 'loss of signal detected', 'TX Power: -40.00 dBm (below threshold)'",
+      "show interface transceiver Te1/1/48 detail — 'Tx Power: -40.00 dBm, Rx Power: -3.21 dBm', 'SFP not present in DOM' (en un extremo)",
+      "Limpieza del SFP con hisopo isopropílico + inspección con microscopio de fibra en ambos extremos. Confirmamos polvo en el extremo del LC del lado del switch."
+    ],
+    "causa": "SFP sucio en el puerto del Catalyst 9500. El polvo bloqueó la señal óptica y el láser entró en modo de protección, perdiendo el link. Rx Power estaba OK pero el Tx del switch estaba en -40dBm por el conector contaminado.",
+    "solucion": [
+      "Limpieza del SFP+ con limpiador LC Click Cleaner (1-CL-LC-900)",
+      "Re-inserción del SFP y verificación: show interface Te1/1/48 ahora muestra 'up, line protocol is up'",
+      "show interface transceiver Te1/1/48 detail — confirmar Tx Power en rango normal (-2 a -8 dBm) y DOM presente"
+    ],
+    "comandos": [
+      "show interface Te1/1/48",
+      "show interface transceiver Te1/1/48 detail",
+      "show interfaces counters errors"
+    ],
+    "prevencion": "Programar limpieza preventiva de SFPs cada 6 meses. Configurar syslog para alertas de Tx Power < -8 dBm y rx < -20 dBm con trap SNMP al NMS."
+  },
+  {
+    "id": 2,
+    "cat": "L1",
+    "title": "PoE no levanta en AP Ubiquiti U6-LR",
+    "topo": "Switch Cisco Catalyst 9200 PoE+ con 48 puertos, alimentando 12 APs Ubiquiti U6-LR en el techo de una oficina. AP en puerto Gi1/0/15.",
+    "sintoma": "Cliente reporta por mail a las 09:30AM: '3 APs del piso 3 no responden, no aparecen en el controller UniFi'. El NOC ve traps 'pethPsePortOnOffNotification' en el syslog.",
+    "diag": [
+      "show power inline Gi1/0/15 — 'Inline Power: off', 'Operational Status: off', 'Fault: 'No applicable Fault''",
+      "show power inline consumption — ver consumo total y por puerto, los 3 puertos marcan 0W",
+      "show log | i Gi1/0/15 — buscar mensajes 'ILPOWER-3-CONTROLLER_PORT_ERR' o 'denied due to power surge'"
+    ],
+    "causa": "El switch detectó una condición de cortocircuito en el cable UTP del AP del puerto 15, lo pasó a estado 'err-disable' por power-deny. Probable daño físico en el cable por puerta que se cerró sobre él.",
+    "solucion": [
+      "Reemplazo del cable UTP Cat6A del puerto 15",
+      "Reanudar el puerto: configure terminal / interface Gi1/0/15 / shutdown / no shutdown",
+      "Verificar: show power inline Gi1/0/15 — debe mostrar 'Inline Power: on, 25.5W'"
+    ],
+    "comandos": [
+      "show power inline Gi1/0/15",
+      "show power inline consumption",
+      "show interfaces status err-disabled"
+    ],
+    "prevencion": "Activar 'power inline auto max 30000' para limitar consumo. Configurar 'errdisable recovery cause power-deny interval 300' para auto-recuperar puertos PoE con fallas transitorias."
+  },
+  {
+    "id": 3,
+    "cat": "L1",
+    "title": "Duplex mismatch entre switch y servidor Linux",
+    "topo": "Switch Juniper EX4300 (ge-0/0/8) conectado a un servidor Linux con bonding mode 0, NIC Intel X710. Velocidad negociada 10G, MTU 1500.",
+    "sintoma": "Cliente reporta que el backup de 800GB que corría toda la noche se cortó a la mitad. SNMP muestra input errors incrementando en ge-0/0/8. Alertas a las 02:40AM del NOC.",
+    "diag": [
+      "show interfaces ge-0/0/8 extensive — 'Input errors: 47823', 'CRC errors: 47823', 'Drops: 0', 'Speed: 10Gbps, Duplex: full-duplex'",
+      "En el server: ethtool ens3f0 — 'Speed: 10000Mb/s, Duplex: Full, Auto-negotiation: on' — PERO la salida del log dmesg muestra 'eth0: link speed changed to 1000/full'",
+      "show log messages | match ge-0/0/8 — buscar 'autonegotiation failure' o 'speed mismatch'"
+    ],
+    "causa": "Duplex mismatch clásico. El servidor Linux tenía autonegotiate ON y el switch Juniper tenía hardcodeado 'speed 10g, full-duplex'. Durante la renegociación post-reboot, el NIC negoció 1G/full con el partner (que no negociaba), generando CRC errors. Aunque terminaba 'up', el half-effectivo causaba drops de frames jumbo durante el backup.",
+    "solucion": [
+      "En el server: ethtool -s ens3f0 autoneg off speed 10000 duplex full",
+      "En el Juniper: set interfaces ge-0/0/8 ether-options no-auto-negotiate",
+      "Validar: monitor interface ge-0/0/8 interval 2 durante 5 minutos y confirmar que 'Input errors' y 'CRC errors' no incrementen"
+    ],
+    "comandos": [
+      "show interfaces ge-0/0/8 extensive",
+      "ethtool ens3f0",
+      "dmesg | grep eth"
+    ],
+    "prevencion": "Documentar en runbook: 'Switch ↔ Server siempre hardcodeado en ambos extremos, no confiar en autonegociation'. Configurar Zabbix con trigger 'CRC errors increment > 10/min' en puertos de servidores."
+  },
+  {
+    "id": 4,
+    "cat": "L2",
+    "title": "Broadcast storm en VLAN de usuarios",
+    "topo": "Switch Cisco Catalyst 2960-X acceso (sw-acceso-01), uplinks en trunk Gi1/0/1 hacia core, VLAN 10 (usuarios) y VLAN 20 (voIP). 80 usuarios conectados.",
+    "sintoma": "A las 11:14AM todos los usuarios de la planta 2 reportan que la red está 'extremadamente lenta'. En el Wireshark del NOC se ve un 95% de broadcast frames en Gi1/0/1.",
+    "diag": [
+      "show interfaces counters — 'Gi1/0/1: Broadcasts 4,872,341 frames/sec', alarmándose: 'Broadcast storm detected on Gi0/1'",
+      "show spanning-tree blockedports — ningún puerto bloqueado (problema, debería haberlos)",
+      "show mac address-table count — 'Total Mac Addresses for this criterion: 8472' (inflado), un solo MAC aparecía en 6000+ puertos"
+    ],
+    "causa": "Alguien conectó un switch no administrado (TP-Link de 8 bocas) en cascada formando un loop físico en la VLAN 10. El BPDU del Catalyst no llegaba a la boca porque el switch tonto no filtraba STP, generando loop de capa 2 sin spanning tree que cortara.",
+    "solucion": [
+      "Identificar el switch problemático: show mac address-table address <mac-top> interface Gi1/0/X — seguir la MAC hasta el puerto físico donde está la piña de usuarios",
+      "Bajar el puerto: interface Gi1/0/X / shutdown",
+      "Configurar storm-control: storm-control broadcast level 20 15 (umbral 20% rising, 15% falling) y storm-control action shutdown en todos los puertos de acceso"
+    ],
+    "comandos": [
+      "show interfaces counters",
+      "show mac address-table count",
+      "storm-control broadcast level pps 1000 500"
+    ],
+    "prevencion": "Habilitar storm-control en TODOS los puertos de acceso con 'storm-control broadcast level 20 15' y action shutdown. Activar 'bpduguard enable' globalmente en puertos access. Bloquear VLANs extendidas con 'switchport nonegotiate' y 'spanning-tree bpdufilter disable'."
+  },
+  {
+    "id": 5,
+    "cat": "L2",
+    "title": "Trunk no levanta entre Catalyst y switch HP",
+    "topo": "Cisco Catalyst 3850 (puerto Te1/1/1) trunk hacia HP Aruba 2930F (puerto 49). VLANs permitidas 10, 20, 30, 40. LACP en el canal.",
+    "sintoma": "Ticket del cliente a las 10:00AM: 'El enlace entre los dos switches cayó, los usuarios no salen a internet'. Walk-in al NOC: 'No levanta el link'.",
+    "diag": [
+      "show interfaces trunk — el puerto Te1/1/1 NO aparece en la lista de trunks activos",
+      "show running-config interface Te1/1/1 — 'switchport mode trunk', 'switchport trunk encapsulation dot1q' — pero la negociación no termina de cuajar",
+      "show logging | match Te1/1/1 — 'DTP-5-TRUNKPORTON: Te1/1/1 has become dot1q trunk' pero se alterna con 'DTP-5-NONTRUNKPORTON'"
+    ],
+    "causa": "El HP Aruba usa DTP por defecto en modo 'auto' con su propia implementación, que no negocia bien con el DTP nativo de Cisco. Resultado: flapea entre trunk y access cada 30 segundos. Encima, las VLANs nativa diferían: Cisco tenía native 1, HP tenía native 4094.",
+    "solucion": [
+      "Forzar trunk manual: en Cisco: interface Te1/1/1 / switchport mode trunk / switchport nonegotiate",
+      "En HP: switchport trunk allowed vlan 10,20,30,40 / switchport trunk native vlan 1",
+      "Validar: show interfaces trunk en Cisco y show trunks en HP — ambos deben listar el puerto y las VLANs correctamente"
+    ],
+    "comandos": [
+      "show interfaces trunk",
+      "show dtp interface Te1/1/1",
+      "show vlan brief"
+    ],
+    "prevencion": "Estandarizar: 'switchport mode trunk' + 'switchport nonegotiate' en TODOS los uplinks inter-switch. Documentar native VLAN (siempre 1 o la VLAN management) y dejarla igual en ambos extremos."
+  },
+  {
+    "id": 6,
+    "cat": "L2",
+    "title": "Spanning tree bloqueó el uplink de producción",
+    "topo": "Core Cisco 6509-E con VSS, dos Catalyst 3850 en distribución (dist-01 y dist-02) con EtherChannel 4x10G al core. VLANs 10-100. PVST+ habilitado.",
+    "sintoma": "A las 14:20PM, NOC recibe alerta 'VLAN 50 root port changed' y simultáneamente los usuarios de contabilidad reportan 'no pueden entrar al sistema de gestión'. La mitad del tráfico fluye por un solo uplink, latencia de 800ms.",
+    "diag": [
+      "show spanning-tree vlan 50 — 'Root port: Te1/1/3' (debería ser el Port-Channel1), 'Cost 2000000' (inflado), 'Bridge ID Priority: 4096' en dist-02",
+      "show spanning-tree summary — 'UplinkFast disabled', 'BackboneFast enabled', 'Configured Pathcost method: long' (inconsistente con core que usa short)",
+      "show running-config | i spanning-tree — dist-02 tiene 'spanning-tree mode mst' mientras que dist-01 y core usan 'pvst'"
+    ],
+    "causa": "Alguien (junior haciendo cambios) cambió el spanning-tree mode de dist-02 de 'pvst' a 'mst' durante una ventana de mantenimiento. Como MST y PVST+ no interoperan bien, dist-02 se anunció como root de su instancia virtual, atrayendo tráfico y provocando recalculos. La convergencia tardó 45 segundos.",
+    "solucion": [
+      "En dist-02: spanning-tree mode pvst",
+      "Forzar root: spanning-tree vlan 1-100 priority 24576 en dist-01 y 28672 en dist-02 (core mantiene 4096)",
+      "Validar: show spanning-tree vlan 50 root — confirmar que el root bridge es el 6509-E con la MAC del supervisor engine"
+    ],
+    "comandos": [
+      "show spanning-tree vlan 50",
+      "show spanning-tree summary",
+      "show spanning-tree root"
+    ],
+    "prevencion": "Bloquear cambios de spanning-tree mode por RBAC (solo nivel 3 puede tocarlo). Implementar 'spanning-tree vlan 1-4094 priority' fijo con document_runbook. Monitorear 'Topology change traps' con Zabbix y alert si > 5/min."
+  },
+  {
+    "id": 7,
+    "cat": "L2",
+    "title": "ARP poisoning en VLAN de management",
+    "topo": "Switch Cisco 2960-X, VLAN 99 management, gateway 10.99.0.1 (router Mikrotik CCR1036), 5 servidores. Sin port-security ni DHCP snooping.",
+    "sintoma": "A las 17:45PM sysadmin reporta 'el gateway aparece con dos MAC distintas en la tabla ARP de los servidores'. Sospecha de MITM.",
+    "diag": [
+      "show arp | include 10.99.0.1 — '10.99.0.1  0011.2233.4455  ARPA  Vlan99  Gi0/15' Y '10.99.0.1  aabb.ccdd.eeff  ARPA  Vlan99  Gi0/22' (dos MACs, una es la real, otra es del atacante)",
+      "show mac address-table address aabb.ccdd.eeff — puerto Gi0/22, identificar qué dispositivo está ahí",
+      "show ip dhcp snooping binding — tabla vacía (DHCP snooping nunca se habilitó)"
+    ],
+    "causa": "Una laptop con Kali Linux en el puerto Gi0/22 estaba corriendo ettercap enviando ARP replies gratuitous claiminándose como gateway. Los servidores empezaron a enviarle el tráfico al atacante, que lo forwardaba al gateway real. La VLAN 99 management no tenía DHCP snooping ni ARP inspection.",
+    "solucion": [
+      "Bajar el puerto: interface Gi0/22 / shutdown",
+      "Habilitar DHCP snooping global: ip dhcp snooping vlan 99 / ip dhcp snooping — y en uplink: ip dhcp snooping trust",
+      "Habilitar DAI: ip arp inspection vlan 99 — con arp inspection trust en uplinks"
+    ],
+    "comandos": [
+      "show arp",
+      "show mac address-table",
+      "show ip arp inspection statistics vlan 99"
+    ],
+    "prevencion": "Implementar DHCP snooping + Dynamic ARP Inspection en TODAS las VLANs de management y usuarios. Configurar 'switchport port-security maximum 2' y 'sticky' en puertos de acceso. Auditar con Wireshark en plan canario."
+  },
+  {
+    "id": 8,
+    "cat": "L3",
+    "title": "OSPF neighbor stuck in EXSTART",
+    "topo": "Dos routers Cisco ISR4451-X (R1 y R2), enlace serial point-to-point /30 en Gi0/0/0, área OSPF 0 backbone, red 10.1.1.0/30. MTU 1500.",
+    "sintoma": "A las 08:00AM, NOC detecta que el tunnel IPSec que va por este link está down. Cliente reporta 'la sede B no se conecta a la matriz, el ERP no levanta'.",
+    "diag": [
+      "show ip ospf neighbor — 'Neighbor ID 2.2.2.2, state EXSTART, interface Gi0/0/0, DR ID 2.2.2.2, BDR ID 0.0.0.0' — atascado en EXSTART",
+      "show ip ospf interface Gi0/0/0 — 'MTU 1500' en R1, en R2: 'MTU 1600' (mismatch)",
+      "debug ip ospf adj — 'Mismatched hello parameters' y 'Dead timer 40s vs 41s' (R2 tenía ip ospf dead-interval 41)"
+    ],
+    "causa": "Dos issues superpuestos: 1) MTU mismatch (1500 vs 1600) impedía el exchange de DBDs en EXSTART porque el paquete con la base de datos no entraba. 2) Dead-interval diferente (40 vs 41) provocaba que los hellos se rechazaran, pero el IOS de Cisco lo dejaba en EXSTART por un bug de interoperabilidad.",
+    "solucion": [
+      "En R2: interface Gi0/0/0 / ip mtu 1500 (igualar al R1)",
+      "En R2: interface Gi0/0/0 / no ip ospf dead-interval 41 (volver a default 40)",
+      "Clear ospf process en R2 (o esperar el reconvergence). Verificar: show ip ospf neighbor debe mostrar FULL/DR o FULL/BDR"
+    ],
+    "comandos": [
+      "show ip ospf neighbor",
+      "show ip ospf interface Gi0/0/0",
+      "debug ip ospf adj"
+    ],
+    "prevencion": "Estandarizar MTU 1500 en todos los enlaces P2P OSPF vía template. Configurar 'ip ospf dead-interval minimal hello-multiplier 4' en interfaces serias para convergencia rápida. Documentar MTU en runbook de cada site."
+  },
+  {
+    "id": 9,
+    "cat": "L3",
+    "title": "BGP no anuncia prefix nuevo",
+    "topo": "Edge router Cisco ASR1002-HX (AS 65001), peer iBGP con Cisco ASR9001 (AS 65001) en 10.10.10.0/31, peer eBGP con proveedor (AS 65099) en 200.50.50.0/31. Se agregó network 203.0.113.0/24 al edge.",
+    "sintoma": "A las 13:30PM NOC recibe mail de NOC del proveedor: 'No vemos el prefix 203.0.113.0/24 anunciado por tu AS'. El cliente del prefix nuevo no tiene conectividad.",
+    "diag": [
+      "show ip bgp 203.0.113.0/24 — 'BGP routing table entry for 203.0.113.0/24, version 0, paths 0 — NOT INSTALLED in BGP'",
+      "show ip bgp neighbors 200.50.50.1 advertised-routes — 203.0.113.0/24 no aparece en la lista",
+      "show running-config | i network — 'router bgp 65001, network 192.168.0.0, network 10.0.0.0' — el network 203.0.113.0 NO estaba en la lista"
+    ],
+    "causa": "El operador agregó la ruta estática 'ip route 203.0.113.0 255.255.255.0 Null0' pero olvidó agregar 'network 203.0.113.0 mask 255.255.255.0' dentro del proceso BGP. Sin el comando network, BGP no lo inyectaba en la tabla BGP aunque existiera en la RIB.",
+    "solucion": [
+      "configure terminal / router bgp 65001 / network 203.0.113.0 mask 255.255.255.0",
+      "clear ip bgp 200.50.50.1 soft out (para re-anunciar sin tumbar la sesión)",
+      "Validar: show ip bgp 203.0.113.0/24 — debe aparecer '*> 0.0.0.0 0 32768 i', y show ip bgp neighbors 200.50.50.1 advertised-routes debe listarlo"
+    ],
+    "comandos": [
+      "show ip bgp",
+      "show ip bgp neighbors 200.50.50.1 advertised-routes",
+      "show running-config | section router bgp"
+    ],
+    "prevencion": "Usar 'bgp inject-map' o route-maps automatizados en deploy. Validar con 'show ip bgp neighbors x advertised-routes' después de cada cambio en peer de proveedor. Configurar alerta en Zabbix si la cantidad de prefixs anunciados cae a 0."
+  },
+  {
+    "id": 10,
+    "cat": "L3",
+    "title": "HSRP split-brain entre dos routers",
+    "topo": "Dos routers Cisco ISR4321 (R-A y R-B) en LAN 192.168.10.0/24, ambos corriendo HSRP grupo 1 con virtual IP 192.168.10.1. R-A debería ser Active, R-B Standby.",
+    "sintoma": "A las 06:50AM los usuarios reportan 'a veces sale a internet, a veces no, dependiendo del momento'. NOC ve que ambos routers se anuncian como Active para el mismo grupo HSRP.",
+    "diag": [
+      "show standby brief en R-A — 'P 1 192.168.10.1  local  100' (active)",
+      "show standby brief en R-B — 'P 1 192.168.10.1  local  100' (active también, conflicto)",
+      "show ip arp 192.168.10.1 — '192.168.10.1  aabb.cc00.0100 ARPA  Vlan10' Y otra entrada con la MAC real de R-B '192.168.10.1  aabb.cc00.0200 ARPA'"
+    ],
+    "causa": "El link entre R-A y R-B (que usaban para HSRP hello) se cayó silenciosamente (cable de cobre dañado). Sin hellos, cada router se declaró Active. Los hosts aprendían ARP de ambos por turnos, generando tráfico asimétrico y blackholeos.",
+    "solucion": [
+      "Reemplazo del cable UTP del link de keepalive HSRP entre R-A y R-B",
+      "Bajar prioridad del R-B momentáneamente: standby 1 priority 95 (forzar Active a R-A)",
+      "Configurar 'standby 1 track <interface> 30' para que R-B baje prioridad si su uplink WAN cae"
+    ],
+    "comandos": [
+      "show standby brief",
+      "show standby internal",
+      "show ip arp 192.168.10.1"
+    ],
+    "prevencion": "Usar HSRP v2 con autenticación MD5 ('standby 1 authentication md5 key-string'). Configurar 'standby delay minimum-time 30 reload 60' para evitar split-brain durante reboots. Monitoreo ICMP a virtual IP cada 10s desde NMS."
+  },
+  {
+    "id": 11,
+    "cat": "L3",
+    "title": "EIGRP stuck-in-active (SIA) en hub",
+    "topo": "Hub Cisco 3925 (R-Hub) con 20 spokes EIGRP sobre túneles GRE en frame-relay (legacy). 5 spokes (R-12, R-15, R-18, R-19, R-20) reportan rutas intermitentes.",
+    "sintoma": "A las 04:15AM, NOC recibe alerta 'EIGRP neighbor 10.20.20.12 down' seguida de otras 4. El hub se llena de mensajes 'DUAL-3-SIA: Neighbor 10.20.20.12 stuck-in-active for 180s'.",
+    "diag": [
+      "show ip eigrp topology active — lista de prefijos stuck-in-active, mayormente rutas de los 5 spokes afectados",
+      "show ip eigrp neighbors — los 5 neighbors aparecen 'stuck-in-active' y los queries quedan pending",
+      "show ip eigrp interfaces detail Tu12 — 'Mean SRTT 1200ms, packet loss 15%' en los túneles afectados, mientras que los otros 15 spokes están con SRTT < 50ms"
+    ],
+    "causa": "El proveedor de MPLS de la transportista tuvo un problema de QoS y los 5 túneles GRE de los spokes específicos comenzaron a perder paquetes. EIGRP manda queries a todos los neighbors cuando una ruta se pierde. Los spokes que no contestaban (paquetes perdidos) generaban SIA en el hub, que no podía completar la convergencia DUAL hasta el timeout de 180s.",
+    "solucion": [
+      "Reducir temporizadores SIA: configure terminal / router eigrp 1 / timers active-time 60 (de 180 a 60 segundos)",
+      "Stubs en spokes: router eigrp 1 / eigrp stub connected summary (limita queries a spokes remotos)",
+      "Reiniciar adyacencias afectadas: clear ip eigrp neighbors 10.20.20.12 10.20.20.15 10.20.20.18"
+    ],
+    "comandos": [
+      "show ip eigrp topology active",
+      "show ip eigrp neighbors detail",
+      "show ip eigrp interfaces Tu12"
+    ],
+    "prevencion": "Configurar EIGRP stub en todos los spokes remotos. Cambiar transportista a SD-WAN o DMVPN phase 3 con convergencia sub-segundo. Monitorear SRTT > 500ms con Zabbix para detectar degradación de transporte antes del SIA."
+  },
+  {
+    "id": 12,
+    "cat": "L3",
+    "title": "OSPF área stub mal configurada rompe redistribución",
+    "topo": "Core OSPF área 0 con 2 áreas stub: área 10 (site A) y área 20 (site B). R-A en área 10 redistribuye rutas estáticas hacia OSPF con 'redistribute static subnets'. R-B en área 20 no.",
+    "sintoma": "A las 02:00AM, ticket nocturno: 'El site A dejó de ver las rutas estáticas del otro lado, pero el site B sí'. Las rutas externas tipo E2 no aparecen en LSDB de R-A.",
+    "diag": [
+      "show ip ospf database external — vacío en R-A, pero en ABR del área 20 sí están las LSA tipo 5",
+      "show running-config | i area — 'area 10 stub' en R-A, 'area 10 stub no-summary' en ABR-1 — el 'no-summary' hace que sea totally-stubby",
+      "show ip ospf interface Gi0/0 — 'Area 10 STUB' confirma que es stub, no permite LSA tipo 5"
+    ],
+    "causa": "El área 10 era 'stub' (no permite LSA tipo 4 ni 5). Las rutas estáticas redistribuidas en R-A se inyectaban como LSA tipo 5, que el ABR filtraba antes de inyectarlas en el área stub. Por eso R-A veía sus propias redistribuidas (originadas en R-A) pero NO las de otros routers que estuvieran fuera del área.",
+    "solucion": [
+      "Convertir área 10 a NSSA: configure terminal / router ospf 1 / area 10 nssa (en R-A y ABR-1)",
+      "En R-A: router ospf 1 / area 10 nssa default-information-originate",
+      "Validar: show ip route ospf en R-B debe mostrar las estáticas redistribuidas como 'O N2' (NSSA external type 2)"
+    ],
+    "comandos": [
+      "show ip ospf database",
+      "show ip ospf interface",
+      "show ip protocols"
+    ],
+    "prevencion": "Documentar topología OSPF con tipos de área (stub/totally-stubby/NSSA). Usar NSSA cuando se necesite redistribuir rutas externas en un área que no es backbone. Auditar LSDB con 'show ip ospf database nssa-external'."
+  },
+  {
+    "id": 13,
+    "cat": "L3",
+    "title": "TTL exceeded en traceroute por loop de routing",
+    "topo": "Router Cisco 7200 (R-X) en AS 65010, peer eBGP con R-Y (AS 65020) por un lado y R-Z (AS 65030) por otro. R-X y R-Z tienen acuerdo de tránsito pero R-Z filtra prefix 198.51.100.0/24.",
+    "sintoma": "A las 05:40AM, el cliente del prefix 198.51.100.0/24 reporta 'pérdida total de conectividad'. Traceroute desde fuera muestra hasta 14 saltos con * * * (TTL exceeded).",
+    "diag": [
+      "traceroute 198.51.100.5 desde R-X — repite R-Y y R-Z alternadamente, 14 saltos y muere",
+      "show ip bgp 198.51.100.0/24 — 'AS Path: 65020 65030 65010 65020 i' (loop de AS path que no fue detectado por BGP por un bug de loop detection)",
+      "show ip route 198.51.100.0 — la ruta estática hacia Null0 con distancia 200, y la ruta BGP con distance 20 — pero BGP no se está aplicando por la regla de 'bgp bestpath as-path ignore'"
+    ],
+    "causa": "Bug de configuración: 'bgp bestpath as-path ignore' estaba habilitado (venía de una prueba anterior y nadie lo quitó). Eso desactivó la protección anti-loop de BGP, permitiendo que se instalaran rutas con AS-path que ya contenían el AS local. El tráfico se ruteaba al peer, lo rebotaba, lo recibía de nuevo, y se hacía un loop hasta que se acababa el TTL.",
+    "solucion": [
+      "configure terminal / router bgp 65010 / no bgp bestpath as-path ignore",
+      "clear ip bgp * soft (para reaplicar las mejores rutas sin tumbar sesiones)",
+      "Validar: show ip bgp 198.51.100.0/24 debe mostrar AS path limpio y mostrar 'valid' y 'best'. Traceroute debe completarse."
+    ],
+    "comandos": [
+      "show ip bgp 198.51.100.0/24",
+      "show running-config | section router bgp",
+      "traceroute 198.51.100.5"
+    ],
+    "prevencion": "Remover 'bgp bestpath as-path ignore' de configs de producción. Usar 'bgp maxas-limit 32' para prevenir loops con AS-path inflados. Auditar con 'show ip bgp inconsistent-as' cada 24h."
+  },
+  {
+    "id": 14,
+    "cat": "L4",
+    "title": "SYN flood en portal de autogestión",
+    "topo": "Servidor web Apache 2.4 detrás de un Fortinet 100F. DMZ 192.168.50.0/24, NAT 1:1 hacia IP pública 200.50.50.50 puerto 443. Portal con login expuesto.",
+    "sintoma": "A las 22:30PM, NOC recibe alerta 'CPU Fortinet 100F 95%'. El portal empieza a responder 504 a usuarios legítimos. Logs de Apache muestran miles de conexiones half-open.",
+    "diag": [
+      "get system performance status en Fortinet — 'CPU usage: 96%, session setup rate: 18500/sec' (anormal)",
+      "diagnose sys session filter dst-port 443 / diagnose sys session list — 'Total sessions 287,432, half-open 189,200'",
+      "tcpdump en Apache: tcpdump -ni eth0 'tcp[tcpflags] & tcp-syn != 0' — 17,000 SYN/segundo, todos de IPs distintas (botnet)"
+    ],
+    "causa": "Botnet realizando SYN flood distribuido contra el puerto 443. El Fortinet estaba procesando cada SYN, asignando un session entry, hasta saturar la tabla de sesiones (~300k) y la CPU del plano de datos.",
+    "solucion": [
+      "Activar SYN proxy en Fortinet: config firewall policy / edit 1 / set tcp-syn-proxy enable",
+      "Activar rate-limit: config firewall policy / set rate-count 100 rate-duration 1 rate-mode continuous / set rate-track src-ip",
+      "Habilitar DoS policy: config firewall DoS-policy / edit 1 / set service http / set anomaly syn flood enable action block"
+    ],
+    "comandos": [
+      "diagnose sys session list",
+      "diagnose sys session stat",
+      "get system performance status"
+    ],
+    "prevencion": "Suscribirse a un servicio DDoS protection (Cloudflare Spectrum o similar). Configurar rate-limiting por IP origen. Activar 'syn-cookie' en Apache como segunda capa: echo 1 > /proc/sys/net/ipv4/tcp_syncookies."
+  },
+  {
+    "id": 15,
+    "cat": "L4",
+    "title": "Conntrack full en Linux load balancer",
+    "topo": "Linux 5.15 con iptables y HAProxy 2.6 como load balancer. nf_conntrack_max=262144. Balancea tráfico HTTP a 3 backends Apache.",
+    "sintoma": "A las 10:45AM, el sistema empieza a descartar paquetes nuevos. Logs: 'nf_conntrack: table full, dropping packet'. Usuarios ven 'connection reset'.",
+    "diag": [
+      "cat /proc/sys/net/netfilter/nf_conntrack_count — '262140' (cerca del máximo)",
+      "cat /proc/sys/net/netfilter/nf_conntrack_max — '262144' (el límite)",
+      "conntrack -L 2>/dev/null | head -50 — mayormente TIME_WAIT y ESTABLISHED de un crawler agresivo de Bingbot"
+    ],
+    "causa": "Un crawler de Microsoft (Bingbot) estaba scrapeando con 2000 conexiones simultáneas, todas establecidas contra el LB y sin cerrar rápidamente. nf_conntrack_max se llenó de ESTABLISHED y TIME_WAIT, no aceptando nuevas sesiones. El timeout default de 432000s (5 días) en ESTABLISHED no ayudaba.",
+    "solucion": [
+      "Reducir timeouts: sysctl -w net.netfilter.nf_conntrack_tcp_timeout_established=300",
+      "Subir nf_conntrack_max: sysctl -w net.netfilter.nf_conntrack_max=524288 (más memoria, más espacio)",
+      "Rate-limit en HAProxy: stick-table type ip size 200k expire 30s store conn_cur / tcp-request connection reject if { src_conn_cur ge 50 }"
+    ],
+    "comandos": [
+      "cat /proc/sys/net/netfilter/nf_conntrack_count",
+      "conntrack -L",
+      "sysctl -a | grep nf_conntrack"
+    ],
+    "prevencion": "Ajustar nf_conntrack_max a 1/8 de la RAM disponible en MB. Configurar HAProxy con rate-limit por IP origen. Monitorear 'conntrack_count / conntrack_max > 0.8' con Zabbix y alertar antes de que se llene."
+  },
+  {
+    "id": 16,
+    "cat": "L4",
+    "title": "Port 443 bloqueado por firewall corporativo",
+    "topo": "Cliente accede a SaaS (https://api.servicio.com) desde PC corporativa. Red: 10.10.0.0/16 con salida a internet por proxy 10.10.0.1 puerto 8080. NAT corporativo.",
+    "sintoma": "A las 09:10AM, 5 usuarios reportan 'no anda el sistema de turnos, dice que no puede conectar'. El dev del SaaS confirma que la API está up. NOC escala el ticket.",
+    "diag": [
+      "curl -v https://api.servicio.com desde PC cliente — 'Failed to connect to api.servicio.com port 443: Connection timed out'",
+      "curl -v --proxy http://10.10.0.1:8080 https://api.servicio.com — funciona, sale a través del proxy",
+      "En el firewall Fortinet: diagnose debug flow show function-name 0 / diagnose debug flow trace start 5 / diagnose debug flow filter saddr 10.10.10.42 — log muestra 'Denied by policy id=3' que es la policy default de salida"
+    ],
+    "causa": "La policy de firewall corporativo (Fortinet) tenía una regla default 'deny all outbound' excepto para 80/443 hacia dominios específicos (whitelist). api.servicio.com no estaba en la whitelist, y peor: el Fortinet estaba interceptando el CONNECT method del proxy y bloqueándolo.",
+    "solucion": [
+      "Agregar excepción en Fortinet: config firewall policy / edit 3 / set dstaddr api-servicio / set service HTTPS / set action accept",
+      "Crear FQDN address: config firewall address / edit api-servicio / set type fqdn / set fqdn api.servicio.com",
+      "Validar: curl -v https://api.servicio.com desde PC cliente debe completar TLS handshake y responder 200"
+    ],
+    "comandos": [
+      "config firewall policy",
+      "diagnose debug flow",
+      "curl -v https://api.servicio.com"
+    ],
+    "prevencion": "Implementar filtro por URL category en lugar de whitelist individual. Documentar procesos de alta de nuevas excepciones SaaS en un SLA de 4h. Habilitar logs a SIEM para tráfico bloqueado saliente."
+  },
+  {
+    "id": 17,
+    "cat": "L7",
+    "title": "DNS resolution falla en VLAN de servidores",
+    "topo": "5 servidores en VLAN 30 (172.16.30.0/24), resolver configurado a 172.16.30.53 (Windows DNS interno con Active Directory integrado). Forwarder upstream 8.8.8.8.",
+    "sintoma": "A las 07:00AM al arrancar los servicios (cron systemd), todos los servidores devuelven 'Temporary failure in name resolution' para dominios externos. Los servicios no arrancan.",
+    "diag": [
+      "systemd-resolve --status en server 1 — 'DNS Servers: 172.16.30.53', pero dig google.com @172.16.30.53 devuelve 'connection timed out; no servers could be reached'",
+      "tcpdump -ni eth0 port 53 -vvv en DNS server — los queries llegan, pero el DNS server no responde",
+      "En Windows DNS server: Get-Service DNS — 'Running'. Pero Get-DnsServerForwarder — 'Forwarders: 8.8.8.8, 8.8.4.4 — timeout' (no salen hacia internet)"
+    ],
+    "causa": "El DNS server Windows 2022 tenía un firewall local (Windows Defender Firewall) que estaba bloqueando el outbound UDP/53 hacia 8.8.8.8 después de un update de definiciones. Los queries recursivos se quedaban sin respuesta, y la validación de AD tampoco funcionaba porque requería DNS.",
+    "solucion": [
+      "Habilitar outbound DNS en firewall local: New-NetFirewallRule -DisplayName 'Allow DNS Out' -Direction Outbound -Protocol UDP -RemotePort 53 -Action Allow",
+      "Verificar: Get-DnsServerForwarder — y nslookup google.com 172.16.30.53 desde un server debe resolver",
+      "Reiniciar servicio DNS: Restart-Service DNS (para que limpie caché y reintente)"
+    ],
+    "comandos": [
+      "Get-DnsServerForwarder",
+      "nslookup google.com 172.16.30.53",
+      "systemd-resolve --status"
+    ],
+    "prevencion": "Documentar reglas de firewall local en runbook de servidores críticos. Configurar monitor Splunk para 'DNS query forwarder timeout > 5'. Tener un DNS secundario (1.1.1.1) configurado como backup forwarder."
+  },
+  {
+    "id": 18,
+    "cat": "L7",
+    "title": "Certificado SSL vencido en API REST",
+    "topo": "Servidor Nginx 1.22 reverse proxy de api.cliente.com.ar. Certbot con Let's Encrypt, renovación automática configurada. TLS 1.2 + 1.3.",
+    "sintoma": "A las 11:00AM, los clientes mobile reportan 'No se puede conectar al servidor, error de certificado'. Monitoreo Uptime Kuma: 'API down - certificate expired'.",
+    "diag": [
+      "openssl s_client -connect api.cliente.com.ar:443 -servername api.cliente.com.ar < /dev/null 2>/dev/null | openssl x509 -noout -dates — 'notAfter=Dec 15 00:00:00 2024 GMT' (vencido, hoy es Dic 17)",
+      "certbot certificates — muestra el cert con 'VALID: 0' y el cron de renovación 'NEXT RENEWAL: never'",
+      "systemctl status certbot.timer — 'inactive (dead)' (el timer no estaba corriendo)"
+    ],
+    "causa": "El timer de certbot se había deshabilitado tras un update de paquetes (apt upgrade había roto el timer en Ubuntu 22.04). El certificado venció porque no hubo renovación automática y nadie se dio cuenta hasta que el browser lo bloqueó.",
+    "solucion": [
+      "Reactivar timer: systemctl enable --now certbot.timer / systemctl start certbot.timer",
+      "Renovar manualmente: certbot renew --force-renewal",
+      "Validar: certbot certificates — debe mostrar 'VALID: 90' días. openssl s_client debe mostrar fecha de expiración futura."
+    ],
+    "comandos": [
+      "certbot certificates",
+      "openssl s_client -connect api.cliente.com.ar:443",
+      "systemctl list-timers"
+    ],
+    "prevencion": "Monitoreo de expiración de certificados con Prometheus blackbox_exporter y alerta 30 días antes. Test semanal de 'certbot renew --dry-run' desde cron. Documentar proceso de post-update de paquetes en servers."
+  },
+  {
+    "id": 19,
+    "cat": "L7",
+    "title": "HTTP/2 degrade a HTTP/1.1 causa latencia",
+    "topo": "Nginx 1.24 como reverse proxy hacia backend Node.js 18. Frontend hace ~40 requests por página. TLS con ALPN h2 habilitado. Cloudflare como CDN en frente.",
+    "sintoma": "A las 14:00PM, equipo de frontend reporta 'después del deploy de ayer, la página carga en 4 segundos en vez de 1.2'. Latencia P95 subió de 800ms a 4.2s.",
+    "diag": [
+      "curl -vI --http2 https://api.cliente.com.ar — 'ALPN: h2' y 'HTTP/2 200' — OK",
+      "En Chrome DevTools → Network → Protocol column: cada asset está marcado como 'http/1.1' en vez de 'h2'",
+      "En el backend Node.js: 'HTTP/1.1 200' en los logs. Netstat en Nginx: 'ESTABLISHED' con peer, ningún TIME_WAIT raro"
+    ],
+    "causa": "El deploy del backend había incluido una actualización de la lib http2 de Node.js que rompió el keep-alive. Nginx hacía multiplexing HTTP/2 contra el cliente, pero por cada request del cliente abría una conexión nueva al backend con HTTP/1.1, y Node no las poolaba. Resultado: 40 conexiones TCP+TLS por cada page load, latencia acumulada de 3s solo en handshake.",
+    "solucion": [
+      "Bajar la versión de Node o del paquete 'http2-wrapper' al último estable que funcionaba",
+      "Configurar Nginx upstream keepalive: upstream backend { server 10.0.0.1:3000; keepalive 32; }",
+      "Agregar 'proxy_http_version 1.1' y 'proxy_set_header Connection \"\"' en location block"
+    ],
+    "comandos": [
+      "curl -vI --http2 https://api.cliente.com.ar",
+      "nginx -T | grep -A5 upstream",
+      "ss -nti dst 10.0.0.1"
+    ],
+    "prevencion": "Mantener upstream keepalive 32+ en TODOS los bloques upstream de Nginx. Hacer test de carga después de cada deploy con k6 o vegeta midiendo P95 y verificar que HTTP/2 persiste end-to-end."
+  },
+  {
+    "id": 20,
+    "cat": "adv",
+    "title": "MPLS LSP down en backbone de tránsito",
+    "topo": "Backbone MPLS con routers Cisco ASR9000 (P1, P2, P3) y PE1/PE2 como bordes. LDP para distribución de labels. LSP de PE1 a PE2 pasando por P1-P2-P3. VRF cliente 'cliente-a' sobre el LSP.",
+    "sintoma": "A las 05:20AM, NOC recibe alerta crítica 'LSP PE1-PE2 down, MPLS traffic lost'. El cliente A pierde conectividad con sus sites distribuidos en 3 regiones.",
+    "diag": [
+      "show mpls ldp neighbor en PE1 — solo ve P1, P2 y P3 aparecen como vecinos pero los bindings a P3 están en 'Down'",
+      "show mpls forwarding-table — 'No Label' en el prefix destino, indica que LDP no está distribuyendo labels para el FEC del LSP",
+      "show isis database en P3 — 'Level-1 LSP ID 0000.0000.0003.00-00, Sequence 0x4F, Checksum 0x9A8B' — P3 tiene LSDB inconsistente"
+    ],
+    "causa": "P3 había sido reiniciado la noche anterior por mantenimiento y la base de datos de LDP no se rehidrató correctamente por un issue de memoria. Como MPLS LDP depende del IGP (IS-IS en este backbone) para encontrar el path, y el LSDB de IS-IS en P3 estaba inconsistente, P3 no calculaba la mejor ruta hacia el loopback de PE2, y por lo tanto LDP no generaba el label binding.",
+    "solucion": [
+      "Limpiar LDP en P3: clear mpls ldp neighbor * / clear mpls forwarding-table",
+      "Forzar renegocio IS-IS: clear isis * / verificar LSDB consistente en P3",
+      "Validar: show mpls forwarding-table en PE1 debe mostrar 'Pop label' o 'Swap label' para el prefix del LSP. show mpls ldp binding debe mostrar el binding hacia P3 con label correcto"
+    ],
+    "comandos": [
+      "show mpls ldp neighbor",
+      "show mpls forwarding-table",
+      "show isis database verbose"
+    ],
+    "prevencion": "Migrar de LDP a Segment Routing (SR-MPLS) con TI-LFA para convergencia < 50ms. Monitorear LSP state con SNMP polling cada 30s. Configurar 'mpls ldp discovery quick-start' para re-convergencia más rápida."
+  },
+  {
+    "id": 21,
+    "cat": "adv",
+    "title": "IGMP snooping roto en VLAN de video",
+    "topo": "Switch Cisco Catalyst 9500 como core de distribución de IPTV. Multicast source 239.255.0.100, 50 receptores en VLAN 200 distribuidos en 5 access switches. IGMP snooping habilitado.",
+    "sintoma": "A las 19:00PM, todos los usuarios de IPTV reportan 'pantalla negra, no carga el canal'. El source sigue enviando tráfico multicast (verificado con sflow).",
+    "diag": [
+      "show ip igmp snooping groups vlan 200 — 'Vlan200, Group 239.255.0.100, 0 members' (¡cero!)",
+      "show mac address-table multicast vlan 200 — vacío",
+      "show ip igmp snooping querier vlan 200 — 'IGMP Querier: 10.200.0.1' pero 'Querier IP: 0.0.0.0' (no hay querier activo, IP es 0.0.0.0)"
+    ],
+    "causa": "El querier IGMP del Catalyst 9500 (configurado para VLAN 200) no estaba mandando queries. La IP del querier quedaba en 0.0.0.0 porque faltaba el comando 'ip igmp snooping vlan 200 mrouter interface Te1/1/1' apuntando al uplink del source multicast. Sin querier, los receptores no mandaban reports, el switch no aprendía los grupos, y el multicast se inundaba solo en el segmento local del source (pero el resto no veía nada).",
+    "solucion": [
+      "Configurar mrouter port: configure terminal / interface Te1/1/1 / ip igmp snooping mrouter",
+      "Forzar querier: ip igmp snooping vlan 200 querier address 10.200.0.1",
+      "Validar: show ip igmp snooping groups vlan 200 — debe mostrar los grupos con members. Los usuarios deben poder ver el canal."
+    ],
+    "comandos": [
+      "show ip igmp snooping groups",
+      "show ip igmp snooping querier",
+      "show ip igmp snooping mrouter"
+    ],
+    "prevencion": "Auditar configuración de IGMP snooping en cada VLAN de multicast. Configurar el querier de backup en el switch de core con IP del gateway de la VLAN. Documentar mrouter ports en runbook de IPTV."
+  },
+  {
+    "id": 22,
+    "cat": "tel",
+    "title": "Radioenlace PTP con desvanecimiento por lluvia",
+    "topo": "Radioenlace Ubiquiti airFiber 5XHD de 5GHz, antena 30dBi, distancia 12km entre dos torres (Site A en datacenter, Site B en oficina remota). Throughput contratado 450Mbps.",
+    "sintoma": "A las 02:00AM en plena tormenta, NOC recibe alerta 'airFiber link down - RSSI -92 dBm'. El link ya venía degradándose: throughput cayó de 450Mbps a 80Mbps en los últimos 40 minutos.",
+    "diag": [
+      "Acceso al airFiber GUI: 'Signal Strength: -92 dBm, CCQ 28%' (era -65 dBm en condiciones normales)",
+      "airview spectrum analyzer en el Site A — 'Interference floor: -78 dBm' con pico en 5.180 GHz (tormenta + propagación anómala)",
+      "tail -f /var/log/airfiber.log — 'TX/RX retries: 98%, modulation fell from 256QAM to BPSK' (adaptaba modulación continuamente)"
+    ],
+    "causa": "Rain fade (desvanecimiento por lluvia) agravado por la frecuencia de 5GHz en tormenta eléctrica. Las gotas de agua atenúan la señal 2-3 dB/km en 5GHz, y a 12km con lluvia intensa, la atenuación total superaba el margen del enlace. El sistema adaptó la modulación hasta el mínimo (BPSK) y finalmente perdió sincronía.",
+    "solucion": [
+      "Esperar que pase la tormenta (rain fade es pasajero). Mientras tanto, failover a enlace 4G LTE backup que ya estaba configurado",
+      "Reducir distancia de canal: cambiar a airFiber 11FX (11GHz) que es menos susceptible a rain fade, o airFiber 24HD en 24GHz para distancias cortas (con línea de vista limpia)",
+      "Aumentar ganancia de antena: reemplazar las de 30dBi por 34dBi para tener 4dB extra de margen"
+    ],
+    "comandos": [
+      "airview spectrum analyzer",
+      "iwconfig af5 (interfaz airFiber)",
+      "tail -f /var/log/airfiber.log"
+    ],
+    "prevencion": "Diseñar enlace con margen de fade de al menos 15-20 dB por encima del umbral. Implementar diversidad de sitio: 2 radioenlaces con frecuencias distintas. Monitorear CCQ y RSSI con Zabbix, alertar si CCQ < 60% por más de 5 min."
+  },
+  {
+    "id": 23,
+    "cat": "tel",
+    "title": "Satélite geoestacionario con latencia alta en VoIP",
+    "topo": "Sucursal remota en zona rural sin fibra ni 4G. Conexión a internet vía VSAT (Hughes HN9460) en banda Ku apuntando al satélite geoestacionario Amazonas-2. Tráfico VoIP SIP hacia central Asterisk en datacenter en Buenos Aires.",
+    "sintoma": "A las 10:00AM, el cliente reporta 'las llamadas por VoIP se cortan o suenan robóticas, no se entiende nada'. Llamadas simples de 30 segundos se cortan a los 10.",
+    "diag": [
+      "Ping desde la VSAT a 8.8.8.8 — 'time=748ms, time=751ms' (latencia típica de VSAT geo: 600-800ms RTT)",
+      "mtr 8.8.8.8 — muestra 4 saltos, el 3er salto (el satélite) tiene packet loss 35%",
+      "sngrep sobre el trunk SIP — paquetes RTP llegan con jitter 200ms+, fuera del buffer de 100ms del codec G.711"
+    ],
+    "causa": "La latencia de por sí del satélite geoestacionario es de ~600ms (ida y vuelta 240ms × 2 + procesamiento). Sumado a la alta variabilidad del enlace (jitter) y al packet loss por condiciones climáticas en banda Ku, el buffer del codec VoIP no podía compensar, y Asterisk daba de baja sesiones SIP por timeout. El codec G.711 sin PLC (packet loss concealment) tampoco ayudaba.",
+    "solucion": [
+      "Cambiar a Opus con PLC: en sip.conf / disallow=all / allow=alaw:opus:30:ptime=20 / set codecs con Opus prioritario",
+      "Activar jitter buffer adaptativo en el ATA: jitter buffer 200ms en lugar de 100ms",
+      "Evaluar cambio a LEO (Starlink o OneWeb) si la zona tiene cobertura — reduce RTT a 30-50ms"
+    ],
+    "comandos": [
+      "sngrep",
+      "ping 8.8.8.8",
+      "sip set debug on"
+    ],
+    "comandos_extra": [
+      "asterisk -rx 'sip show channelstats'",
+      "tcpdump -ni eth0 udp portrange 10000-20000"
+    ],
+    "prevencion": "No usar VoIP sobre VSAT geoestacionario como solución definitiva. Plan de migración a Starlink/LEO. Mientras tanto, usar códec Opus con PLC + jitter buffer adaptativo de 200ms y QoS DSCP EF para paquetes RTP."
+  }
+]

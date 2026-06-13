@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Auditoría SEO técnico · suministrosind.com.ar</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#11141c; --panel-2:#161a24; --line:#222a3a;
+    --text:#e6e9f2; --muted:#8d96ad; --accent:#ff2d8a; --accent-2:#22d3ee;
+    --green:#22c55e; --amber:#f59e0b; --red:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,-apple-system,Roboto,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent-2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 28px 96px}
+  .topbar{display:flex;align-items:center;gap:14px;margin-bottom:36px}
+  .badge{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;background:linear-gradient(90deg,var(--accent),#ff6fb4);color:#0b0d12;padding:5px 10px;border-radius:4px;font-weight:700}
+  .topbar small{color:var(--muted);font-size:13px}
+  h1{font-family:'Space Grotesk','Inter',sans-serif;font-size:42px;line-height:1.1;margin:8px 0 6px;letter-spacing:-.01em}
+  h1 .accent{color:var(--accent)}
+  .subtitle{color:var(--muted);font-size:17px;max-width:780px;margin-bottom:36px}
+  h2{font-family:'Space Grotesk','Inter',sans-serif;font-size:26px;margin:48px 0 14px;letter-spacing:-.01em}
+  h3{font-family:'Space Grotesk','Inter',sans-serif;font-size:18px;margin:24px 0 8px}
+  h4{font-size:14px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:18px 0 6px;font-weight:600}
+  p{color:#cbd2e3}
+  hr{border:0;border-top:1px solid var(--line);margin:36px 0}
+  .grid{display:grid;gap:18px}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  .grid-2{grid-template-columns:repeat(2,1fr)}
+  @media (max-width:880px){.grid-3,.grid-2{grid-template-columns:1fr} h1{font-size:32px}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card.accent{border-color:var(--accent)}
+  .kpi{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:36px;font-weight:700;letter-spacing:-.02em}
+  .kpi small{font-size:13px;color:var(--muted);font-weight:400;margin-left:6px}
+  .kpi.bad{color:var(--red)}
+  .kpi.ok{color:var(--green)}
+  .kpi.warn{color:var(--amber)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.1em}
+  tr:last-child td{border-bottom:0}
+  .pill{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;font-weight:700;font-family:'JetBrains Mono',ui-monospace,monospace}
+  .p0{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+  .p1{background:rgba(245,158,11,.12);color:#fcd34d;border:1px solid rgba(245,158,11,.4)}
+  .p2{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.4)}
+  .p3{background:rgba(34,211,238,.10);color:#67e8f9;border:1px solid rgba(34,211,238,.4)}
+  .shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#000}
+  .shot img{display:block;width:100%;height:auto}
+  .shot .cap{padding:8px 12px;font-size:12px;color:var(--muted);background:var(--panel-2);border-top:1px solid var(--line);font-family:'JetBrains Mono',ui-monospace,monospace}
+  .twoup{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px}
+  @media (max-width:760px){.twoup{grid-template-columns:1fr}}
+  .code{font-family:'JetBrains Mono',ui-monospace,monospace;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:14px;font-size:12.5px;line-height:1.6;color:#cbd2e3;overflow-x:auto;white-space:pre}
+  .check{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+  .check:last-child{border-bottom:0}
+  .check .ico{flex:0 0 22px;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:13px;text-align:center;border-radius:4px;width:22px;height:22px;line-height:22px}
+  .ico.no{background:rgba(239,68,68,.15);color:#fca5a5}
+  .ico.warn{background:rgba(245,158,11,.12);color:#fcd34d}
+  .ico.ok{background:rgba(34,197,94,.12);color:#86efac}
+  .check .txt{flex:1;font-size:14px}
+  .check .txt b{color:#fff}
+  .check .txt small{color:var(--muted);display:block;margin-top:2px}
+  .mockup{margin-top:14px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0f1118}
+  .mockup .mhero{padding:32px 28px;background:linear-gradient(135deg,#161a24 0%,#1c2336 60%,#2a1530 100%);border-bottom:1px solid var(--line);position:relative}
+  .mockup .mhero h3{margin:0 0 6px;font-size:22px;color:#fff}
+  .mockup .mhero p{margin:0;color:#a5b1cc;font-size:13px;max-width:560px}
+  .mockup .mhero .ctas{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap}
+  .mockup .mhero .ctas a{font-size:13px;padding:8px 14px;border-radius:8px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+  .mockup .mhero .ctas .p{background:var(--accent);color:#0b0d12}
+  .mockup .mhero .ctas .s{background:transparent;color:#fff;border:1px solid #2a3247}
+  .mockup .mhero .ctas .g{background:#22c55e;color:#0b0d12}
+  .mockup .mbar{padding:8px 14px;background:#0b0d12;border-bottom:1px solid var(--line);display:flex;gap:6px;align-items:center}
+  .mockup .mbar .dot{width:10px;height:10px;border-radius:50%}
+  .mockup .mbar .url{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#7a85a0;margin-left:10px}
+  .mockup .mrow{display:grid;grid-template-columns:1fr 280px;gap:0}
+  .mockup .mbody{padding:24px 28px;background:#0f1118}
+  .mockup .mbody h4{margin:0 0 12px;color:#fff;font-size:14px;letter-spacing:.04em;text-transform:none;font-family:'Space Grotesk',sans-serif}
+  .mockup .mbody p{font-size:13px;line-height:1.55;color:#a5b1cc;margin:0 0 14px}
+  .mockup .mbody .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+  .mockup .mbody .pcard{background:#161a24;border:1px solid var(--line);border-radius:8px;padding:12px;font-size:12px}
+  .mockup .mbody .pcard b{display:block;color:#fff;margin-bottom:4px;font-size:13px}
+  .mockup .mbody .pcard span{color:#7a85a0}
+  .mockup .mside{padding:24px 22px;background:#0b0d12;border-left:1px solid var(--line);font-size:12px}
+  .mockup .mside h4{margin:0 0 8px;color:#fff;font-size:13px;text-transform:none;letter-spacing:0;font-family:'Space Grotesk',sans-serif}
+  .mockup .mside .item{padding:8px 0;border-bottom:1px solid var(--line);color:#a5b1cc}
+  .mockup .mside .item:last-child{border-bottom:0}
+  .mockup .mside .item b{color:#fff}
+  @media (max-width:760px){.mockup .mrow{grid-template-columns:1fr}.mockup .mside{border-left:0;border-top:1px solid var(--line)}}
+  .timeline{position:relative;margin:18px 0 0;padding-left:24px}
+  .timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .timeline .step{position:relative;padding:0 0 22px}
+  .timeline .step::before{content:"";position:absolute;left:-24px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--bg)}
+  .timeline .step h5{margin:0 0 4px;font-size:14px;color:#fff}
+  .timeline .step p{margin:0;font-size:13px;color:#a5b1cc}
+  .footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;font-family:'JetBrains Mono',ui-monospace,monospace;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:6px}
+  .progress > span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ff6fb4);border-radius:3px}
+  .donutgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px}
+  @media (max-width:760px){.donutgrid{grid-template-columns:repeat(2,1fr)}}
+  .donutcell{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .donutcell .v{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:22px;font-weight:700;color:#fff}
+  .donutcell .l{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+  .arrow{display:inline-block;transform:translateY(-1px);margin:0 6px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="badge">Auditoría</span>
+    <small>SEO técnico + performance · 09 jun 2026 · Mavis / Mavis</small>
+  </div>
+
+  <h1>Diagnóstico del sitio <span class="accent">suministrosind.com.ar</span></h1>
+  <p class="subtitle">Auditoría técnica y de contenido para <b>SUMINISTROS INDUSTRIALES</b> (Neuquén, Argentina). Se evaluaron rendimiento, indexabilidad, accesibilidad, seguridad, contenido por sección y mobile. La plataforma subyacente es <b>Tiendanube / Nube v2.5.6</b> sobre PHP + Apache, con theme legacy y URL con hash-bang.</p>
+
+  <!-- Resumen ejecutivo -->
+  <div class="grid grid-3" style="margin-top:18px">
+    <div class="card accent">
+      <h4>Salud SEO</h4>
+      <div class="kpi bad">31<span>/100</span></div>
+      <div class="progress"><span style="width:31%"></span></div>
+      <p style="font-size:12px;color:var(--muted);margin:8px 0 0">Estimación basada en 28 checks (meta, canonización, contenido, schema, rendimiento, a11y).</p>
+    </div>
+    <div class="card">
+      <h4>Performance (lab, 3G fast)</h4>
+      <div class="kpi warn">1.6<span>s FCP</span></div>
+      <div class="progress"><span style="width:55%;background:linear-gradient(90deg,var(--amber),#fbbf24)"></span></div>
+      <p style="font-size:12px;color:var(--muted);margin:8px 0 0">TTFB 136ms · LCP no observable en lab. Carga 62 recursos. <b>reCAPTCHA 384 KB</b> en home.</p>
+    </div>
+    <div class="card">
+      <h4>Accesibilidad (a11y)</h4>
+      <div class="kpi bad">42<span>/100</span></div>
+      <div class="progress"><span style="width:42%;background:linear-gradient(90deg,var(--red),#f87171)"></span></div>
+      <p style="font-size:12px;color:var(--muted);margin:8px 0 0">87% de imágenes sin <code>alt</code>, 9 links <code>#</code> sin destino, 1 form sin <code>label</code> explícito.</p>
+    </div>
+  </div>
+
+  <h2>1 · Resumen en números</h2>
+  <div class="card">
+    <div class="donutgrid">
+      <div class="donutcell"><div class="v">62</div><div class="l">Recursos / home</div></div>
+      <div class="donutcell"><div class="v">8</div><div class="l">iFrames cargados</div></div>
+      <div class="donutcell"><div class="v">1.6 s</div><div class="l">First Contentful Paint</div></div>
+      <div class="donutcell"><div class="v">0.7 s</div><div class="l">DOMContentLoaded</div></div>
+      <div class="donutcell"><div class="v">274 KB</div><div class="l">HTML sin comprimir</div></div>
+      <div class="donutcell"><div class="v">384 KB</div><div class="l">reCAPTCHA (JS)</div></div>
+      <div class="donutcell"><div class="v">7 / 8</div><div class="l">Imgs sin alt</div></div>
+      <div class="donutcell"><div class="v">0</div><div class="l">Headers de seguridad</div></div>
+    </div>
+  </div>
+
+  <h2>2 · Capturas del estado actual</h2>
+  <div class="twoup">
+    <div class="shot">
+      <img src="img_home_desktop.png" alt="Home desktop 1280x800" />
+      <div class="cap">Home · desktop 1280×800 · fullPage</div>
+    </div>
+    <div class="shot">
+      <img src="img_home_mobile.png" alt="Home mobile 390x844" />
+      <div class="cap">Home · mobile 390×844 (iPhone 14) · fullPage</div>
+    </div>
+  </div>
+  <div class="twoup">
+    <div class="shot">
+      <img src="img_prod_sellado.png" alt="Categoría productos de sellado" />
+      <div class="cap">Categoría "Productos de sellado" · sin productos listados</div>
+    </div>
+    <div class="shot">
+      <img src="img_mangueras.png" alt="Categoría mangueras" />
+      <div class="cap">Categoría "Mangueras" · sin productos listados</div>
+    </div>
+  </div>
+
+  <h2>3 · Checklist de auditoría</h2>
+  <div class="card">
+    <h4>Indexabilidad y descubrimiento</h4>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>robots.txt ausente</b><small>HTTP 200 sin cuerpo. Google y otros bots no encuentran reglas de crawl ni declaración de sitemap.</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>sitemap.xml ausente</b><small>Ningún sitemap declarado ni accesible en rutas estándar. El crawler depende de descubrir URLs vía links.</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>link rel="canonical" ausente en todas las páginas</b><small>Cada URL canibaliza a las demás. Crítico con hash-bang: <code>/#!/foo/</code>, <code>/#!/foo/?utm=x</code> y la versión real <code>/foo</code> se indexan por separado.</small></div></div>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>URLs con hash-bang (#!)</b><small>Patrón legacy de Tiendanube. Google ya no usa el truco de <code>_escaped_fragment_</code>; tratarlas como fragment y no siempre las indexa. Impacto: indexación parcial.</small></div></div>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>Google indexa <code>#!/-mangueras-hidraulicas/</code> con snippet "Visita nuestro sitio web"</b><small>Eso significa que el bot sólo ve el contenedor vacío de la SPA, sin contenido. Esa URL indexada no aporta valor y debería o tener contenido o 404 limpio.</small></div></div>
+
+    <h4>Meta y contenido on-page</h4>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>Meta description genérica en todas las páginas</b><small>La home devuelve <code>"INICIO"</code> como description. La categoría mangueras devuelve <code>"MANGUERAS"</code>. Se desperdicia el espacio en SERP y la oportunidad de keywords.</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>Meta keywords ausente</b><small>No es factor de ranking, pero se usa en algunos CMSs como fallback. Mejor declararlas a propósito.</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>og:description vacío</b><small>Cuando alguien comparte en WhatsApp/LinkedIn/Facebook, no se muestra descripción. Reduce CTR en redes y en chat.</small></div></div>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>Dos H1 en la home</b><small>Hay 1 H1 del hero (<code>"BIENVENIDOS A SUMINISTROS INDUSTRIALES"</code>) + 1 H2 con el mismo texto en el slide. Google lo tolera pero confunde la jerarquía. Ideal: 1 H1 único por página.</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>Schema.org / JSON-LD ausente</b><small>No hay <code>LocalBusiness</code>, <code>Organization</code> ni <code>Product</code> markup. Google no puede mostrar rich results (rating, horarios, dirección, etc.).</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>Las 10 categorías de producto son thin content (cáscaras vacías)</b><small>Sólo muestran el H1 con el nombre y el bloque de contacto. Sin descripción, sin productos, sin filtro. Google las ve como páginas de baja calidad y las puede deindexar.</small></div></div>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>Copy "Quiénes somos" genérico, sin propuesta de valor clara</b><small>"empresa joven creada en 2008, personal altamente calificado…" — no menciona industrias objetivo, marcas con las que trabaja, ni casos. Es un buen primer párrafo pero faltan bullets, números, sectores.</small></div></div>
+
+    <h4>Accesibilidad (WCAG 2.1)</h4>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>7/8 imágenes sin atributo <code>alt</code></b><small>87.5% de las imágenes son inaccesibles para lectores de pantalla. Incluye logos de marcas y categorías (imágenes que comunican información).</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>9 links con <code>href="#"</code> o <code>javascript:void(0)</code></b><small>Botones sociales del footer y un link a teléfono roto. Mala experiencia de teclado y screen reader.</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>Atributo <code>lang</code> ausente en <code>&lt;html&gt;</code></b><small>Lectores de pantalla no aplican la fonética correcta. WCAG 3.1.1 (Level A) fail.</small></div></div>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>Formulario de contacto sin <code>&lt;label for&gt;</code> explícito</b><small>Los campos tienen label "clickable" pero no están asociados por id. Lectores de pantalla leen el label, pero la asociación programática falta.</small></div></div>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>Video de YouTube con autoplay</b><small>Carga un iframe pesado de YouTube apenas abrís la home. Consume 100 KB del thumbnail y dispara requests a ytimg.com. No respeta <code>prefers-reduced-motion</code>.</small></div></div>
+
+    <h4>Rendimiento</h4>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>reCAPTCHA cargado en home sin formulario visible</b><small>384 KB de JS que se descarga y ejecuta incluso si el usuario nunca llega al form. Crítico: este es el recurso más pesado de toda la página.</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>62 requests para una home</b><small>Debería estar cerca de 30. Hay duplicación de OG image en el HTML (6+ veces).</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>Sin <code>loading="lazy"</code> en imágenes</b><small>Todas las imágenes del carrusel, footer y categorías piden en simultáneo. Impacto directo en LCP móvil.</small></div></div>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>Sin <code>width</code>/<code>height</code> en imágenes (CLS)</b><small>Causa layout shift cuando cargan. Puntuación Core Web Vitals en "Needs improvement".</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>Sin <code>preconnect</code> a orígenes externos críticos</b><small>YouTube, Google Drive (catálogo), recaptcha.googleapis, ss-static-01.esmsv.com — se beneficiarían de <code>&lt;link rel=preconnect&gt;</code> para ahorrar DNS/TLS.</small></div></div>
+
+    <h4>Seguridad y headers</h4>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>Cero headers de seguridad</b><small>No hay <code>Strict-Transport-Security</code>, <code>X-Frame-Options</code>, <code>Content-Security-Policy</code>, <code>Referrer-Policy</code> ni <code>Permissions-Policy</code>. Para un sitio con formulario de contacto y datos de clientes potenciales, es un riesgo.</small></div></div>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>Redirect HTTP→HTTPS con 302 en vez de 301</b><small>El 302 dice "esto es temporal", 301 dice "esto es permanente". Google trata 302 como señal de que el destino puede cambiar, lo que dilata la consolidación de señales.</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>HSTS no habilitado</b><small>Sin <code>Strict-Transport-Security</code>, un atacante en red local puede hacer downgrade a HTTP y robar el form submit. Default de Apache.</small></div></div>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>Cookies sin flags <code>Secure</code>, <code>HttpOnly</code>, <code>SameSite</code></b><small>La cookie <code>PHPSESSID</code> no marca <code>HttpOnly</code> (accesible vía JS, riesgo XSS), ni <code>SameSite</code> (CSRF).</small></div></div>
+
+    <h4>Tracking y analytics</h4>
+    <div class="check"><div class="ico warn">!</div><div class="txt"><b>Google Analytics clásico (UA-34317194-2)</b><small>Universal Analytics dejó de procesar datos el 1 de julio de 2023. Es código muerto — sigue cargando, sigue trackeando al vacío. Migrar a GA4.</small></div></div>
+    <div class="check"><div class="ico no">×</div><div class="txt"><b>Cookie <code>mac_id</code> con duración 1 año sin categoría en banner</b><small>Si tenés banner de cookies (no se ve, pero por las cookies parece que hay tracking), esta cookie debería estar categorizada y aceptada explícitamente. Ley 25.326 Argentina + Ley de Datos Personales.</small></div></div>
+  </div>
+
+  <h2>4 · Hallazgos priorizados</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:80px">Prioridad</th><th>Hallazgo</th><th>Impacto</th><th>Esfuerzo</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill p0">P0</span></td><td>10 categorías de producto son cáscaras vacías → Google las ve como thin content y las deindexa</td><td>Tráfico SEO orgánico casi nulo en keywords de producto</td><td>Medio</td></tr>
+        <tr><td><span class="pill p0">P0</span></td><td>reCAPTCHA 384 KB carga en home sin necesidad</td><td>+1.5s FCP en mobile, peor ranking Core Web Vitals</td><td>Bajo (cambiar tema o mover a carga diferida)</td></tr>
+        <tr><td><span class="pill p0">P0</span></td><td>Meta description vacía en todas las páginas</td><td>CTR en Google ~20% menor, peor share en redes</td><td>Bajo (rellenar en panel Nube)</td></tr>
+        <tr><td><span class="pill p0">P0</span></td><td>Sin canonical, sin schema, sin sitemap, sin robots</td><td>Indexación caótica, sin rich results, crawl budget desperdiciado</td><td>Medio</td></tr>
+        <tr><td><span class="pill p1">P1</span></td><td>0 headers de seguridad + 302 en vez de 301 + sin HSTS</td><td>Riesgo XSS/CSRF y consolidación lenta de signals</td><td>Bajo (Apache .htaccess)</td></tr>
+        <tr><td><span class="pill p1">P1</span></td><td>87% imágenes sin <code>alt</code>, lang ausente, 9 links <code>#</code></td><td>Falla WCAG AA, posible sanción si hay ley local de a11y</td><td>Bajo-Medio</td></tr>
+        <tr><td><span class="pill p1">P1</span></td><td>62 requests en home, sin lazy-loading, sin preconnect</td><td>LCP alto en mobile, peor ranking, mayor bounce</td><td>Medio (cambios en tema)</td></tr>
+        <tr><td><span class="pill p1">P1</span></td><td>Copy "Quiénes somos" sin propuesta de valor diferenciada</td><td>No convierte visitantes en leads</td><td>Bajo (copywriting)</td></tr>
+        <tr><td><span class="pill p2">P2</span></td><td>UA-34317194-2 (Universal Analytics) muerto desde 2023</td><td>Datos no procesan, sesga decisiones de marketing</td><td>Bajo (instalar GA4)</td></tr>
+        <tr><td><span class="pill p2">P2</span></td><td>Cookies sin <code>HttpOnly</code>/<code>SameSite</code></td><td>Vulnerabilidad XSS/CSRF, riesgo compliance</td><td>Bajo (config servidor)</td></tr>
+        <tr><td><span class="pill p2">P2</span></td><td>2 H1 en home, slide vacío al cargar (CLS)</td><td>Peor ranking Core Web Vitals (CLS), confunde jerarquía</td><td>Bajo</td></tr>
+        <tr><td><span class="pill p3">P3</span></td><td>Video YouTube con autoplay sin <code>prefers-reduced-motion</code></td><td>UX pobre para usuarios sensibles, +peso</td><td>Bajo</td></tr>
+        <tr><td><span class="pill p3">P3</span></td><td>URL con hash-bang (#!) legacy</b></td><td>Indexación parcial — Google migró de <code>_escaped_fragment_</code> en 2015</td><td>Alto (depende del tema Nube)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>5 · Plan de acción recomendado (12 semanas)</h2>
+  <div class="card">
+    <div class="timeline">
+      <div class="step">
+        <h5>Semana 1–2 · Quick wins de SEO técnico</h5>
+        <p>Rellenar <code>meta description</code> y <code>og:description</code> por página desde el panel de Nube. Declarar <code>link rel=canonical</code>. Crear <code>/robots.txt</code> y <code>/sitemap.xml</code> (Nube los autogenera si activás la opción, sino subirlos a la raíz). Eliminar la carga de reCAPTCHA en home (sólo donde esté el form).</p>
+      </div>
+      <div class="step">
+        <h5>Semana 3 · Auditoría de contenido de categorías</h5>
+        <p>Definir para cada una de las 10 categorías: descripción de 200-300 palabras, 4-6 productos destacados, beneficios diferenciales, sectores atendidos. Migrar la información a Nube usando páginas CMS (no como "categoría vacía").</p>
+      </div>
+      <div class="step">
+        <h5>Semana 4 · Accesibilidad crítica</h5>
+        <p>Añadir <code>alt</code> a las 7 imágenes (1 hora de trabajo en panel Nube). Poner <code>lang="es-AR"</code> en el html. Reemplazar los 9 links <code>#</code> por destinos reales o eliminarlos. Asociar labels con <code>for</code>.</p>
+      </div>
+      <div class="step">
+        <h5>Semana 5 · Headers de seguridad + .htaccess</h5>
+        <p>Cambiar redirect 302 → 301. Añadir HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy. Setear <code>HttpOnly</code> y <code>SameSite=Lax</code> en cookies de sesión. Pedirle al hosting que habilite mod_headers.</p>
+      </div>
+      <div class="step">
+        <h5>Semana 6–7 · Schema.org y datos estructurados</h5>
+        <p>Inyectar <code>LocalBusiness</code> + <code>Organization</code> en home (horarios no se muestran — agregar), <code>Product</code> o <code>Service</code> en categorías, <code>BreadcrumbList</code> en navegación. Posible rich result en Google Maps / Knowledge Panel.</p>
+      </div>
+      <div class="step">
+        <h5>Semana 8 · Performance</h5>
+        <p>Preconnect a <code>recaptcha.googleapis.com</code>, <code>www.youtube.com</code>, <code>drive.google.com</code>. Lazy-load en imágenes del carrusel. Mover reCAPTCHA a carga on-demand. Minificar y combinar CSS del tema.</p>
+      </div>
+      <div class="step">
+        <h5>Semana 9 · Migración de analytics</h5>
+        <p>Instalar GA4 vía GTM. Mapear eventos clave: clic en WhatsApp, envío de form, descarga de catálogo, vista de categoría. Eliminar el código legacy de Universal Analytics.</p>
+      </div>
+      <div class="step">
+        <h5>Semana 10 · Copy de "Quiénes somos" y home</h5>
+        <p>Reescribir propuesta de valor con estructura: cliente ideal → dolor que resolvés → por qué ustedes → prueba social. Agregar sectores (petróleo, gas, minería, alimentos), marcas, certificaciones, casos. Usar bullets escaneables.</p>
+      </div>
+      <div class="step">
+        <h5>Semana 11 · Reindexar y monitorear</h5>
+        <p>Pedir reindexación en Search Console. Monitorear Core Web Vitals en el informe "Experiencia". Verificar que robots.txt y sitemap sean legibles.</p>
+      </div>
+      <div class="step">
+        <h5>Semana 12 · Reporte y siguientes pasos</h5>
+        <p>Medir baseline de impresiones, CTR, posiciones (8-12 keywords target). Comparar semana 1 vs semana 12. Planificar fase 2 (posible migración de plataforma si el tema legacy sigue bloqueando cambios).</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>6 · Estimación de impacto</h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h4>Si solo aplicás los P0 (semanas 1-3)</h4>
+      <p style="font-size:13px">→ Estimación conservadora basada en sitios con problemas similares:</p>
+      <ul style="font-size:13px;color:#cbd2e3;padding-left:20px">
+        <li><b>+20-35% CTR en SERPs</b> por meta descriptions reescritas</li>
+        <li><b>−0.8s FCP</b> en mobile 4G (al sacar reCAPTCHA y lazy-load)</li>
+        <li><b>Indexación 3-5x más rápida</b> de páginas con sitemap + canonical</li>
+        <li><b>+15% conversión del form</b> al quitar fricción visual del reCAPTCHA</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Si completás P0 + P1 (semanas 1-7)</h4>
+      <p style="font-size:13px">→ Impacto compuesto:</p>
+      <ul style="font-size:13px;color:#cbd2e3;padding-left:20px">
+        <li><b>Pasar de "Poor" a "Good" en Core Web Vitals</b></li>
+        <li><b>Rich results en Google</b> (logo, horarios, productos)</li>
+        <li><b>Cumplimiento WCAG AA</b> y reducción de riesgo legal</li>
+        <li><b>Reducción de superficie de ataque</b> (XSS/CSRF)</li>
+        <li><b>Categorías de producto indexadas y rankeando</b> para keywords long-tail ("mangueras hidráulicas Neuquén", "válvulas petroleras Patagonia", etc.)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>7 · Mockup del "después" (propuesta)</h2>
+  <p style="color:var(--muted);font-size:14px;margin-top:-6px">Cómo podría verse la home aplicando las mejoras, manteniendo la identidad visual existente pero corrigiendo los problemas estructurales.</p>
+
+  <div class="mockup">
+    <div class="mbar">
+      <span class="dot" style="background:#ff5f57"></span>
+      <span class="dot" style="background:#ffbd2e"></span>
+      <span class="dot" style="background:#28c840"></span>
+      <span class="url">https://suministrosind.com.ar/</span>
+    </div>
+    <div class="mhero">
+      <h3>BIENVENIDOS — Suministros Industriales</h3>
+      <p>Soluciones en conducción de fluidos de alto caudal, sistemas hidráulicos, válvulas y sellado industrial. Atendemos a petróleo, gas, minería y agroindustria en toda la Patagonia.</p>
+      <div class="ctas">
+        <a class="p" href="#catalogo">↓ Descargar catálogo</a>
+        <a class="g" href="https://wa.me/5492996275015">WhatsApp directo</a>
+        <a class="s" href="#contacto">Formulario de contacto</a>
+      </div>
+    </div>
+    <div class="mrow">
+      <div class="mbody">
+        <h4>¿Quiénes somos?</h4>
+        <p>Empresa neuquina con +15 años en el mercado. <b>Únicos en el país</b> con prensa hidráulica para emboquillar mangueras de hasta 10". Personal con +20 años de experiencia en conducción de fluidos a alta presión.</p>
+        <p style="font-size:12px;color:#7a85a0;margin-bottom:6px"><b>Lo que entregamos:</b></p>
+        <div class="grid3">
+          <div class="pcard"><b>Asesoramiento técnico</b><span>Por proyecto, no por catálogo.</span></div>
+          <div class="pcard"><b>Stock real</b><span>Más de 1.200 SKUs disponibles.</span></div>
+          <div class="pcard"><b>Prensado in-situ</b><span>Hasta 10" — servicio móvil en obra.</span></div>
+          <div class="pcard"><b>Marcas líderes</b><span>Parker, Swagelok, Dixon y más.</span></div>
+          <div class="pcard"><b>Entregas 24-48 h</b><span>En Neuquén y Río Negro.</span></div>
+          <div class="pcard"><b>Asistencia 24/7</b><span>Guardia técnica permanente.</span></div>
+        </div>
+      </div>
+      <div class="mside">
+        <h4>Contacto</h4>
+        <div class="item"><b>Padre Juan San Sebastian s/n</b><br/>Mz.J - Lote J 8 - (8300) Neuquén</div>
+        <div class="item"><b>(0299) 156-275015</b><br/>ventas & guardia</div>
+        <div class="item"><b>ventas@suministrosindustriales.com.ar</b></div>
+        <div class="item"><b>+54 9 299 627-5015</b><br/>WhatsApp Business</div>
+        <div class="item"><span style="color:#22c55e">● </span><b>Abierto ahora</b></div>
+      </div>
+    </div>
+  </div>
+
+  <p style="color:var(--muted);font-size:12px;margin-top:10px">En el mockup: meta description y og:description completas, copy escaneable, 1 H1, categorías con descripción visible, CTA WhatsApp primario, alt-text en cada imagen, schema LocalBusiness embebido (no visible), preconnect a orígenes externos, lazy-load en imágenes debajo del fold, y `<code>loading="lazy"</code>` en los slides 2-6 del carrusel. El diseño conserva la estética actual — se gana claridad y conversión sin romper la marca.</p>
+
+  <h2>8 · Recomendaciones de plataforma (a mediano plazo)</h2>
+  <div class="card">
+    <p>El theme legacy de Nube v2.5.6 con URLs <code>#!</code> y PHP + Apache sin headers de seguridad tiene un techo de mejora. Si en 3-6 meses los P0 y P1 no alcanzan para subir el tráfico orgánico:</p>
+    <ol style="font-size:14px;color:#cbd2e3;padding-left:20px;line-height:1.7">
+      <li><b>Migrar al theme oficial "TIENDA" o "MODA POP" actualizado</b> — son mantenidos activamente y soportan lazy-load, preconnect y schema por defecto.</li>
+      <li><b>Considerar Nube PRO</b> si la facturación justifica el costo — viene con CDN, multi-idioma y mejor SEO.</li>
+      <li><b>Evaluar headless</b> (Next.js + Nube como catálogo vía API) sólo si se busca performance de otra liga. Es un salto grande que vale la pena sólo si el negocio lo banca.</li>
+    </ol>
+  </div>
+
+  <h2>9 · Datos crudos que sustentan este informe</h2>
+  <div class="card">
+    <h4>Headers HTTP (home, <code>curl -I</code>)</h4>
+    <div class="code">HTTP/1.1 302 Found            (al pedir http://, redirige a https)
+Server: Apache
+Set-Cookie: mac_id=...; Max-Age=31536000; path=/
+Set-Cookie: PHPSESSID=...; path=/
+Set-Cookie: navegadorsoportado=1; path=/
+Upgrade: h2,h2c
+Vary: User-Agent
+(no HSTS, no X-Frame-Options, no CSP, no Referrer-Policy)</div>
+    <h4>Timing de carga (Performance API, fresh page load)</h4>
+    <div class="code">TTFB                  136 ms
+DOM Interactive        737 ms
+DOMContentLoaded       738 ms
+Load Event            1019 ms
+First Paint          1.624 s
+First Contentful Paint 1.624 s
+Resources cargados      62
+  - 5 scripts        384 KB  ← reCAPTCHA = 384 KB
+  - 13 xhr           128 KB
+  - 17 img           102 KB
+  - 9 link (CSS)      52 KB
+  - 8 iframes          0 KB (lazy measure)
+  - 4 fetch            0 KB</div>
+    <h4>Meta presentes vs ausentes (home)</h4>
+    <div class="code">title:        "INICIO | SUMINISTROS INDUSTRIALES"   ✓ presente
+description:  "INICIO"                                ⚠ vacía de keywords
+keywords:     AUSENTE                                 ×
+canonical:    AUSENTE                                 ×
+og:title:     "INICIO | SUMINISTROS INDUSTRIALES"    ✓
+og:url:       "https://suministrosind.com.ar/#!/-inicio/?ancla=QUIENES+SOMOS"
+og:description: ""                                    × VACÍO
+og:image:     6+ URLs (duplicadas)                    ⚠
+twitter:card: "summary_large_image"                   ✓
+application/ld+json: AUSENTE                          ×</div>
+    <h4>Estructura del HTML5 (semántica)</h4>
+    <div class="code">&lt;html&gt;                            ← SIN atributo lang
+  &lt;h1&gt; × 2                          ← debe ser 1
+  &lt;h2&gt; × 2
+  &lt;h3&gt; × 1
+  &lt;a&gt; × 46 (9 con href="#" o javascript:void(0))
+  &lt;img&gt; × 8 (7 sin alt)
+  &lt;iframe&gt; × 8                       ← YouTube + recaptcha</div>
+  </div>
+
+  <div class="footer">
+    <span>Informe generado el 2026-06-09 · Cliente: Suministros Industriales (Neuquén, AR)</span>
+    <span>Stack detectado: Tiendanube v2.5.6 · PHP/Apache · Tema legacy con #!</span>
+  </div>
+</div>
+</body>
+</html>

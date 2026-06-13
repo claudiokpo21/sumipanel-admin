@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1200" font-family="Arial, Helvetica, sans-serif" font-size="11">
+  <!--
+    Honda XR190L 2017 - Diagrama Electrico PGM-FI
+    Fuente: Manual de Taller 00X65-K79-001 (Moto Honda da Amazonia)
+    Cap. 4 - Sistema Electrico (pags 4-3, 4-21, 4-22, 4-23, 4-27, 4-32)
+  -->
+  <defs>
+    <linearGradient id="hondaRed" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#cc0000"/><stop offset="1" stop-color="#990000"/>
+    </linearGradient>
+    <linearGradient id="ecmGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8e8e8"/><stop offset="1" stop-color="#bcbcbc"/>
+    </linearGradient>
+    <linearGradient id="ecmLabelGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#404040"/><stop offset="1" stop-color="#202020"/>
+    </linearGradient>
+    <linearGradient id="compGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff8e8"/><stop offset="1" stop-color="#f0e6c8"/>
+    </linearGradient>
+    <style>
+      .wire { stroke-width: 1.4; fill: none; }
+      .wire-thick { stroke-width: 2.5; fill: none; }
+      .label { font-size: 10px; fill: #111; }
+      .label-w { font-size: 10px; fill: #111; font-weight: bold; }
+      .comp-box { fill: url(#compGrad); stroke: #6a5a2a; stroke-width: 1.2; }
+      .comp-box-thick { fill: url(#compGrad); stroke: #6a5a2a; stroke-width: 1.8; }
+      .ecm-box { fill: url(#ecmGrad); stroke: #202020; stroke-width: 1.5; }
+      .section-title { font-size: 16px; font-weight: bold; fill: #cc0000; }
+      .small { font-size: 9px; }
+    </style>
+  </defs>
+
+  <!-- HEADER -->
+  <rect x="0" y="0" width="1800" height="50" fill="url(#hondaRed)"/>
+  <text x="20" y="33" fill="white" font-size="22" font-weight="bold">HONDA XR190L (2017) - DIAGRAMA ELÉCTRICO PGM-FI</text>
+  <text x="900" y="33" fill="white" font-size="14" text-anchor="middle">Sistema 12V - Negativo a Masa</text>
+  <text x="1780" y="33" fill="white" font-size="12" text-anchor="end">Manual: 00X65-K79-001</text>
+  <rect x="0" y="50" width="1800" height="22" fill="#202020"/>
+  <text x="20" y="66" fill="white" font-size="12">184.4 cc SOHC | 15.6 HP @ 8500 rpm | Batería YTX7L-BS 12V 6Ah | Fusible principal 15A | Caja fusibles 2x10A</text>
+
+  <text x="20" y="100" class="section-title">DIAGRAMA DEL SISTEMA PGM-FI</text>
+  <line x1="20" y1="108" x2="1780" y2="108" stroke="#cc0000" stroke-width="1.5"/>
+
+  <!-- =========== ROW 1: TOP POWER RAIL =========== -->
+  <!-- Bateria -->
+  <g transform="translate(80,130)">
+    <rect class="comp-box-thick" x="0" y="0" width="120" height="60" rx="4"/>
+    <text x="60" y="20" text-anchor="middle" class="label-w">BATERÍA</text>
+    <text x="60" y="36" text-anchor="middle" class="small">12V - 6Ah</text>
+    <text x="60" y="50" text-anchor="middle" class="small">YTX7L-BS</text>
+    <circle cx="25" cy="0" r="5" fill="#404040"/>
+    <text x="25" y="-6" text-anchor="middle" class="small">−</text>
+    <circle cx="95" cy="0" r="5" fill="#ff3030"/>
+    <text x="95" y="-6" text-anchor="middle" class="small">+</text>
+    <line x1="25" y1="60" x2="25" y2="76" class="wire"/>
+    <line x1="19" y1="76" x2="31" y2="76" class="wire"/>
+    <line x1="22" y1="80" x2="28" y2="80" class="wire"/>
+    <line x1="24" y1="84" x2="26" y2="84" class="wire"/>
+  </g>
+
+  <!-- Main fuse 15A -->
+  <g transform="translate(260,140)">
+    <rect class="comp-box" x="0" y="0" width="100" height="40" rx="3"/>
+    <text x="50" y="18" text-anchor="middle" class="label-w">FUSIBLE 15A</text>
+    <text x="50" y="32" text-anchor="middle" class="small">PRINCIPAL</text>
+  </g>
+
+  <!-- Switch de encendido -->
+  <g transform="translate(420,135)">
+    <rect class="comp-box-thick" x="0" y="0" width="130" height="50" rx="3"/>
+    <text x="65" y="20" text-anchor="middle" class="label-w">INTERRUPTOR</text>
+    <text x="65" y="35" text-anchor="middle" class="label-w">DE ENCENDIDO</text>
+    <text x="65" y="47" text-anchor="middle" class="small">OFF / ON / LOCK</text>
+  </g>
+
+  <!-- Caja de fusibles 10A -->
+  <g transform="translate(600,140)">
+    <rect class="comp-box" x="0" y="0" width="160" height="40" rx="3"/>
+    <text x="80" y="18" text-anchor="middle" class="label-w">CAJA DE FUSIBLES</text>
+    <text x="40" y="33" text-anchor="middle" class="small">SUB1 - 10A</text>
+    <text x="120" y="33" text-anchor="middle" class="small">SUB2 - 10A</text>
+  </g>
+
+  <!-- Relé de arranque -->
+  <g transform="translate(810,140)">
+    <rect class="comp-box" x="0" y="0" width="120" height="40" rx="3"/>
+    <text x="60" y="18" text-anchor="middle" class="label-w">RELÉ ARRANQUE</text>
+    <text x="60" y="33" text-anchor="middle" class="small">Starter relay</text>
+  </g>
+
+  <!-- Relé corte de carga -->
+  <g transform="translate(960,140)">
+    <rect class="comp-box" x="0" y="0" width="120" height="40" rx="3"/>
+    <text x="60" y="18" text-anchor="middle" class="label-w">RELÉ CORTE CARGA</text>
+    <text x="60" y="33" text-anchor="middle" class="small">DC load cut</text>
+  </g>
+
+  <!-- Bank angle sensor -->
+  <g transform="translate(1110,140)">
+    <rect class="comp-box" x="0" y="0" width="120" height="40" rx="3"/>
+    <text x="60" y="18" text-anchor="middle" class="label-w">SENSOR ÁNGULO</text>
+    <text x="60" y="33" text-anchor="middle" class="small">Bank angle</text>
+  </g>
+
+  <!-- IACV -->
+  <g transform="translate(1260,140)">
+    <rect class="comp-box" x="0" y="0" width="120" height="40" rx="3"/>
+    <text x="60" y="18" text-anchor="middle" class="label-w">IACV (4P)</text>
+    <text x="60" y="33" text-anchor="middle" class="small">Aire ralentí</text>
+  </g>
+
+  <!-- DLC -->
+  <g transform="translate(1410,140)">
+    <rect class="comp-box" x="0" y="0" width="120" height="40" rx="3"/>
+    <text x="60" y="18" text-anchor="middle" class="label-w">DLC (4P)</text>
+    <text x="60" y="33" text-anchor="middle" class="small">K-Line / SCS</text>
+  </g>
+
+  <!-- Bujia -->
+  <g transform="translate(1560,140)">
+    <rect class="comp-box" x="0" y="0" width="120" height="40" rx="3"/>
+    <text x="60" y="18" text-anchor="middle" class="label-w">BUJÍA</text>
+    <text x="60" y="33" text-anchor="middle" class="small">CPR8EA-9</text>
+  </g>
+
+  <!-- =================== TOP RAIL WIRES =================== -->
+  <!-- Bat(+) R to Main Fuse -->
+  <line x1="175" y1="130" x2="260" y2="155" class="wire-thick" stroke="#cc0000"/>
+  <text x="200" y="125" class="small" fill="#cc0000" font-weight="bold">R</text>
+  <!-- Main fuse to Switch -->
+  <line x1="360" y1="155" x2="420" y2="155" class="wire-thick" stroke="#cc0000"/>
+  <!-- Switch to Caja fusibles (R/Bu) -->
+  <line x1="550" y1="160" x2="600" y2="160" class="wire" stroke="#cc6600"/>
+  <text x="565" y="155" class="small" fill="#cc6600" font-weight="bold">R/Bu</text>
+  <!-- Caja fusibles to Relé arranque (R/Bu) -->
+  <line x1="760" y1="160" x2="810" y2="160" class="wire" stroke="#cc6600"/>
+  <!-- Caja fusibles to Relé corte (R/Bu) -->
+  <line x1="760" y1="160" x2="960" y2="160" class="wire" stroke="#cc6600"/>
+  <!-- Caja fusibles to ECM (R/Bu / IGP) -->
+  <path d="M 680 180 L 680 200 L 720 200" class="wire" stroke="#cc6600"/>
+
+  <!-- =========== ECM 33-PIN (CENTER, BIG) =========== -->
+  <g transform="translate(620,250)">
+    <rect class="ecm-box" x="0" y="0" width="560" height="320" rx="4"/>
+    <rect x="0" y="0" width="560" height="26" fill="url(#ecmLabelGrad)"/>
+    <text x="280" y="20" text-anchor="middle" fill="white" font-size="16" font-weight="bold">ECM (PGM-FI) - CONECTOR 33P</text>
+
+    <!-- Column headers -->
+    <text x="60" y="48" text-anchor="middle" class="label-w">PIN</text>
+    <text x="140" y="48" text-anchor="middle" class="label-w">SEÑAL</text>
+    <text x="240" y="48" text-anchor="middle" class="label-w">COLOR</text>
+    <text x="320" y="48" text-anchor="middle" class="label-w">PIN</text>
+    <text x="400" y="48" text-anchor="middle" class="label-w">SEÑAL</text>
+    <text x="500" y="48" text-anchor="middle" class="label-w">COLOR</text>
+    <line x1="20" y1="56" x2="540" y2="56" stroke="#666" stroke-width="0.5"/>
+
+    <g font-size="10" fill="#202020">
+      <!-- Left column (1-16) -->
+      <text x="60" y="74" class="label-w" text-anchor="middle">1</text><text x="140" y="74" text-anchor="middle">IGP</text><text x="240" y="74" text-anchor="middle" font-weight="bold" fill="#0066cc">Bl/R</text>
+      <text x="320" y="74" class="label-w" text-anchor="middle">17</text><text x="400" y="74" text-anchor="middle">INJ</text><text x="500" y="74" text-anchor="middle" font-weight="bold" fill="#cc0099">P/Bl</text>
+
+      <text x="60" y="92" class="label-w" text-anchor="middle">2</text><text x="140" y="92" text-anchor="middle">PG</text><text x="240" y="92" text-anchor="middle" font-weight="bold" fill="#006600">G</text>
+      <text x="320" y="92" class="label-w" text-anchor="middle">18</text><text x="400" y="92" text-anchor="middle">FFP</text><text x="500" y="92" text-anchor="middle" font-weight="bold" fill="#0066cc">Bl/O</text>
+
+      <text x="60" y="110" class="label-w" text-anchor="middle">3</text><text x="140" y="110" text-anchor="middle">O²</text><text x="240" y="110" text-anchor="middle" font-weight="bold" fill="#0066cc">Bl/W</text>
+      <text x="320" y="110" class="label-w" text-anchor="middle">19</text><text x="400" y="110" text-anchor="middle">−</text><text x="500" y="110" text-anchor="middle">−</text>
+
+      <text x="60" y="128" class="label-w" text-anchor="middle">4</text><text x="140" y="128" text-anchor="middle">SG</text><text x="240" y="128" text-anchor="middle" font-weight="bold" fill="#006600">G/W</text>
+      <text x="320" y="128" class="label-w" text-anchor="middle">20</text><text x="400" y="128" text-anchor="middle">−</text><text x="500" y="128" text-anchor="middle">−</text>
+
+      <text x="60" y="146" class="label-w" text-anchor="middle">5</text><text x="140" y="146" text-anchor="middle">VCC</text><text x="240" y="146" text-anchor="middle" font-weight="bold" fill="#cc6600">Y/R</text>
+      <text x="320" y="146" class="label-w" text-anchor="middle">21</text><text x="400" y="146" text-anchor="middle">PCMP</text><text x="500" y="146" text-anchor="middle" font-weight="bold" fill="#cc6600">Bu/Y</text>
+
+      <text x="60" y="164" class="label-w" text-anchor="middle">6</text><text x="140" y="164" text-anchor="middle">−</text><text x="240" y="164" text-anchor="middle">−</text>
+      <text x="320" y="164" class="label-w" text-anchor="middle">22</text><text x="400" y="164" text-anchor="middle">PCPM</text><text x="500" y="164" text-anchor="middle" font-weight="bold">W/Y</text>
+
+      <text x="60" y="182" class="label-w" text-anchor="middle">7</text><text x="140" y="182" text-anchor="middle">PB</text><text x="240" y="182" text-anchor="middle" font-weight="bold" fill="#99cc00">Lg/Y</text>
+      <text x="320" y="182" class="label-w" text-anchor="middle">23</text><text x="400" y="182" text-anchor="middle">IACV2A</text><text x="500" y="182" text-anchor="middle" font-weight="bold" fill="#cc6600">Br/W</text>
+
+      <text x="60" y="200" class="label-w" text-anchor="middle">8</text><text x="140" y="200" text-anchor="middle">−</text><text x="240" y="200" text-anchor="middle">−</text>
+      <text x="320" y="200" class="label-w" text-anchor="middle">24</text><text x="400" y="200" text-anchor="middle">T/O (Bank)</text><text x="500" y="200" text-anchor="middle" font-weight="bold" fill="#cc6600">R/Bu</text>
+
+      <text x="60" y="218" class="label-w" text-anchor="middle">9</text><text x="140" y="218" text-anchor="middle">THL</text><text x="240" y="218" text-anchor="middle" font-weight="bold">Y</text>
+      <text x="320" y="218" class="label-w" text-anchor="middle">25</text><text x="400" y="218" text-anchor="middle">−</text><text x="500" y="218" text-anchor="middle">−</text>
+
+      <text x="60" y="236" class="label-w" text-anchor="middle">10</text><text x="140" y="236" text-anchor="middle">−</text><text x="240" y="236" text-anchor="middle">−</text>
+      <text x="320" y="236" class="label-w" text-anchor="middle">26</text><text x="400" y="236" text-anchor="middle">IACV1A</text><text x="500" y="236" text-anchor="middle" font-weight="bold" fill="#cc6600">Br/Bl</text>
+
+      <text x="60" y="254" class="label-w" text-anchor="middle">11</text><text x="140" y="254" text-anchor="middle">TA</text><text x="240" y="254" text-anchor="middle" font-weight="bold" fill="#009999">Gr/Bu</text>
+      <text x="320" y="254" class="label-w" text-anchor="middle">27</text><text x="400" y="254" text-anchor="middle">PB</text><text x="500" y="254" text-anchor="middle" font-weight="bold" fill="#99cc00">Lg/Y</text>
+
+      <text x="60" y="272" class="label-w" text-anchor="middle">12</text><text x="140" y="272" text-anchor="middle">−</text><text x="240" y="272" text-anchor="middle">−</text>
+      <text x="320" y="272" class="label-w" text-anchor="middle">28</text><text x="400" y="272" text-anchor="middle">−</text><text x="500" y="272" text-anchor="middle">−</text>
+
+      <text x="60" y="290" class="label-w" text-anchor="middle">13</text><text x="140" y="290" text-anchor="middle">−</text><text x="240" y="290" text-anchor="middle">−</text>
+      <text x="320" y="290" class="label-w" text-anchor="middle">29</text><text x="400" y="290" text-anchor="middle">−</text><text x="500" y="290" text-anchor="middle">−</text>
+
+      <text x="60" y="302" class="label-w" text-anchor="middle">14</text><text x="140" y="302" text-anchor="middle">T/O (EOT)</text><text x="240" y="302" text-anchor="middle" font-weight="bold" fill="#cc6600">Y/Bu</text>
+      <text x="320" y="302" class="label-w" text-anchor="middle">30</text><text x="400" y="302" text-anchor="middle">IACV1B</text><text x="500" y="302" text-anchor="middle" font-weight="bold" fill="#cc6600">Bu/W</text>
+
+      <text x="60" y="314" class="label-w" text-anchor="middle">15</text><text x="140" y="314" text-anchor="middle">SCS</text><text x="240" y="314" text-anchor="middle" font-weight="bold" fill="#0066cc">Bu</text>
+      <text x="320" y="314" class="label-w" text-anchor="middle">31</text><text x="400" y="314" text-anchor="middle">IACV2B</text><text x="500" y="314" text-anchor="middle" font-weight="bold" fill="#cc6600">Bu/Bl</text>
+
+      <text x="60" y="316" class="label-w" text-anchor="middle" visibility="hidden">.</text>
+      <text x="320" y="316" class="label-w" text-anchor="middle">16</text><text x="400" y="316" text-anchor="middle">K-LINE</text><text x="500" y="316" text-anchor="middle" font-weight="bold">Y</text>
+      <text x="320" y="316" class="label-w" text-anchor="middle">32-33</text><text x="400" y="316" text-anchor="middle">PGx2</text><text x="500" y="316" text-anchor="middle" font-weight="bold" fill="#006600">G</text>
+    </g>
+  </g>
+
+  <!-- =================== LEFT COLUMN: SENSORS =================== -->
+  <!-- SENSOR CKP (left of ECM, lower) -->
+  <g transform="translate(120,290)">
+    <rect class="comp-box-thick" x="0" y="0" width="200" height="100" rx="3"/>
+    <text x="100" y="20" text-anchor="middle" class="label-w">SENSOR CKP</text>
+    <text x="100" y="36" text-anchor="middle" class="small">Pick-up de estátor (12)</text>
+    <text x="100" y="55" class="small">Pin 1 (signal+): Bu/Y → ECM 21</text>
+    <text x="100" y="69" class="small">Pin 2 (signal-): W/Y → ECM 22</text>
+    <text x="100" y="85" class="small">V pico mín: 0,7V</text>
+  </g>
+
+  <!-- SENSOR O2 (left of ECM, mid) -->
+  <g transform="translate(120,410)">
+    <rect class="comp-box" x="0" y="0" width="200" height="90" rx="3"/>
+    <text x="100" y="20" text-anchor="middle" class="label-w">SENSOR O² (21-1)</text>
+    <text x="100" y="36" text-anchor="middle" class="small">Sonda lambda (1 hilo)</text>
+    <text x="100" y="55" class="small">Pin 1: Bl/W → ECM 3</text>
+    <text x="100" y="69" class="small">Pin 2: G/W (masa)</text>
+    <text x="100" y="83" class="small">Sin calentador</text>
+  </g>
+
+  <!-- SENSOR EOT (left of ECM, lower) -->
+  <g transform="translate(120,520)">
+    <rect class="comp-box" x="0" y="0" width="200" height="90" rx="3"/>
+    <text x="100" y="20" text-anchor="middle" class="label-w">SENSOR EOT (7-1, 7-2)</text>
+    <text x="100" y="36" text-anchor="middle" class="small">Temp. motor (culata)</text>
+    <text x="100" y="55" class="small">Pin 1: Y/Bu → ECM 14</text>
+    <text x="100" y="69" class="small">Pin 2: G/W (masa)</text>
+    <text x="100" y="83" class="small">R: 2,5-2,8 kΩ @ 20°C</text>
+  </g>
+
+  <!-- SENSOR UNIT (5P - TP, MAP, IAT) - left of ECM, bottom -->
+  <g transform="translate(120,630)">
+    <rect class="comp-box-thick" x="0" y="0" width="220" height="140" rx="3"/>
+    <text x="110" y="20" text-anchor="middle" class="label-w">SENSOR UNIT (5P)</text>
+    <text x="110" y="36" text-anchor="middle" class="small">Cuerpo de aceleración</text>
+    <line x1="10" y1="44" x2="210" y2="44" stroke="#888" stroke-width="0.5"/>
+    <text x="15" y="58" class="label-w">MAP (1-1, 1-2):</text>
+    <text x="15" y="72" class="small">Y/R → ECM 5 (VCC)</text>
+    <text x="15" y="84" class="small">Lg/Y → ECM 7 (PB)</text>
+    <text x="15" y="100" class="label-w">TP / THL (8-1, 8-2):</text>
+    <text x="15" y="114" class="small">Y/R, Y → ECM 5, 9</text>
+    <text x="15" y="130" class="label-w">IAT / TA (9-1, 9-2):</text>
+    <text x="120" y="130" class="small">Gr/Bu, G/W → ECM 11, 4</text>
+  </g>
+
+  <!-- =================== RIGHT COLUMN: SENSORS & ACTUATORS =================== -->
+  <!-- INYECTOR (right top) -->
+  <g transform="translate(1260,290)">
+    <rect class="comp-box-thick" x="0" y="0" width="200" height="80" rx="3"/>
+    <text x="100" y="20" text-anchor="middle" class="label-w">INYECTOR (12-1)</text>
+    <text x="100" y="36" text-anchor="middle" class="small">1 inyector / 1 cilindro</text>
+    <text x="100" y="55" class="small">Pin 1: P/Bl (control) → ECM 17</text>
+    <text x="100" y="69" class="small">Pin 2: Bl/R (alimentación)</text>
+  </g>
+
+  <!-- BOMBA DE COMBUSTIBLE -->
+  <g transform="translate(1260,390)">
+    <rect class="comp-box-thick" x="0" y="0" width="200" height="80" rx="3"/>
+    <text x="100" y="20" text-anchor="middle" class="label-w">BOMBA COMBUSTIBLE</text>
+    <text x="100" y="36" text-anchor="middle" class="small">Sumergida en tanque</text>
+    <text x="100" y="55" class="small">Alimentación: Bl/O (relé)</text>
+    <text x="100" y="69" class="small">Control: vía ECM pin 18 (FFP)</text>
+  </g>
+
+  <!-- IACV (right mid) -->
+  <g transform="translate(1260,490)">
+    <rect class="comp-box" x="0" y="0" width="200" height="80" rx="3"/>
+    <text x="100" y="20" text-anchor="middle" class="label-w">IACV (29-1) (4P)</text>
+    <text x="100" y="36" text-anchor="middle" class="small">Válvula aire ralentí</text>
+    <text x="100" y="55" class="small">Br/W, Br/Bl, Bu/W, Bu/Bl</text>
+    <text x="100" y="69" class="small">Pares A y B → ECM 23,26,30,31</text>
+  </g>
+
+  <!-- SENSOR ANGULO DE CHASIS -->
+  <g transform="translate(1260,590)">
+    <rect class="comp-box" x="0" y="0" width="200" height="80" rx="3"/>
+    <text x="100" y="20" text-anchor="middle" class="label-w">SENSOR ÁNGULO CHASIS</text>
+    <text x="100" y="36" text-anchor="middle" class="small">(54-1, 54-2) Bank angle</text>
+    <text x="100" y="55" class="small">R/Bu → ECM 24</text>
+    <text x="100" y="69" class="small">Y/R (VCC), G/W (masa)</text>
+  </g>
+
+  <!-- DLC (right bottom) -->
+  <g transform="translate(1260,690)">
+    <rect class="comp-box" x="0" y="0" width="200" height="60" rx="3"/>
+    <text x="100" y="20" text-anchor="middle" class="label-w">DLC (4P) - DIAGNÓSTICO</text>
+    <text x="100" y="36" text-anchor="middle" class="small">ISO 9141 K-Line</text>
+    <text x="100" y="52" class="small">K-line: Y → ECM 16, SCS: Bu → 15</text>
+  </g>
+
+  <!-- ============ BOTTOM ROW: CHARGING / IGNITION / STARTING ============ -->
+
+  <!-- ALTERNADOR (estator) -->
+  <g transform="translate(80,820)">
+    <rect class="comp-box" x="0" y="0" width="240" height="90" rx="3"/>
+    <text x="120" y="22" text-anchor="middle" class="label-w">ALTERNADOR (Estátor)</text>
+    <text x="120" y="38" text-anchor="middle" class="small">Monofásico - 0,165 kW @ 5000 rpm</text>
+    <text x="120" y="56" class="small">Bobina carga: 2 cables W → Reg/Rec</text>
+    <text x="120" y="70" class="small">Pick-up CKP: Bu/Y, W/Y</text>
+    <text x="120" y="84" class="small">R bobina: 0,2-1,2 Ω @ 20°C</text>
+  </g>
+
+  <!-- REGULADOR/RECTIFICADOR -->
+  <g transform="translate(360,820)">
+    <rect class="comp-box-thick" x="0" y="0" width="200" height="90" rx="3"/>
+    <text x="100" y="22" text-anchor="middle" class="label-w">REGULADOR/RECTIFICADOR</text>
+    <text x="100" y="38" text-anchor="middle" class="small">Media onda monofásica + SCR</text>
+    <text x="100" y="56" class="small">In AC: 2 cables W (del alternador)</text>
+    <text x="100" y="70" class="small">Out DC: R (+) → Batería</text>
+    <text x="100" y="84" class="small">GND: G (masa)</text>
+  </g>
+
+  <!-- BOBINA DE ENCENDIDO -->
+  <g transform="translate(600,820)">
+    <rect class="comp-box-thick" x="0" y="0" width="200" height="90" rx="3"/>
+    <text x="100" y="22" text-anchor="middle" class="label-w">BOBINA DE ENCENDIDO</text>
+    <text x="100" y="38" text-anchor="middle" class="small">Ignition coil (transistorizada)</text>
+    <text x="100" y="56" class="small">Primario: P/Bu (gate ECM)</text>
+    <text x="100" y="70" class="small">Alimentación: Bl/R (ECM IGP)</text>
+    <text x="100" y="84" class="small">V pico mín: 100V | Punto F: 8° APMS</text>
+  </g>
+
+  <!-- MOTOR DE ARRANQUE -->
+  <g transform="translate(840,820)">
+    <rect class="comp-box-thick" x="0" y="0" width="200" height="90" rx="3"/>
+    <text x="100" y="22" text-anchor="middle" class="label-w">MOTOR DE ARRANQUE</text>
+    <text x="100" y="38" text-anchor="middle" class="small">Starter motor</text>
+    <text x="100" y="56" class="small">Alimentación: R (grueso, vía relé)</text>
+    <text x="100" y="70" class="small">Masa: directo a chasis</text>
+    <text x="100" y="84" class="small">+ pedal de arranque (kick)</text>
+  </g>
+
+  <!-- SWITCHES CLUSTER (start button, clutch, neutral) -->
+  <g transform="translate(1080,820)">
+    <rect class="comp-box" x="0" y="0" width="220" height="90" rx="3"/>
+    <text x="110" y="22" text-anchor="middle" class="label-w">SWITCHES DE ARRANQUE</text>
+    <text x="15" y="40" class="small">Botón arranque: Bl/R</text>
+    <text x="15" y="54" class="small">Clutch SW: Bl → G (masa)</text>
+    <text x="15" y="68" class="small">Neutral SW: Lg/R → G/R (diodo)</text>
+    <text x="15" y="82" class="small">Kill SW: vía R/Bu</text>
+  </g>
+
+  <!-- TABLERO INSTRUMENTOS -->
+  <g transform="translate(1340,820)">
+    <rect class="comp-box" x="0" y="0" width="380" height="90" rx="3"/>
+    <text x="190" y="22" text-anchor="middle" class="label-w">TABLERO DE INSTRUMENTOS</text>
+    <text x="15" y="40" class="small">• Velocímetro + Tacómetro</text>
+    <text x="15" y="54" class="small">• Indicador nivel combustible (Y/W, G)</text>
+    <text x="15" y="68" class="small">• Indicador neutro (G, Lg/R) | Faro alto (Lb) | Intermit. (Gr)</text>
+    <text x="15" y="82" class="small">• MIL check engine (O - naranja)</text>
+  </g>
+
+  <!-- =================== KEY WIRES (left side) =================== -->
+  <!-- ECM pin 1 IGP (Bl/R) - top power input from switch -->
+  <path d="M 720 200 L 720 245 L 640 245" class="wire-thick" stroke="#0066cc"/>
+  <!-- ECM pin 2 PG (G) to ground rail -->
+  <path d="M 660 326 L 660 360 L 200 360 L 200 770" class="wire" stroke="#006600" stroke-dasharray="2,2"/>
+  <line x1="194" y1="770" x2="206" y2="770" class="wire" stroke="#006600"/>
+  <line x1="197" y1="774" x2="203" y2="774" class="wire" stroke="#006600"/>
+  <line x1="199" y1="778" x2="201" y2="778" class="wire" stroke="#006600"/>
+
+  <!-- CKP to ECM -->
+  <line x1="320" y1="320" x2="600" y2="320" class="wire" stroke="#cc6600"/>
+  <line x1="600" y1="320" x2="640" y2="328" class="wire" stroke="#cc6600"/>
+  <line x1="600" y1="332" x2="640" y2="340" class="wire"/>
+
+  <!-- O2 to ECM pin 3 -->
+  <line x1="320" y1="445" x2="600" y2="445" class="wire" stroke="#0066cc"/>
+  <line x1="600" y1="445" x2="640" y2="352" class="wire" stroke="#0066cc"/>
+
+  <!-- EOT to ECM pin 14 -->
+  <line x1="320" y1="560" x2="600" y2="560" class="wire" stroke="#cc6600"/>
+  <line x1="600" y1="560" x2="640" y2="550" class="wire" stroke="#cc6600"/>
+
+  <!-- Sensor Unit to ECM -->
+  <line x1="340" y1="650" x2="600" y2="650" class="wire" stroke="#cc6600"/>
+  <line x1="600" y1="650" x2="640" y2="378" class="wire" stroke="#cc6600"/>
+
+  <!-- =================== RIGHT WIRES =================== -->
+  <!-- Inyector to ECM pin 17 (P/Bl) -->
+  <line x1="1260" y1="320" x2="1180" y2="320" class="wire" stroke="#cc0099"/>
+  <line x1="1180" y1="320" x2="1180" y2="316" class="wire" stroke="#cc0099"/>
+  <line x1="1180" y1="316" x2="1160" y2="316" class="wire" stroke="#cc0099"/>
+
+  <!-- Bomba to ECM pin 18 (Bl/O) -->
+  <line x1="1260" y1="425" x2="1180" y2="425" class="wire" stroke="#0066cc"/>
+  <line x1="1180" y1="425" x2="1180" y2="334" class="wire" stroke="#0066cc"/>
+
+  <!-- IACV to ECM 23/26/30/31 -->
+  <line x1="1260" y1="520" x2="1180" y2="520" class="wire" stroke="#cc6600"/>
+  <line x1="1180" y1="520" x2="1180" y2="408" class="wire" stroke="#cc6600"/>
+
+  <!-- Bank angle to ECM 24 -->
+  <line x1="1260" y1="620" x2="1180" y2="620" class="wire" stroke="#cc6600"/>
+  <line x1="1180" y1="620" x2="1180" y2="426" class="wire" stroke="#cc6600"/>
+
+  <!-- DLC to ECM K-line/SCS -->
+  <line x1="1260" y1="720" x2="1180" y2="720" class="wire" stroke="#cc9900"/>
+  <line x1="1180" y1="720" x2="1180" y2="560" class="wire" stroke="#cc9900"/>
+
+  <!-- =================== BOTTOM WIRES =================== -->
+  <!-- Alternator W to Reg/Rec -->
+  <line x1="320" y1="850" x2="360" y2="850" class="wire" stroke="#cccccc"/>
+  <!-- Reg/Rec R (+) to Battery -->
+  <line x1="360" y1="910" x2="360" y2="940" class="wire-thick" stroke="#cc0000"/>
+  <line x1="360" y1="940" x2="200" y2="940" class="wire-thick" stroke="#cc0000"/>
+  <line x1="200" y1="940" x2="200" y2="190" class="wire-thick" stroke="#cc0000"/>
+  <line x1="200" y1="190" x2="175" y2="190" class="wire-thick" stroke="#cc0000"/>
+  <line x1="200" y1="190" x2="200" y2="130" class="wire-thick" stroke="#cc0000"/>
+
+  <!-- Bobina a Bujia (HV cable) -->
+  <line x1="800" y1="850" x2="800" y2="800" class="wire" stroke="#999"/>
+  <line x1="800" y1="800" x2="1620" y2="800" class="wire" stroke="#999"/>
+  <line x1="1620" y1="800" x2="1620" y2="180" class="wire" stroke="#999"/>
+
+  <!-- Bobina alimentación (Bl/R) desde IGP -->
+  <line x1="660" y1="910" x2="660" y2="940" class="wire-thick" stroke="#0066cc"/>
+  <line x1="660" y1="940" x2="700" y2="940" class="wire-thick" stroke="#0066cc"/>
+  <line x1="700" y1="940" x2="700" y2="200" class="wire-thick" stroke="#0066cc"/>
+
+  <!-- Bobina a ECM (P/Bu - gate) -->
+  <line x1="700" y1="850" x2="700" y2="800" class="wire" stroke="#cc0099"/>
+  <line x1="700" y1="800" x2="1080" y2="316" class="wire" stroke="#cc0099"/>
+  <!-- Actually go to ECM pin 17 -->
+
+  <!-- =================== COLOR LEGEND =================== -->
+  <g transform="translate(1340,940)">
+    <rect class="comp-box" x="0" y="0" width="380" height="120" rx="3"/>
+    <text x="10" y="18" class="label-w">LEYENDA DE COLORES (JIS Honda)</text>
+    <g font-size="9">
+      <rect x="10" y="28" width="14" height="10" fill="#000"/><text x="30" y="37">B = Black (Negro)</text>
+      <rect x="10" y="42" width="14" height="10" fill="#fff" stroke="#000"/><text x="30" y="51">W = White (Blanco)</text>
+      <rect x="10" y="56" width="14" height="10" fill="#cc0000"/><text x="30" y="65">R = Red (Rojo)</text>
+      <rect x="10" y="70" width="14" height="10" fill="#009900"/><text x="30" y="79">G = Green (Verde)</text>
+      <rect x="10" y="84" width="14" height="10" fill="#99ff66"/><text x="30" y="93">Lg = Light Green</text>
+      <rect x="10" y="98" width="14" height="10" fill="#ffcc00"/><text x="30" y="107">Y = Yellow (Amarillo)</text>
+
+      <rect x="200" y="28" width="14" height="10" fill="#0066cc"/><text x="220" y="37">Bl = Blue (Azul)</text>
+      <rect x="200" y="42" width="14" height="10" fill="#99ccff"/><text x="220" y="51">Lb = Light Blue</text>
+      <rect x="200" y="56" width="14" height="10" fill="#cc6600"/><text x="220" y="65">Br = Brown</text>
+      <rect x="200" y="70" width="14" height="10" fill="#ff8800"/><text x="220" y="79">O = Orange</text>
+      <rect x="200" y="84" width="14" height="10" fill="#cc0099"/><text x="220" y="93">P = Pink (Rosa)</text>
+      <rect x="200" y="98" width="14" height="10" fill="#666"/><text x="220" y="107">Gr = Gray (Gris)</text>
+    </g>
+  </g>
+
+  <!-- =================== FOOTER =================== -->
+  <rect x="0" y="1190" width="1800" height="10" fill="url(#hondaRed)"/>
+  <text x="20" y="1186" font-size="9" fill="#666">Fuente: Manual de Taller 00X65-K79-001 (2017) - Moto Honda da Amazônia Ltda. - Cap. 4 Sistema Eléctrico</text>
+  <text x="1780" y="1186" font-size="9" fill="#666" text-anchor="end">XR190L - Sistema PGM-FI - Datos extraídos del manual oficial</text>
+</svg>

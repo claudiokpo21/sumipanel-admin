@@ -1,0 +1,22 @@
+# Node / Vercel
+node_modules/
+.vercel/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+server.log
+server.err
+
+# Build artifacts
+dist/
+build/

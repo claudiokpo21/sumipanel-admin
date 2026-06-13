@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "name": "sumipanel-admin",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/admin.html" }
+  ]
+}

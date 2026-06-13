@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CV Automatización — Adaptador de CV a ofertas</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #181b22;
+    --panel-2: #1f242d;
+    --border: #2a2f3a;
+    --text: #e6e9ef;
+    --muted: #9aa3b2;
+    --accent: #ff2d8a;
+    --accent-2: #6f5cff;
+    --ok: #2dd4bf;
+    --warn: #fbbf24;
+    --err: #ef4444;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: linear-gradient(180deg, #0a0c10 0%, #0f1115 100%);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15,17,21,0.85);
+    backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  h1 {
+    margin: 0; font-size: 20px; font-weight: 700;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .tag {
+    font-size: 12px; color: var(--muted);
+    border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px;
+  }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 80px; }
+  .settings {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;
+  }
+  .settings label {
+    display: flex; flex-direction: column; gap: 6px;
+    font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .settings select, .settings input {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 10px; border-radius: 8px;
+    font-size: 14px; font-family: inherit;
+  }
+  .settings select:focus, .settings input:focus {
+    outline: 2px solid var(--accent); outline-offset: 1px;
+  }
+  .step {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .step-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .step-num {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    color: white; font-weight: 700; font-size: 14px;
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .step-title { font-size: 16px; font-weight: 600; }
+  .step-desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .grid-2 {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+  textarea, .output {
+    width: 100%;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    padding: 12px;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px; line-height: 1.5;
+    resize: vertical;
+    min-height: 180px;
+  }
+  textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .output { white-space: pre-wrap; min-height: 180px; overflow: auto; max-height: 480px; }
+  .actions {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+  }
+  button {
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px; font-family: inherit; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button.primary {
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+    border: none; color: white; font-weight: 600;
+  }
+  button.primary:hover { filter: brightness(1.1); color: white; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .status {
+    font-size: 12px; padding: 4px 10px; border-radius: 6px;
+    display: inline-block; margin-left: auto;
+  }
+  .status.ok { background: rgba(45,212,191,0.15); color: var(--ok); }
+  .status.err { background: rgba(239,68,68,0.15); color: var(--err); }
+  .status.busy { background: rgba(111,92,255,0.15); color: var(--accent-2); }
+  .status.idle { background: rgba(154,163,178,0.1); color: var(--muted); }
+  .tabs {
+    display: flex; gap: 4px; margin-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 8px 14px; cursor: pointer;
+    font-size: 13px; color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s ease;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:hover { color: var(--text); }
+  .pane { display: none; }
+  .pane.active { display: block; }
+  .help {
+    font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5;
+  }
+  .help code {
+    background: var(--panel-2); padding: 1px 6px; border-radius: 4px;
+    font-size: 11px;
+  }
+  .key-warning {
+    font-size: 11px; color: var(--warn);
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.2);
+    padding: 6px 10px; border-radius: 6px; margin-top: 6px;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 12px; padding: 24px;
+    border-top: 1px solid var(--border); margin-top: 40px;
+  }
+  details summary { cursor: pointer; color: var(--muted); font-size: 12px; padding: 4px 0; }
+  details[open] summary { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>CV Automatización</h1>
+    <div class="tag">Parsear → Analizar oferta → Adaptar → Formatear</div>
+  </div>
+  <div class="tag" id="version">v1.0</div>
+</header>
+
+<main>
+
+  <div class="settings">
+    <label>
+      Proveedor LLM
+      <select id="provider">
+        <option value="claude">Claude (Anthropic)</option>
+        <option value="MiniMax">MiniMax (MiniMax)</option>
+      </select>
+    </label>
+    <label>
+      Modelo
+      <select id="model">
+        <option value="claude-3-5-sonnet-20241022">claude-3-5-sonnet</option>
+        <option value="claude-3-5-haiku-20241022">claude-3-5-haiku</option>
+      </select>
+    </label>
+    <label>
+      API Key
+      <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off" />
+    </label>
+    <label>
+      Modo
+      <select id="mode">
+        <option value="api">API (automático)</option>
+        <option value="manual">Manual (copy/paste)</option>
+      </select>
+    </label>
+  </div>
+  <div class="key-warning" id="keyWarning" style="display:none">
+    ⚠️ Tu API key se guarda solo en <code>localStorage</code> de este navegador. No sale a ningún servidor externo salvo a la API del proveedor elegido.
+  </div>
+
+  <!-- PASO 1: Parsear CV -->
+  <div class="step" id="step1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Parsear CV</div>
+        <div class="step-desc">Pegá el texto de tu CV y obtené el JSON estructurado.</div>
+      </div>
+      <span class="status idle" id="status1">En espera</span>
+    </div>
+    <div class="grid-2">
+      <div>
+        <label style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:block">Texto del CV</label>
+        <textarea id="cvInput" placeholder="Pegá acá el texto completo de tu CV..."></textarea>
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:block">JSON resultante</label>
+        <div class="output" id="cvOutput">(esperando entrada)</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="primary" onclick="runStep1()">▶ Procesar CV</button>
+      <button onclick="copyText('cvOutput')">Copiar JSON</button>
+      <button onclick="downloadJson('cvOutput', 'cv-parseado.json')">Descargar .json</button>
+      <button onclick="clearStep(1)">Limpiar</button>
+    </div>
+  </div>
+
+  <!-- PASO 2: Analizar oferta -->
+  <div class="step" id="step2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Analizar oferta laboral</div>
+        <div class="step-desc">Pegá el texto de la oferta y obtené el JSON de análisis.</div>
+      </div>
+      <span class="status idle" id="status2">En espera</span>
+    </div>
+    <div class="grid-2">
+      <div>
+        <label style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:block">Texto de la oferta</label>
+        <textarea id="offerInput" placeholder="Pegá acá el texto de la oferta (descripción del puesto, requisitos, etc.)..."></textarea>
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:block">JSON resultante</label>
+        <div class="output" id="offerOutput">(esperando entrada)</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="primary" onclick="runStep2()">▶ Analizar oferta</button>
+      <button onclick="copyText('offerOutput')">Copiar JSON</button>
+      <button onclick="downloadJson('offerOutput', 'oferta-analisis.json')">Descargar .json</button>
+      <button onclick="clearStep(2)">Limpiar</button>
+    </div>
+  </div>
+
+  <!-- PASO 3: Adaptar CV -->
+  <div class="step" id="step3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Adaptar CV a la oferta</div>
+        <div class="step-desc">Usa el CV del paso 1 + análisis del paso 2 para reescribir el CV orientado al puesto.</div>
+      </div>
+      <span class="status idle" id="status3">En espera</span>
+    </div>
+    <p class="help">Si no completaste los pasos 1 y 2, pegá el JSON de cada uno acá abajo.</p>
+    <div class="grid-2">
+      <div>
+        <label style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:block">JSON del CV</label>
+        <textarea id="cvJsonInput" placeholder='{"nombre":"...",...}'></textarea>
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:block">JSON de la oferta</label>
+        <textarea id="offerJsonInput" placeholder='{"puesto":"...",...}'></textarea>
+      </div>
+    </div>
+    <label style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-top:14px;margin-bottom:6px;display:block">CV adaptado (JSON)</label>
+    <div class="output" id="adaptedOutput">(esperando entrada)</div>
+    <div class="actions">
+      <button class="primary" onclick="runStep3()">▶ Adaptar CV</button>
+      <button onclick="loadFromPreviousStep()">Cargar desde pasos 1 y 2</button>
+      <button onclick="copyText('adaptedOutput')">Copiar JSON</button>
+      <button onclick="downloadJson('adaptedOutput', 'cv-adaptado.json')">Descargar .json</button>
+      <button onclick="clearStep(3)">Limpiar</button>
+    </div>
+  </div>
+
+  <!-- PASO 4: Formatear -->
+  <div class="step" id="step4">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Formatear CV a texto</div>
+        <div class="step-desc">Convertí el JSON del CV adaptado en texto limpio y copy-pasteable.</div>
+      </div>
+      <span class="status idle" id="status4">En espera</span>
+    </div>
+    <label style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:block">CV formateado</label>
+    <div class="output" id="formattedOutput">(esperando entrada)</div>
+    <div class="actions">
+      <button class="primary" onclick="runStep4()">▶ Formatear</button>
+      <button onclick="loadAdaptedForFormat()">Cargar del paso 3</button>
+      <button onclick="copyText('formattedOutput')">Copiar texto</button>
+      <button onclick="downloadText('formattedOutput', 'cv-formateado.txt')">Descargar .txt</button>
+      <button onclick="clearStep(4)">Limpiar</button>
+    </div>
+  </div>
+
+  <footer>
+    Hecho para uso personal · Las API keys se guardan solo en tu navegador (localStorage)
+  </footer>
+
+</main>
+
+<script>
+// ================================================================
+// Configuración y prompts
+// ================================================================
+const PROMPTS = {
+  parseCV: (cvText) => `Eres un asistente especializado en análisis de CVs. Se te proporcionará el contenido de un CV en texto. Tu tarea es extraer y estructurar la siguiente información en JSON: - nombre - titulo_profesional - resumen - experiencia (array: empresa, puesto, periodo, descripcion) - habilidades (array) - educacion (array) - idiomas (array) Responde SOLO con el JSON, sin texto adicional ni markdown.
+
+CV:
+${cvText}`,
+
+  analyzeOffer: (offerText) => `Eres un asistente especializado en análisis de ofertas laborales. Se te proporcionará el texto o contenido de una oferta de trabajo. Tu tarea es extraer en JSON: - puesto - empresa - requisitos_clave (array: las 5-8 habilidades/requisitos más importantes) - palabras_clave (array: términos técnicos y keywords del sector) - descripcion_breve (max 2 oraciones resumiendo el rol) Responde SOLO con el JSON, sin texto adicional ni markdown.
+
+OFERTA:
+${offerText}`,
+
+  adaptCV: (cvJson, offerJson) => `Eres un experto en recursos humanos y redacción de CVs. Recibirás dos cosas: 1. El CV actual de un candidato (en JSON estructurado) 2. El análisis de una oferta laboral (en JSON estructurado) Tu tarea es reescribir el CV adaptándolo a esa oferta específica. Reglas: - NO inventes experiencia ni habilidades que no existan en el CV original - SÍ reorganizá y reformulá los puntos existentes para alinearlos con las keywords de la oferta - Reescribí el resumen profesional orientado al puesto específico - Destacá las experiencias más relevantes para esa oferta - Usá el mismo idioma que la oferta laboral - Mantené un tono profesional y natural, evitá sonar robótico Devolvé el CV adaptado en este formato JSON: { "nombre": "...", "titulo_profesional": "... (adaptado al puesto)", "resumen": "... (3-4 oraciones orientadas a la oferta)", "experiencia": [{ "empresa": "", "puesto": "", "periodo": "", "descripcion": "" }], "habilidades": ["..."], "educacion": [{ "titulo": "", "institucion": "", "anio": "" }], "idiomas": ["..."] } Responde SOLO con el JSON, sin texto adicional ni markdown.
+
+CV:
+${cvJson}
+
+ANÁLISIS DE OFERTA:
+${offerJson}`,
+
+  formatCV: (cvJson) => `Eres un formateador de CVs profesionales. Recibirás un CV en JSON y deberás convertirlo en texto formateado, limpio y listo para copiar o exportar. Usá este formato: ═══════════════════════════════════ [NOMBRE COMPLETO] [Título Profesional] ═══════════════════════════════════ RESUMEN PROFESIONAL [resumen] EXPERIENCIA LABORAL [empresa] | [puesto] | [periodo] - [descripcion] HABILIDADES - [habilidad1] • [habilidad2] ... EDUCACIÓN [titulo] — [institucion] ([anio]) IDIOMAS [idiomas] No agregues ningún texto fuera del CV. Solo el CV formateado.
+
+CV:
+${cvJson}`
+};
+
+// ================================================================
+// Estado
+// ================================================================
+const MODELS = {
+  claude: ['claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'],
+  MiniMax: ['MiniMax-M2.7', 'MiniMax-Text-01']
+};
+
+let state = {
+  provider: localStorage.getItem('cv_provider') || 'claude',
+  model: localStorage.getItem('cv_model') || 'claude-3-5-sonnet-20241022',
+  apiKey: localStorage.getItem('cv_apiKey') || '',
+  mode: localStorage.getItem('cv_mode') || 'api'
+};
+
+// ================================================================
+// Init
+// ================================================================
+function init() {
+  document.getElementById('provider').value = state.provider;
+  document.getElementById('model').value = state.model;
+  document.getElementById('apiKey').value = state.apiKey;
+  document.getElementById('mode').value = state.mode;
+  updateModels();
+  toggleKeyWarning();
+}
+
+function updateModels() {
+  const provider = document.getElementById('provider').value;
+  const select = document.getElementById('model');
+  select.innerHTML = '';
+  MODELS[provider].forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    select.appendChild(opt);
+  });
+  if (MODELS[provider].includes(state.model)) {
+    select.value = state.model;
+  } else {
+    select.value = MODELS[provider][0];
+    state.model = select.value;
+  }
+}
+
+function toggleKeyWarning() {
+  const mode = document.getElementById('mode').value;
+  const warn = document.getElementById('keyWarning');
+  warn.style.display = (mode === 'api' && document.getElementById('apiKey').value) ? 'block' : 'none';
+}
+
+document.getElementById('provider').addEventListener('change', e => {
+  state.provider = e.target.value;
+  localStorage.setItem('cv_provider', state.provider);
+  updateModels();
+});
+document.getElementById('model').addEventListener('change', e => {
+  state.model = e.target.value;
+  localStorage.setItem('cv_model', state.model);
+});
+document.getElementById('apiKey').addEventListener('input', e => {
+  state.apiKey = e.target.value;
+  localStorage.setItem('cv_apiKey', state.apiKey);
+  toggleKeyWarning();
+});
+document.getElementById('mode').addEventListener('change', e => {
+  state.mode = e.target.value;
+  localStorage.setItem('cv_mode', state.mode);
+  toggleKeyWarning();
+});
+
+init();
+
+// ================================================================
+// API calls
+// ================================================================
+async function callClaude(prompt) {
+  const key = document.getElementById('apiKey').value;
+  const model = document.getElementById('model').value;
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: model,
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Claude ${res.status}: ${err}`);
+  }
+  const data = await res.json();
+  return data.content[0].text;
+}
+
+async function callMiniMax(prompt) {
+  const key = document.getElementById('apiKey').value;
+  const model = document.getElementById('model').value;
+  // OpenAI-compatible endpoint
+  const res = await fetch('https://api.minimaxi.com/v1/text/chatcompletion_v2', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${key}`
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 4096,
+      temperature: 0.3
+    })
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`MiniMax ${res.status}: ${err}`);
+  }
+  const data = await res.json();
+  // MiniMax v2 returns { choices: [{ message: { content: "..." } }] }
+  return data.choices?.[0]?.message?.content || data.choices?.[0]?.text || JSON.stringify(data);
+}
+
+async function callLLM(prompt) {
+  const provider = document.getElementById('provider').value;
+  if (provider === 'claude') return await callClaude(prompt);
+  if (provider === 'MiniMax') return await callMiniMax(prompt);
+  throw new Error('Proveedor desconocido');
+}
+
+function extractJson(text) {
+  // A veces el modelo envuelve el JSON en ```json ... ``` o tira texto extra
+  let cleaned = text.trim();
+  // Quitar fences
+  cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '');
+  // Buscar el primer { y el último }
+  const first = cleaned.indexOf('{');
+  const last = cleaned.lastIndexOf('}');
+  if (first !== -1 && last !== -1 && last > first) {
+    cleaned = cleaned.substring(first, last + 1);
+  }
+  return cleaned;
+}
+
+function validateJson(text) {
+  try { JSON.parse(text); return true; } catch { return false; }
+}
+
+function setStatus(step, status, text) {
+  const el = document.getElementById('status' + step);
+  el.className = 'status ' + status;
+  el.textContent = text;
+}
+
+// ================================================================
+// Steps
+// ================================================================
+async function runStep1() {
+  const input = document.getElementById('cvInput').value.trim();
+  if (!input) return alert('Pegá el texto del CV primero.');
+  const mode = document.getElementById('mode').value;
+  if (mode === 'manual') {
+    setStatus(1, 'busy', 'Manual');
+    document.getElementById('cvOutput').textContent = PROMPTS.parseCV(input);
+    setStatus(1, 'ok', 'Prompt listo');
+    return;
+  }
+  if (!document.getElementById('apiKey').value) return alert('Cargá tu API key o cambiá a modo manual.');
+  setStatus(1, 'busy', 'Procesando...');
+  try {
+    const out = await callLLM(PROMPTS.parseCV(input));
+    const json = extractJson(out);
+    if (!validateJson(json)) throw new Error('La respuesta no es JSON válido:\n' + json.substring(0, 200));
+    document.getElementById('cvOutput').textContent = JSON.stringify(JSON.parse(json), null, 2);
+    setStatus(1, 'ok', 'Listo');
+  } catch (e) {
+    document.getElementById('cvOutput').textContent = 'ERROR: ' + e.message;
+    setStatus(1, 'err', 'Error');
+  }
+}
+
+async function runStep2() {
+  const input = document.getElementById('offerInput').value.trim();
+  if (!input) return alert('Pegá el texto de la oferta primero.');
+  const mode = document.getElementById('mode').value;
+  if (mode === 'manual') {
+    setStatus(2, 'busy', 'Manual');
+    document.getElementById('offerOutput').textContent = PROMPTS.analyzeOffer(input);
+    setStatus(2, 'ok', 'Prompt listo');
+    return;
+  }
+  if (!document.getElementById('apiKey').value) return alert('Cargá tu API key o cambiá a modo manual.');
+  setStatus(2, 'busy', 'Procesando...');
+  try {
+    const out = await callLLM(PROMPTS.analyzeOffer(input));
+    const json = extractJson(out);
+    if (!validateJson(json)) throw new Error('La respuesta no es JSON válido:\n' + json.substring(0, 200));
+    document.getElementById('offerOutput').textContent = JSON.stringify(JSON.parse(json), null, 2);
+    setStatus(2, 'ok', 'Listo');
+  } catch (e) {
+    document.getElementById('offerOutput').textContent = 'ERROR: ' + e.message;
+    setStatus(2, 'err', 'Error');
+  }
+}
+
+async function runStep3() {
+  document.getElementById('cvJsonInput').value = document.getElementById('cvJsonInput').value.trim();
+  document.getElementById('offerJsonInput').value = document.getElementById('offerJsonInput').value.trim();
+  const cvJson = document.getElementById('cvJsonInput').value;
+  const offerJson = document.getElementById('offerJsonInput').value;
+  if (!cvJson || !offerJson) return alert('Necesito el JSON del CV y el JSON de la oferta.');
+  // Validar
+  try { JSON.parse(cvJson); } catch { return alert('El JSON del CV no es válido.'); }
+  try { JSON.parse(offerJson); } catch { return alert('El JSON de la oferta no es válido.'); }
+  const mode = document.getElementById('mode').value;
+  if (mode === 'manual') {
+    setStatus(3, 'busy', 'Manual');
+    document.getElementById('adaptedOutput').textContent = PROMPTS.adaptCV(cvJson, offerJson);
+    setStatus(3, 'ok', 'Prompt listo');
+    return;
+  }
+  if (!document.getElementById('apiKey').value) return alert('Cargá tu API key o cambiá a modo manual.');
+  setStatus(3, 'busy', 'Adaptando...');
+  try {
+    const out = await callLLM(PROMPTS.adaptCV(cvJson, offerJson));
+    const json = extractJson(out);
+    if (!validateJson(json)) throw new Error('La respuesta no es JSON válido:\n' + json.substring(0, 200));
+    document.getElementById('adaptedOutput').textContent = JSON.stringify(JSON.parse(json), null, 2);
+    setStatus(3, 'ok', 'Listo');
+  } catch (e) {
+    document.getElementById('adaptedOutput').textContent = 'ERROR: ' + e.message;
+    setStatus(3, 'err', 'Error');
+  }
+}
+
+async function runStep4() {
+  // Necesitamos el JSON del CV adaptado en el input del paso 3, o el formateado directo
+  let cvJson = document.getElementById('cvJsonInput').value.trim();
+  if (!cvJson) {
+    // Intentar cargar del output del paso 3
+    const adapted = document.getElementById('adaptedOutput').textContent;
+    if (adapted && adapted !== '(esperando entrada)') {
+      cvJson = adapted;
+      document.getElementById('cvJsonInput').value = cvJson;
+    } else {
+      return alert('Necesito el JSON del CV adaptado (paso 3 o pegalo en el campo del paso 3).');
+    }
+  }
+  try { JSON.parse(cvJson); } catch { return alert('El JSON del CV no es válido.'); }
+  const mode = document.getElementById('mode').value;
+  if (mode === 'manual') {
+    setStatus(4, 'busy', 'Manual');
+    document.getElementById('formattedOutput').textContent = PROMPTS.formatCV(cvJson);
+    setStatus(4, 'ok', 'Prompt listo');
+    return;
+  }
+  if (!document.getElementById('apiKey').value) return alert('Cargá tu API key o cambiá a modo manual.');
+  setStatus(4, 'busy', 'Formateando...');
+  try {
+    const out = await callLLM(PROMPTS.formatCV(cvJson));
+    document.getElementById('formattedOutput').textContent = out;
+    setStatus(4, 'ok', 'Listo');
+  } catch (e) {
+    document.getElementById('formattedOutput').textContent = 'ERROR: ' + e.message;
+    setStatus(4, 'err', 'Error');
+  }
+}
+
+// ================================================================
+// Helpers
+// ================================================================
+function copyText(id) {
+  const el = document.getElementById(id);
+  const text = el.value !== undefined ? el.value : el.textContent;
+  if (!text || text.startsWith('(esperando') || text.startsWith('ERROR:')) return alert('Nada que copiar todavía.');
+  navigator.clipboard.writeText(text).then(() => {
+    flash(id);
+  }).catch(() => alert('No se pudo copiar.'));
+}
+
+function flash(id) {
+  const el = document.getElementById(id);
+  el.style.transition = 'background 0.3s';
+  el.style.background = 'rgba(45,212,191,0.15)';
+  setTimeout(() => { el.style.background = ''; }, 500);
+}
+
+function downloadJson(id, filename) {
+  const el = document.getElementById(id);
+  const text = el.value !== undefined ? el.value : el.textContent;
+  if (!text || text.startsWith('(esperando')) return alert('Nada que descargar.');
+  const blob = new Blob([text], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function downloadText(id, filename) {
+  const el = document.getElementById(id);
+  const text = el.value !== undefined ? el.value : el.textContent;
+  if (!text || text.startsWith('(esperando')) return alert('Nada que descargar.');
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function clearStep(n) {
+  const map = {
+    1: ['cvInput', 'cvOutput'],
+    2: ['offerInput', 'offerOutput'],
+    3: ['cvJsonInput', 'offerJsonInput', 'adaptedOutput'],
+    4: ['cvJsonInput', 'formattedOutput']
+  };
+  map[n].forEach(id => {
+    const el = document.getElementById(id);
+    if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') el.value = '';
+    else el.textContent = '(esperando entrada)';
+  });
+  setStatus(n, 'idle', 'En espera');
+}
+
+function loadFromPreviousStep() {
+  const cvOut = document.getElementById('cvOutput').textContent;
+  const offerOut = document.getElementById('offerOutput').textContent;
+  if (cvOut && !cvOut.startsWith('(esperando')) document.getElementById('cvJsonInput').value = cvOut;
+  if (offerOut && !offerOut.startsWith('(esperando')) document.getElementById('offerJsonInput').value = offerOut;
+  flash('cvJsonInput'); flash('offerJsonInput');
+}
+
+function loadAdaptedForFormat() {
+  const adapted = document.getElementById('adaptedOutput').textContent;
+  if (adapted && !adapted.startsWith('(esperando')) {
+    document.getElementById('cvJsonInput').value = adapted;
+    flash('cvJsonInput');
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,6779 @@
+
+===== PAGE 1 =====
+MANUAL DE TALLER
+Moto Honda da Amazônia Ltda.
+00X65-K79A-001
+XR190L
+
+===== PAGE 2 =====
+Manual de Taller
+XR190L
+00X65-K79-001
+(2017)
+Este es un Manual de Taller Especíﬁco.
+Consulte el “Manual de Taller Básico” para 
+instrucciones de mantenimiento básicas y comunes.
+Específico
+Addendum
+1. INFORMACIONES GENERALES
+2. COMBUSTIBLE Y MOTOR
+3. ARMAZÓN & CHASIS
+4. SISTEMA ELÉCTRICO
+5. XR190CT-H 
+
+===== PAGE 3 =====
+1-1
+XR190L
+1. INFORMACIONES GENERALES
+ALGUNAS PALABRAS SOBRE SEGURIDAD ...................................................................... 1-2
+COMO USAR ESTE MANUAL ............................................................................................... 1-3
+SÍMBOLOS ............................................................................................................................. 1-4
+IDENTIFICACIÓN DEL MODELO ........................................................................................... 1-5
+ESPECIFICACIONES ............................................................................................................. 1-6
+VALORES DE PAR DE APRIETE ......................................................................................... 1-12
+LISTA DE HERRAMIENTAS ESPECIALES ......................................................................... 1-16
+PASAJE DE CABLES Y CABLEADO .................................................................................. 1-17
+CARACTERÍSTICAS TÉCNICAS ......................................................................................... 1-24
+TABLA DE MANTENIMIENTO .............................................................................................. 1-25
+
+===== PAGE 4 =====
+1-2
+XR190L
+INFORMACIONES GENERALES
+Algunas palabras sobre seguridad
+INFORMACIONES DE SERVICIO
+Las informaciones de servicios y reparaciones contenidas en este manual se destinan al uso por técnicos profesionales 
+caliﬁcados.
+Intentar efectuar servicios o reparaciones sin la capacitación, herramientas y equipos correctos podría causarle heridas 
+a usted o a otras personas. También podría dañar el vehículo o crear una condición insegura.
+Este manual describe los métodos y procedimientos correctos para efectuar servicios, mantenimiento y reparaciones. 
+Algunos procedimientos requieren el uso de herramientas especialmente proyectadas y equipo dedicado. Cualquier 
+persona que pretenda usar una pieza de repuesto, procedimiento de servicio o una herramienta que no sean 
+recomendados por Honda deberá determinar los riesgos a su seguridad personal y a la operación segura del vehículo.
+Si usted necesita reemplazar una pieza, use piezas genuinas Honda con el número de pieza correcto o una pieza 
+equivalente. Recomendamos enfáticamente que usted no utilice piezas de repuesto de calidad inferior.
+PARA LA SEGURIDAD DE SU CLIENTE
+Servicios y mantenimiento correctos son esenciales para la seguridad del cliente y la ﬁabilidad del vehículo. Cualquiera 
+error o descuido durante los servicios en un vehículo pueden resultar en operación defectuosa, daño al vehículo o 
+heridas a otras personas.
+!  ADVERTENCIA
+Servicios o reparaciones incorrectos pueden crear una condición insegura que puede hacer con que su cliente sea 
+herido gravemente o muerto.
+Siga cuidadosamente los procedimientos y precauciones presentados en este manual y otros materiales de servicios.
+PARA SU SEGURIDAD
+Como este manual se destina a técnicos de servicios profesionales, no son suministradas advertencias acerca de 
+muchas prácticas de seguridad básicas de talleres (p.ej., Piezas calientes – use guantes). Si usted no ha recibido 
+capacitación de seguridad para talleres o no se siente seguro en cuanto a su conocimiento de prácticas de servicio 
+seguras, recomendamos que no intente efectuar los procedimientos descritos en este manual.
+Algunas de las informaciones de seguridad de servicios más importantes se suministran a continuación. Sin embargo, no 
+podemos alertarlo en cuanto a todos los riesgos concebibles que puedan surgir durante la realización de procedimientos 
+de servicio y reparaciones. Solamente usted podrá decidir si debe o no realizar una tarea determinada.
+!  ADVERTENCIA
+La falla en seguir correctamente las instrucciones y precauciones puede hacer con que usted sufra heridas graves o muera.
+Siga cuidadosamente los procedimientos y precauciones presentados en este manual.
+PRECAUCIONES IMPORTANTES DE SEGURIDAD
+Asegúrese de poseer una comprensión clara de todas las prácticas básicas de seguridad en el taller y de usar ropas 
+y equipos de seguridad apropiados. Cuando efectúe cualquier tarea de servicio, sea especialmente cuidadoso en 
+cuanto a lo siguiente:
+•  Lea todas las instrucciones antes de empezar y asegúrese de poseer las herramientas, las piezas de repuesto o 
+reparación y las habilidades requeridas para efectuar las tareas de manera segura y completa.
+•  Proteja sus ojos usando anteojos de seguridad, anteojos de protección o protectores faciales siempre que martille, 
+perfore, esmerile, haga fuerza con palanca o trabaje en cerca de aire o líquidos a presión y resortes u otros componentes 
+con energía almacenada. Si tiene cualquier duda, use protección ocular.
+•  Use otras ropas de protección cuando sea necesario, por ejemplo, guantes o zapatos de seguridad. Manipular piezas 
+calientes o puntiagudas puede causar quemaduras o cortes graves. Antes de sujetar algo que aparentemente podrá 
+lastimarlo, pare y colóquese guantes.
+•  Protéjase y a las otras personas siempre que eleve el vehículo por encima del suelo. Siempre que usted eleve el 
+vehículo, sea con un cabrestante o un gato mecánico, asegúrese de que siempre esté apoyado ﬁrmemente. Use 
+caballetes ajustables.
+Asegúrese de que el motor esté apagado antes de iniciar cualesquier procedimientos de servicio, a menos que la 
+instrucción lo oriente a actuar de otro modo. Esto ayudará a eliminar diferentes riesgos potenciales:
+•  Envenenamiento por monóxido de carbono proveniente del escape del motor. Asegúrese de que exista ventilación 
+adecuada siempre que ponga el motor en funcionamiento.
+•  Quemaduras por piezas o líquido de refrigeración calientes. Deje que el motor y el sistema de escape se enfríen 
+antes de trabajar en esas áreas.
+•  Herida por piezas móviles. Si la instrucción lo orienta a poner el motor en funcionamiento, asegúrese de que sus 
+manos, dedos y ropas estén fuera del camino.
+Vapores de gasolina y gas hidrógeno provenientes de las baterías son explosivos. Para reducir la posibilidad de un 
+incendio o explosión, tenga cuidado al trabajar cerca de gasolina o baterías.
+•  Use solamente un disolvente no inﬂamable para limpiar las piezas. Nunca use gasolina.
+•  Nunca drene o almacene gasolina en un recipiente abierto.
+•  Mantenga todos los cigarrillos, chispas y llamas alejados de la batería y todas las piezas relacionadas al combustible.
+
+===== PAGE 5 =====
+1-3
+XR190L
+INFORMACIONES GENERALES
+Como usar este manual
+Este material es un “Manual de Taller Espec” (Especíﬁco). Las informaciones de servicios y reparaciones para este 
+modelo están descritas en este manual como informaciones especíﬁcas. Consulte el “Manual de Taller Básico” para 
+instrucciones e informaciones de mantenimiento básicas y comunes.
+Siga las recomendaciones de la Tabla de Mantenimiento para asegurar que el vehículo esté en perfectas condiciones 
+de funcionamiento.
+La ejecución de los mantenimientos iniciales es de gran importancia. Compensa el desgaste inicial que ocurre durante 
+el periodo de ablande.
+Encuentre la sección deseada en esta página y, enseguida, consulte el índice en la primera página de la sección.
+Su seguridad y la de otras personas es muy importante. Para ayudarlo a tomar decisiones con base en informaciones, 
+suministramos mensajes y otras informaciones de seguridad a lo largo de este manual. Lógicamente, no es práctico 
+o posible alertarlo de todos los riesgos asociados con la realización de servicios en este vehículo.
+Usted debe usar su propio sentido común.
+Encontrará informaciones importantes de seguridad en una variedad de formas incluyendo:
+• Etiquetas de Seguridad – en el vehículo
+•  Mensajes de Seguridad – precedidas por un símbolo de alerta de seguridad 
+ y una de las tres palabras de 
+señalización, PELIGRO, ADVERTENCIA, o ATENCIÓN. Estas palabras de señalización signiﬁcan:
+PELIGRO : Usted SERÁ MUERTO o HERIDO GRAVEMENTE si no sigue las instrucciones.
+ADVERTENCIA: Usted podrá ser MUERTO o HERIDO GRAVEMENTE si no sigue las instrucciones.
+ATENCIÓN: Usted podrá ser HERIDO si no sigue las instrucciones.
+• Instrucciones – cómo efectuar servicios en este vehículo correctamente y de manera segura.
+Conforme usted lee este manual, encontrará informaciones que son precedidas por un símbolo 
+AVISO . La ﬁnalidad 
+de este mensaje es ayudar a prevenir daños a su vehículo, propiedades de terceros o el ambiente.
+TODAS LAS INFORMACIONES, ILUSTRACIONES, INSTRUCCIONES Y ESPECIFICACIONES INCLUIDAS EN ESTA 
+PUBLICACIÓN SON BASADAS EN LAS INFORMACIONES MÁS RECIENTES DISPONIBLES EN LA OCASIÓN 
+DE LA APROBACIÓN DE LA CONFECCIÓN DEL MANUAL. Moto Honda da Amazônia Ltda. SE RESERVA EL 
+DERECHO DE ALTERAR LAS CARACTERÍSTICAS DE LA MOTOCICLETA EN CUALQUIER MOMENTO Y SIN 
+PREVIO AVISO, NO INCURRIENDO, ASÍ, EN OBLIGACIONES DE CUALQUIER ESPECIE. NINGUNA PARTE 
+DE ESTA PUBLICACIÓN PUEDE SER REPRODUCIDA SIN PERMISO POR ESCRITO. ESTE MANUAL FUE 
+ELABORADO PARA PERSONAS QUE TIENEN CONOCIMIENTOS BÁSICOS SOBRE EL MANTENIMIENTO DE 
+LAS MOTOCICLETAS, MOTONETAS, O CUADRICICLOS HONDA.
+© Honda Motor Co., Ltd.
+HSA – PUBLICACIONES TÉCNICAS
+Fecha de Emisión: Julio, 2016
+
+===== PAGE 6 =====
+1-4
+XR190L
+INFORMACIONES GENERALES
+SÍMBOLOS
+Los símbolos utilizados en este manual indican los procedimientos especíﬁcos de servicio. Las informaciones 
+suplementarias necesarias referentes a estos símbolos se dan especíﬁcamente en el texto, sin la utilización de los 
+mismos.
+SÍMBOLOS DE INSTRUCCIÓN
+Procedimiento de Desmontaje o Desarmado.
+Desacople el conector.
+Procedimiento de Montaje o Armado.
+Acople el conector.
+Secuencia de desmontaje/desarmado con un 
+punto de observación. 
+Secuencia de montaje/armado con un punto 
+de observación.
+Apriete con el par de apriete especiﬁcado. 
+Reemplace por una pieza nueva antes del 
+armado.
+Inspeccione visualmente la pieza.
+Inspeccione la pieza haciendo una medición 
+con el instrumento adecuado.
+Gire el interruptor de encendido a la posición 
+APAGADO. 
+Gire el interruptor de encendido a la posición 
+ENCENDIDO.
+Arranque el motor. 
+Mida la resistencia o veriﬁque la continuidad 
+usando un multímetro.
+Mida el voltaje usando un multímetro. 
+Mida la corriente usando un multímetro. 
+Use la herramienta especial Honda. 
+Consulte el Manual de Taller "Espec" 
+(Especíﬁco) para la instrucción.
+SÍMBOLOS DE LUBRICACIÓN Y SELLADO
+Aceite
+Use el aceite para motor recomendado.
+Aplique la solución de aceite de molibdeno 
+(mezcla de aceite para motor y grasa a base 
+de molibdeno en la proporción de 1:1).
+Aplique una grasa especificada. Use una 
+grasa multiuso a menos que se especiﬁque 
+de otra forma.
+Aplique junta líquida.
+Aplique traba química. Use una traba de 
+resistencia media a menos que se especiﬁque 
+de otra forma.
+Use ﬂuido de freno DOT 3 o DOT 4.
+Use aceite para horquilla o fluido para 
+suspensión especiﬁcado.
+
+===== PAGE 7 =====
+1-5
+XR190L
+INFORMACIONES GENERALES
+IDENTIFICACIÓN DEL MODELO
+• Nombre del modelo: XRE190L-H
+Código/tipo
+Destino
+LA
+Latin America
+PE
+Peru
+CL
+Chile
+DK
+General KILO
+NÚMERO DE SERIE DEL MOTOR 
+ETIQUETA DE COLOR
+NÚMERO DE IDENTIFICACIÓN DEL 
+VEHÍCULO
+
+===== PAGE 8 =====
+1-6
+XR190L
+INFORMACIONES GENERALES
+ESPECIFICACIONES
+ESPECIFICACIONES TÉCNICAS
+ÍTEM
+ESPECIFICACIONES
+DIMENSIONES
+Largo total
+2.075 mm
+Ancho total
+812 mm
+Altura total
+1,124 mm
+Entre ejes
+1,351 mm
+Altura del asiento
+835 mm
+Altura del descansapie
+300 mm
+Altura libre del suelo
+242 mm
+Peso en orden de marcha
+133 kg
+Capacidad de peso máximo
+155 kg
+CHASIS
+Tipo del chasis
+Tipo cuna semidoble
+Suspensión delantera
+Horquilla telescópica
+Carrera del eje delantero
+161,5 mm
+Suspensión trasera
+Mono Shock
+Carrera del eje trasero
+147 mm
+Tamaño del neumático delantero
+90/90 - 19M/C 52P
+Tamaño del neumático trasero
+110/90 - 17M/C 60P
+Marca/Modelo del neumático delantero
+C6559F (CHENG SHIN)
+Marca/Modelo del neumático trasero
+C6559 (CHENG SHIN)
+Freno delantero
+Freno hidráulico a disco
+Freno trasero
+Zapata
+Ángulo de avance
+26°12’
+Trail
+95,5 mm
+Capacidad del tanque de combustible
+12,0 litros
+Capacidad de la reserva del tanque de combustible
+3,9 litros
+MOTOR
+Disposición del cilindro
+Monocilíndrico inclinado a 15° de la vertical
+Diámetro y carrera
+61,000 x 63,096 mm
+Cilindrada
+184.43 cm3
+Relación de compresión
+9,5 : 1
+Tren de válvulas
+Accionado por corriente, OHC
+Válvula de admisión
+abre
+10° APMS en apertura de 1 mm
+cierra
+30° DPMI en apertura de 1 mm
+Válvula de escape
+abre
+35° APMI en apertura de 1 mm
+cierra
+0° PMS en apertura de 1 mm
+Sistema de lubricación
+Forzado por bomba de aceite y cárter húmedo
+Tipo de la bomba de aceite
+Trocoidal
+Sistema de Refrigeración
+Enfriado por aire
+Sistema de ﬁltración de aire
+Elemento de papel viscoso
+Peso en seco del motor
+29,5 kg
+Sistema de control de emisiones
+Sistema de control de emisiones de la carcasa de 
+motor con catalizador de tres vías 
+SISTEMA DE 
+ALIMENTACIÓN
+Tipo
+PGM-FI
+Cavidad de la válvula de aceleración
+30 mm
+
+===== PAGE 9 =====
+1-7
+XR190L
+INFORMACIONES GENERALES
+ÍTEM
+ESPECIFICACIONES
+SISTEMA DE 
+TRANSMISIÓN
+Sistema de Embrague
+Multidiscos en baño de ace
+Sistema de accionamiento del embrague
+Por cable
+Transmisión
+5 velocidades
+Reducción primaria
+3,136 (69/22)
+Reducción ﬁnal
+3,000 (48/16)
+Relación de transmisión
+1ª
+2,785 (39/14)
+2ª
+1,789 (34/19)
+3ª
+1,368 (26/19)
+4ª
+1,090 (24/22)
+5ª
+0,928 (26/28)
+Sistema de cambio de marchas
+Sistema de retorno operado por el pie zquierdo 
+1 - N - 2 - 3 - 4 - 5
+SISTEMA 
+ELÉCTRICO
+Sistema de encendido
+Totalmente transistorizado
+Sistema de arranque
+Arranque eléctrico
+Sistema de carga
+Alternador de salida monofásica
+Regulador/rectiﬁcador
+Cargamento de media onda monofásica y SCR 
+abierto
+Sistema de Iluminación
+Alternador
+ESPECIFICACIONES DE ALIMENTACIÓN Y MOTOR
+SISTEMA DE ALIMENTACIÓN
+ÍTEM
+ESPECIFICACIONES
+Número de identiﬁcación de la válvula de aceleración
+GQ1QA
+Rotación de ralentí
+1400 ± 100 rpm
+Juego libre de la empuñadura del acelerador
+2 – 6 mm
+Presión del combustible en ralentí
+294 kPa
+Flujo de la bomba de combustible (en 12 V)
+58,6 cm3 mínimo/10 segundos
+SISTEMA DE LUBRICACIÓN
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Capacidad de 
+aceite del motor
+Después del drenaje
+1,0 litro
+–
+Después de desarmar
+1,2 litro
+–
+Aceite del motor recomendado
+“Aceite para motocicletas 4 tiempos” 
+Honda o un aceite de motor 
+equivalente. 
+Clasiﬁcación de servicio API: SG o 
+superior JASO T903 estándar: MA 
+Viscosidad: SAE 10W-30
+–
+Holgura del extremo del rotor de la bomba de aceite
+0,15
+0,20
+
+===== PAGE 10 =====
+1-8
+XR190L
+INFORMACIONES GENERALES
+CULATA/VÁLVULAS
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Compresión del cilindro
+1.402 kPa a 650 rpm
+–
+Holgura de válvulas
+ADM
+0,08 ± 0,02
+–
+ESC
+0,24 ± 0,02
+–
+Árbol de levas
+Altura del lóbulo de comando
+ADM
+34,249 – 34,489
+34,219
+ESC
+34,079 – 34,319
+34,049
+Eje del balancín
+D.E. del eje del balancín
+ADM/ESC
+9,988 – 10,000
+–
+Válvula, guía de 
+válvula
+D.E. del vástago de la válvula
+ADM
+4,975 – 4,990
+4,965
+ESC
+4,955 – 4,970
+4,945
+D.I. de la guía de válvula
+ADM/ESC
+5,000 – 5,012
+–
+Saliente de la guía de válvula 
+arribade la culata
+ADM/ESC
+16,8 – 17,0
+–
+Ancho del asiento válvula
+ADM
+1,2 – 1,4
+1,8
+ESC
+1,0 – 1,2
+1,6
+Largo libre del resorte de la válvula
+Interna
+35,59
+34,89
+Externa
+39,46
+38,67
+Alabeo de la culata 
+–
+0,05
+CILINDRO/PISTÓN
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Cilindro
+D.I.
+61,000 – 61,010
+61,100
+Alabeo
+–
+0,10
+Pistón
+Pistón D.E.
+60,981 – 60,997
+60,90
+D.I. de la cavidad del bulón del pistón
+14,002 – 14,008
+14,020
+D.E. del bulón del pistón
+13,994 – 14,000
+13,980
+Segmentos del 
+pistón
+Holgura entre los extremos 
+Del segmento del pistón
+1º segmento
+0,07 – 0,17
+0,27
+2º segmento
+0,17 – 0,32
+0,42
+Segmento de aceite 
+(segmento lateral) 
+0,10 – 0,35
+0,55
+Holgura entre segmento 
+Del pistón y canaleta
+1º segmento
+0,015 – 0,045
+–
+2º segmento
+0,015 – 0,045
+–
+EMBRAGUE/ARTICULACIÓN DEL SELECTOR DE MARCHAS
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Juego libre de la palanca del embrague
+10 – 20
+–
+Embrague
+Espesor del disco
+2,92 – 3,08
+2,70
+Alabeo del separador
+–
+0,15
+Largo libre del resorte del embrague
+40,5
+39,5
+D.I. de la campana del embrague
+23,000 – 23,021
+–
+Guía de la campana 
+del embrague
+D.E.
+22,959 – 22,980
+–
+D.I.
+16,991 – 17,009
+–
+D.E. del eje primario en la guía de la campana del embrague 
+16,966 – 16,984
+–
+ALTERNADOR/EMBRAGUE DE ARRANQUE
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Engranaje conducido de arranque
+D.E.
+45,660 – 45,673
+–
+D.I.
+29,000 – 29,021
+–
+
+===== PAGE 11 =====
+1-9
+XR190L
+INFORMACIONES GENERALES
+CARCASA DEL MOTOR/TRANSMISIÓN/BALANCÍN
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Biela
+Holgura lateral
+0,1 – 0,35
+0,45
+Holgura radial
+0 – 0,008
+0,05
+Diámetro interno del pie de la biela
+14.010 – 14.028
+14.038
+Cigüeñal
+Alabeo
+–
+0,03 
+Transmisión
+D.I. del engranaje
+M4
+20,000 – 20,018
+–
+M5
+17,000 – 17,018
+–
+C1
+20,500 – 20,521
+–
+C2
+23,020 – 23,041
+–
+C3
+20,020 – 20,038
+–
+D.E. del buje del engranaje
+C1
+20,459 – 20,480
+–
+C2
+22,984 – 23,005
+–
+D.I. del buje del engranaje
+C1
+17,000 – 17,018
+–
+C2
+20,020 – 20,041
+–
+D.E. del eje primario
+En M4
+19,968 – 19,980
+–
+En M5
+16,968 – 16,980
+–
+D.E. del eje secundario
+En C1
+16,966 – 16,984
+–
+En C2
+19,978 – 19,989
+–
+En C3
+19,988 – 20,000
+–
+Horquilla selectora, 
+Eje de la horquilla 
+selectora
+D.I. de la horquilla selectora
+10,000 – 10,018
+–
+D.E. del eje de la horquilla
+9,986 – 9,995
+–
+Espesor de la garra
+4,93 – 5,00
+4,83
+ESPECIFICACIONES DE CHASIS 
+RUEDA DELANTERA/SUSPENSIÓN
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Presión del 
+neumático frío
+Solamente conductor
+150 kPa
+–
+Conductor y pasajero
+150 kPa
+–
+Alabeo del eje
+–
+0,2
+Excentricidad de la 
+rueda
+Radial
+–
+1,0
+Axial
+–
+1,0
+Horquilla
+Líquido recomendado
+CN10#
+–
+Nivel de líquido
+184
+–
+Capacidad de ﬂuido
+183 ± 2.5 cm3
+–
+RUEDA TRASERA
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Presión del 
+neumático frío
+Solamente conductor
+150 kPa
+–
+Conductor y pasajero
+200 kPa
+–
+Alabeo del eje
+–
+0,2
+Excentricidad de la 
+llanta de la rueda 
+Radial
+–
+1,0
+Axial
+–
+1,0
+Holgura de la cadena de transmisión
+20 – 30
+60
+Tamaño/eslabones de la cadena de transmisión
+428V/128LE 
+–
+
+===== PAGE 12 =====
+1-10
+XR190L
+INFORMACIONES GENERALES
+FRENO HIDRÁULICO
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Delantero
+Fluido de freno especiﬁcado
+Fluido de freno DOT 4
+–
+Espesor del disco de freno
+3,8 ± 4,2
+3,5
+Alabeo del disco de freno
+–
+0,3
+D.I. del cilindro maestro
+12,700 – 12,743
+–
+D.E. del pistón maestro
+12,657 – 12,684
+–
+D.I. del cilindro del cáliper
+27,000 – 27,050
+–
+D.E. del pistón del cáliper
+26,918 – 26,968
+–
+Trasero
+Holgura palanca de freno
+20 – 30
+–
+D.I. Tambor de freno
+110
+111
+ESPECIFICACIONES DEL SISTEMA ELÉCTRICO
+SISTEMA PGM-FI
+ÍTEM
+ESPECIFICACIONES
+Resistencia del sensor EOT (20°C)
+2,5 – 2,8 kΩ
+Resistencia del inyector (24°C)
+11 – 13 Ω
+SISTEMA DE ENCENDIDO
+ÍTEM
+ESPECIFICACIONES
+Bujía de encendido
+CPR8EA-9 (NGK)
+Separación de los electrodos de la bujía de encendido
+0,80 – 0,90 mm
+Pico de tensión de la bobina de encendido mínimo
+100 V
+Pico de tensión del sensor CKP
+0,7 V mínimo
+Punto de encendido (Marca “F”)
+8° APMS en rotación de ralentí
+BATERÍA/SISTEMA DE CARGA
+ÍTEM
+ESPECIFICACIONES
+Batería
+Tipo
+YTX7L-BS
+Capacidad
+12 V – 6 Ah (10HR)/6.3 Ah (20HR)
+Corriente de carga
+0 mA
+Tensión (20 °C)
+Totalmente cargada
+Mínimo de 12,8 V
+Necesita carga
+Abajo de 12,3 V
+Corriente de carga
+Normal
+0,6 A/5 – 10 h
+Rápida
+3 A/1 h
+Alternador
+Capacidad
+0,165 kW/5.000 rpm
+Resistencia de la bobina de carga (20 °C)
+0,2 – 1,2 Ω
+
+===== PAGE 13 =====
+1-11
+XR190L
+INFORMACIONES GENERALES
+LUCES/INSTRUMENTOS/INTERRUPTORES
+ÍTEM
+ESPECIFICACIONES
+Lámparas
+Faro
+Alto/Bajo
+12 V – 35/35 W
+Luz de freno/luz trasera
+12 V – 21/5 W
+Intermitente delantero
+12 V – 10 W x 2
+Intermitente trasero
+12 V – 10 W x 2
+Luz de posición
+12 V – 5 W
+Luz de la placa de licencia
+12 V – 5 W
+Instrumentos 1
+12 V – 2 W
+Instrumentos 2
+12 V – 1,7 W
+Indicador del faro alto
+12 V – 1,7 W
+Indicador del punto muerto
+12 V – 3,4 W
+Indicador del intermitente
+12 V – 3,4 W
+MIL
+12 V – 3,4 W
+Fusible
+Fusible principal
+15 A
+Fusible secundario
+10 A x 2
+Resistencia del sensor de nivel de combustible
+Lleno
+6 – 10 Ω
+Vacío
+90 – 100 Ω
+
+===== PAGE 14 =====
+1-12
+XR190L
+INFORMACIONES GENERALES
+VALORES DE PAR DE APRIETE
+• Cada ﬁjador debe ser apretado con el valor de par de apriete estándar, excepto los ﬁjadores con valor de par de 
+apriete especiﬁcado.
+• CANT.: Cantidad, DIA: Diámetro de la rosca (mm), PAR: Par de Apriete (N.m)
+PAR DE APRIETE ESTÁNDAR
+TIPO DE FIJADOR
+TRQ
+TIPO DE FIJADOR
+TRQ
+Tornillo embridado y tuerca 5 mm
+5,2
+Tornillo Phillips 5 mm
+4,2
+Tornillo embridado y tuerca 6 mm
+10
+Tornillo Phillips 6 mm
+9,0
+Tornillo embridado y tuerca 8 mm
+22
+Tornillo embridado 6 mm
+12
+Tornillo embridado y tuerca 10 mm
+34
+Tornillo embridado y tuerca 8mm
+27
+Tornillo embridado y tuerca 12 mm
+54
+Tornillo embridado y tuerca 10 mm
+39
+UNIDAD DE LA BOMBA DE COMBUSTIBLE
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tuerca de la placa de ﬁjación de la bomba de 
+combustible
+4
+6
+12
+è 2-4
+FILTRO DE AIRE
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de la tapa del ﬁltro de aire
+4
+5
+1,0
+Tornillo de la tapa del elemento del ﬁltro de aire
+4
+5
+1,0
+Tornillo de la tapa separada del ﬁltro de aire
+5
+5
+1,0
+THROTTLE BODY
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Contratuerca del cable A del acelerador 
+(lado del cuerpo del acelerador)
+1
+6
+4,5
+Contratuerca del cable B del acelerador 
+(lado del cuerpo del acelerador)
+1
+6
+4,5
+Tornillo de la abrazadera del aislador
+1
+5
+2,5
+Tornillo del aislante
+2
+6
+12
+Tornillo Torx de la unidad del sensor
+3
+5
+3,4
+Tornillo Torx de ﬁjación de la IACV
+2
+4
+2,1
+Tornillo del soporte del cable del acelerador
+2
+5
+3,4
+Tornillo de la conexión del inyector de combustible
+2
+5
+5,1
+LUBRICATION SYSTEM
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de drenaje de aceite
+1
+12
+30
+Tornillo de la tapa de la bomba de aceite
+1
+4
+3,0
+CYLINDER HEAD
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tapa del oriﬁcio del cigüeñal
+1
+32
+15
+Aplique grasa
+Tapa del oriﬁcio de sincronización
+1
+14
+10
+Tapón del accionador del tensor de la cadena de 
+distribución
+1
+6
+4,0
+Tornillo del engranaje del árbol de levas
+2
+5
+9,0
+Tuerca de la culata aceite para motor
+4
+9
+30
+Aplique aceite para motor. 
+Tornillo del cojinete del árbol de levas
+1
+6
+12
+Aplique aceite para motor. 
+Tornillo del cojinete del eje del brazo del balancín
+2
+5
+5,0
+Contratuerca de ajuste de la válvula del embrague
+2
+6
+18
+Aplique aceite para motor.
+Aplique aceite para Espárrago del cilindro
+4
+9
+9,0
+
+===== PAGE 15 =====
+1-13
+XR190L
+INFORMACIONES GENERALES
+EMBRAGUE/ARTICULACIÓN DEL SELECTOR DE MARCHAS/ENGRANAJE DEL BALANCÍN 
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Contratuerca del cubo del embrague
+1
+14
+83
+Aplique aceite para motor.
+Tornillo del limitador del tambor selector de marchas
+1
+6
+12
+Aplique traba química.
+Tornillo de la placa limitadora del tambor selector 
+de marchas
+1
+6
+12
+Aplique traba química. 
+Pasador del resorte de retorno de selección de 
+marchas
+1
+8
+22
+Aplique traba química. 
+Tornillo de la placa de accionamiento del embrague
+4
+6
+12
+Contratuerca del rotor del ﬁltro de aceite
+1
+14
+83
+Aplique aceite para motor.
+Tornillos de la tapa del rotor del ﬁltro de aceite
+3
+5
+4,0
+ALTERNADOR/EMBRAGUE DE ARRANQUE
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Embrague de arranque
+6
+6
+16
+Aplique traba química.
+Tornillo de la ﬁjación del estator
+3
+6
+12
+Tuerca autoblocante del volante del motor
+1
+14
+74
+Aplique aceite para motor.
+Tornillo de ﬁjación del sensor CKP
+2
+6
+12
+Aplique traba química. 
+Tornillo del soporte del cableado del alternador
+1
+6
+12
+Aplique traba química. 
+ CARCASA DEL MOTOR/CIGÜEÑAL/TRANSMISIÓN/BALANCÍN
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de la placa de ﬁjación del rodamiento del 
+eje primario
+2
+6
+12
+Aplique traba química.
+Tapón
+1
+6
+10
+Aplique traba química.
+Contratuerca del engranaje movido del balancín
+1
+14
+64
+Aplique aceite para motor.
+Tuerca del balancín
+1
+12
+55
+Aplique aceite para motor.
+UNIDAD DEL MOTOR
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tuerca de ﬁjación delantera del motor
+3
+8
+35
+Tuerca de ﬁjación inferior delantera del motor
+1
+8
+35
+Tuerca de ﬁjación superior trasera del motor
+1
+10
+60
+Tuerca de ﬁjación inferior trasera del motor
+1
+10
+60
+Tuerca de ﬁjación superior del motor
+2
+8
+35
+Tornillo del piñón de transmisión
+2
+6
+12
+SOPORTE LATERAL
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de la articulación del soporte lateral
+1
+10
+10
+è 3-12
+Tuerca de la articulación del soporte lateral
+1
+10
+39
+Tuerca autoblocante è 3-12
+TUBO DE ESCAPE/SILENCIADOR 
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Prisionero del tubo de escape
+2
+8
+11
+è 3-13
+Tuercas de la tapa de la conexión del tubo de escape
+2
+8
+18
+Tornillo delantero del protector del silenciador
+3
+6
+14
+Tornillo Allen del protector del silenciador
+1
+6
+10
+Tornillo de la abrazadera del silenciador
+1
+8
+20
+Tornillo del soquete del protector del tubo de escape
+1
+6
+10
+RUEDA DELANTERA
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tuerca del eje delantero
+1
+12
+44
+Tuerca autoblocante
+Tornillo el disco del freno delantero
+5
+6
+15
+
+===== PAGE 16 =====
+1-14
+XR190L
+INFORMACIONES GENERALES
+HORQUILLA DE LA SUSPENSIÓN
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de ﬁjación del puente superior
+2
+8
+22
+Tornillo de ﬁjación del puente inferior
+4
+8
+32
+Tornillo de la manguera de freno
+2
+6
+12
+Tornillo de la horquilla de la suspensión
+2
+27
+22
+Tornillo Allen de la horquilla de la suspensión
+2
+8
+20
+Aplique traba química.
+MANILLAR
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de soporte superior del manillar
+4
+8
+26
+Tornillo de la articulación de la palanca del embrague
+1
+6
+1,0
+Tuerca de la articulación de la palanca del embrague
+1
+6
+5,9
+Tuerca de ajuste del cable A del acelerador (lado 
+de la empuñadura)
+1
+7
+3,8
+Contratuerca del cable A del acelerador (lado de la 
+empuñadura)
+1
+10
+3,0
+Contratuerca del cable B del acelerador (lado de la 
+empuñadura) 
+1
+12
+3,0
+COLUMNA DE DIRECCIÓN
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tuerca de la columna de dirección
+1
+24
+103
+Tuerca de ajuste de la columna de dirección
+1
+26
+–
+è 3-19
+RUEDA TRASERA
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tuerca del eje trasero
+1
+16
+93
+Tuerca autoblocante
+Tuerca del piñón de transmisión
+6
+8
+32
+Tuerca autoblocante
+SUSPENSIÓN TRASERA
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo superior del amortiguador
+1
+10
+44
+Tuerca inferior del amortiguador
+1
+10
+44
+Tuerca autoblocante
+Tuerca de la articulación del brazo oscilante
+1
+14
+88
+Tuerca autoblocante
+Tornillo del deslizador de la cadena de transmisión
+1
+5
+6,0
+FRENO DELANTERO
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de la tapa del depósito del cilindro maestro 
+delantero
+2
+4
+1,5
+Tornillo del soporte del cilindro maestro del freno 
+delantero
+2
+6
+12
+Tornillo del aceite de la manguera del freno
+2
+10
+34
+Tornillo de la articulación de la palanca del freno
+1
+6
+1,0
+Tuerca de la articulación de la palanca del freno
+1
+6
+5,9
+Tornillos del interruptor de la luz del freno delantero
+1
+4
+1,2
+Pasador del soporte de la pastilla del freno delantero
+1
+10
+17
+Tapón del pasador de la pastilla del freno delantero
+1
+10
+2,5
+Tornillo el cáliper del freno delantero
+2
+8
+30
+Tornillo ALOC revestido, cambie por 
+nuevo
+Pasador deslizante principal del cáliper del freno 
+delantero
+1
+8
+22
+Aplique traba química.
+Válvula de purgado del cáliper del freno delantero
+1
+8
+5,4
+
+===== PAGE 17 =====
+1-15
+XR190L
+INFORMACIONES GENERALES
+FRENO TRASERO 
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tuerca del brazo del freno trasero
+1
+6
+10
+Tuerca autoblocante
+SISTEMA PGM-FI
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Sensor EOT
+1
+10
+15
+Aplique aceite para motor.
+Sensor O2
+1
+12
+25
+Sensor del angulo del bastidor
+2
+6
+5,8
+SISTEMA DE ENCENDIDO
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Bujía de encendido
+1
+10
+16
+SISTEMA DE ILUMINACIÓN
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tuerca del intermitente
+4
+10
+19
+VELOCÍMETRO
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo del tablero de instrumentos
+3
+4
+1,2
+
+===== PAGE 18 =====
+1-16
+XR190L
+INFORMACIONES GENERALES
+LISTA DE HERRAMIENTAS ESPECIALES
+TÍTULO
+Nº DE LA HERRAMIENTA
+NOMBRE DE LA HERRAMIENTA
+Combustible y Motor
+07406-0040004
+Medidor de presión de combustible
+070MJ-K260100
+Conjunto de accesorios del manómetro de combustible
+070MF-KVS0300
+Extractor de la carcasa de la bomba de combustible
+070PZ-ZY30100
+Conector SCS
+07708-0030200
+Llave de traba de la tuerca, 10 x 12 mm
+07908-KE90000
+Llave de ajuste del botador, 3 x 4 mm
+070MG-0010100
+Limitador del tensor
+07757-0010000
+Compresor del resorte de la válvula
+07984-MA60001
+Escariador de la guía de válvula, 5,0 mm
+07942-MA60000
+Instalador de la guía de la válvula, 4,8 mm
+07724-0010200
+Traba para engranaje
+07GMB-KT70101
+Fijador del cubo del embrague
+07725-0040001
+Fijador de volante del motor
+07933-KM10001
+Extractor del volante del motor
+Chasis
+07746-0050300
+Cabeza extractora de rodamiento, 12 mm
+07746-0050100
+Eje extractor de rodamiento
+07746-0010200
+Accesorio, 37 x 40 mm
+07746-0040200
+Guía, 12 mm
+07749-0010000
+Instalador
+07748-0010001
+Extractor del retén de aceite
+07747-0010100
+Peso del instalador del retén de la horquilla de la suspensión
+07747-0010300
+Accesorio del instalador del retén de la horquilla de la 
+suspensión
+07747-0010400
+Accesorio del instalador del retén de la horquilla de la 
+suspensión
+07916-KA50100
+Llave para contratuerca
+07746-0050500
+Cabeza extractora de rodamiento, 17 mm
+07746-0040400
+Guía, 17 mm
+07953-MJ10000
+Conjunto del extractor de pista
+07746-0010300
+Accesorio, 42 x 47 mm
+07914-SA50001
+Alicates para anillo elástico
+
+===== PAGE 19 =====
+1-17
+XR190L
+INFORMACIONES GENERALES
+5 – 10mm
+CABLEADO PRINCIPAL
+INTERIOR DE LOS CONECTORES:
+• CONECTOR 9P DEL MANILLAR IZQUIERDO
+•  CABLEADO DEL INTERRUPTOR 
+IZQUIERDO DEL MANILLAR
+CABLEADO 
+PRINCIPAL
+CABLEADO DEL 
+INTERRUPTOR 
+IZQUIERDO 
+DEL MANILLAR
+CABLEADO DEL 
+INTERRUPTOR 
+IZQUIERDO 
+DEL MANILLAR
+CABLEADO 
+DEL FARO
+CABLEADO DEL 
+INTERRUPTOR 
+DEL TABLERO DE 
+INSTRUMENTOS
+CABLEADO DEL 
+INTERRUPTOR 
+DERECHO DEL 
+MANILLAR
+CABLEADO DEL INTERRUPTOR 
+DERECHO DEL MANILLAR
+CABLEADO DEL 
+INTERMITENTE 
+CABLEADO PRINCIPAL
+INTERIOR DE LOS CONECTORES:
+•  INTERRUPTOR 6P DEL MANILLAR 
+IZQUIERDO
+•  CABLEADO DEL INTERMITENTE 
+DELANTERO IZQUIERDO
+•  CABLEADO DEL INTERMITENTE 
+DELANTERO DERECHO 
+•  CABLE TIERRA DEL INTERMITENTE 
+DELANTERO
+PASAJE DE CABLES Y CABLEADO
+
+===== PAGE 20 =====
+1-18
+XR190L
+INFORMACIONES GENERALES
+CABLE A DEL ACELERADOR
+CABLE B DEL ACELERADOR
+CABLEADO DEL VELOCÍMETRO
+MARCA BLANCA 
+ÁREA DE MARCA 
+BLANCA (15 MM)
+2 – 4 mm
+
+===== PAGE 21 =====
+1-19
+XR190L
+INFORMACIONES GENERALES
+CABLEADO DEL 
+INTERRUPTOR DE 
+PUNTO MUERTO
+CABLE NEGATIVO (–) 
+DE LA BATERÍA 
+CABLEADO DEL 
+ALTERNATOR
+DLC
+CONECTOR 
+33P DEL ECM 
+CONECTOR 2P DEL 
+SENSOR EOT
+Ser golpeado.
+ INTERIOR DE LOS CONECTORES:
+•  CONECTOR 2P DEL INTERRUPTOR 
+DE LA LUZ DEL FRENO TRASERO
+•  ALTERNATOR 3P
+•  ALTERNATOR 2P
+•  CABLEADO DEL INTERRUPTOR DE 
+PUNTO MUERTO
+CONECTOR 2P DEL 
+SENSOR EOT
+CABLE DEL MOTOR 
+DE ARRANQUE
+CABLE NEGATIVO (–) 
+DE LA BATERÍA
+CABLE NEGATIVO (–) 
+DE LA BATERÍA
+CABLEADO DEL INTERRUPTOR 
+DE PUNTO MUERTO
+CABLEADO DEL ALTERNADOR
+45° ± 5°
+
+===== PAGE 22 =====
+1-20
+XR190L
+INFORMACIONES GENERALES
+CABLEADO DEL 
+INTERRUPTOR DE 
+PUNTO MUERTO
+CABLEADO DEL 
+INTERRUPTOR DE 
+PUNTO MUERTO
+CABLEADO DEL 
+INTERRUPTOR DE 
+PUNTO MUERTO
+TAPA DE PIÑÓN 
+DE TRANSMISIÓN
+CABLEADO DEL ALTERNATOR 
+CABLEADO DEL SENSOR CKP
+TAPA DE PIÑÓN 
+DE TRANSMISIÓN
+TAPA DE PIÑÓN 
+DE TRANSMISIÓN
+
+===== PAGE 23 =====
+1-21
+XR190L
+INFORMACIONES GENERALES
+CONECTOR 3P DEL SENSOR 
+DEL ÁNGULO DEL BASTIDOR
+CABLE DE LA BUJÍA 
+DE ENCENDIDO
+
+===== PAGE 24 =====
+1-22
+XR190L
+INFORMACIONES GENERALES
+CABLEADO PRINCIPAL
+CONECTOR 2P 
+DEL INYECTOR
+CONECTOR 
+4P DEL IACV
+INTERIOR DE LOS CONECTORES:
+•  CONECTOR 2P DE LA LUZ DE LA PLACA DE LICENCIA
+•  CONECTOR 3P DE LA LUZ DE FRENO/LUZ TRASERA 
+•  CABLEADO DEL INTERMITENTE TRASERO IZQUIERDO
+•  CABLEADO DEL INTERMITENTE TRASERO DERECHO 
+•  CABLE TIERRA DEL INTERMITENTE TRASERO
+CABLEADO DEL 
+INTERMITENTE 
+CABLEADO 
+PRINCIPAL
+CABLEADO 
+PRINCIPAL
+
+===== PAGE 25 =====
+1-23
+XR190L
+INFORMACIONES GENERALES
+MANGUERA DE ALIMENTACIÓN 
+DE COMBUSTIBLE 
+
+===== PAGE 26 =====
+1-24
+XR190L
+INFORMACIONES GENERALES
+CARACTERÍSTICAS TÉCNICAS
+SISTEMA DE BOMBA DE COMBUSTIBLE CON FUNCIÓN DE AVISO DE 
+OBSTRUCCIÓN DEL FILTRO DE COMBUSTIBLE
+CONDUCTO DE 
+RESPIRADERO
+NIVEL DE 
+COMBUSTIBLE
+FILTRO DE RESPIRADERO
+TANQUE DE COMBUSTIBLE
+BOMBA DE COMBUSTIBLE
+FILTRO DE COMBUSTIBLE
+CÁMARA DE LA BOMBA
+A INYECTOR DE 
+COMBUSTIBLE
+Conducto de succión de aire bajo la obstrucción del ﬁltro de combustible
+Conducto de descarga de aire bajo condiciones normales del ﬁltro de combustible
+Caudal de combustible bajo condiciones normales del ﬁltro de combustible
+El sistema de bomba de combustible de este modelo consta de los siguientes componentes:
+– Cámara de la bomba de combustible
+– Filtro de combustible
+– Conducto del respiradero
+– Filtro de respiradero
+Bajo condiciones normales, la cámara de la bomba de combustible aspira el combustible a través del ﬁltro de combustible 
+y luego lo suministra al inyector.
+Cuando el ﬁltro de combustible está obstruido, el combustible es aspirado a la cámara de la bomba a través del conducto 
+de respiradero para mantener el vehículo en funcionamiento. El ﬁltro de respiradero se encuentra en el lado interior 
+superior del tanque de combustible. Cuando el combustible se consume hasta el punto en el que el ﬁltro de respiradero 
+está expuesto por encima del nivel de combustible, una cierta cantidad de aire será aspirada a la cámara de la bomba 
+a través del ﬁltro de respiradero y del conducto de respiradero. 
+Este aire entrante produce “una falta de combustible”, lo que perjudica el rendimiento del motor con el ﬁn de notiﬁcar al 
+conductor de la obstrucción del ﬁltro de combustible. Este síntoma funciona como un aviso para el reemplazo del ﬁltro.
+Este sistema elimina la necesidad de reemplazar el ﬁltro de combustible de acuerdo a un intervalo ﬁjo, ya que el 
+conductor experimentará el síntoma y notará la obstrucción del ﬁltro durante el uso del vehículo.
+La conducción sigue normal mientras el nivel de combustible en el tanque se mantiene por encima del ﬁltro de respiradero, 
+porque no se introducirá aire en la cámara de la bomba, incluso cuando el ﬁltro de combustible esté obstruido.
+Si el combustible en el tanque es suﬁciente, pero existe el síntoma de mal funcionamiento del motor, la falta de 
+combustible o el fallo de arranque del motor, realice la prueba de suministro de combustible. 
+
+===== PAGE 27 =====
+1-25
+XR190L
+INFORMACIONES GENERALES
+TABLA DE MANTENIMIENTO
+• Efectúe la inspección antes del Uso en el Manual del Propietario en cada intervalo programado de mantenimiento.
+• I: Inspeccione y Limpie, Ajuste, Lubrique o Reemplace si es necesario. C: Limpie. R: Reemplace. A: Ajuste L: Lubrique.
+• Los siguientes ítems requieren algún conocimiento mecánico. Ciertos ítems (particularmente aquellos marcados 
+con * y **) pueden requerir más informaciones técnicas y herramientas. Consulte su concesionario.
+ •  Consulte el “Manual de Taller Básico” para cada instrucción de mantenimiento, excepto las instrucciones 
+descritas en este manual.
+ÍTEMS 
+NOTA 
+FRECUENCIA (NOTA 1)
+INSPECCIÓN 
+ANUAL
+CAMBIAR 
+REGULARMENTE 
+VÉASE
+LA
+PÁGINA
+X1.000 km
+1
+6
+12
+18
+24
+30
+36
+*
+Línea de combustible
+I
+I
+I
+I
+I
+I
+I
+*
+Acelerador
+I
+I
+I
+I
+I
+I
+I
+*
+Filtro de aire
+NOTA 2
+R
+R
+è 2-7
+Respiradero del motor
+NOTA 3
+C
+C
+C
+C
+C
+C
+Bujía de encendido
+I
+R
+I
+R
+I
+R
+è 4-22
+*
+Holgura de las válvulas
+I
+I
+I
+I
+I
+I
+è 2-14
+Aceite del motor
+R
+R
+R
+R
+R
+R
+R
+R
+è 2-13
+** Tamiz del ﬁltro de aceite
+C
+C
+C
+è 2-13
+** Filtro centrífugo de aceite
+C
+C
+C
+è 2-21
+*
+Ralentí
+I
+I
+I
+I
+I
+I
+I
+I
+Cadena de transmisión
+NOTA 4
+Cada 600 km I, L
+Deslizador de la cadena 
+de transmisión
+I
+I
+I
+I
+I
+I
+Fluido de freno
+NOTA 5
+I
+I
+I
+I
+I
+I
+I
+2 años
+Pastillas de freno
+I
+I
+I
+I
+I
+I
+I
+Sistema de frenos
+I
+I
+I
+I
+I
+I
+I
+I
+Interruptor de la luz de 
+freno
+I
+I
+I
+I
+I
+I
+I
+Faro
+I
+I
+I
+I
+I
+I
+I
+è 4-33
+Embrague
+I
+I
+I
+I
+I
+I
+I
+I
+Soporte Lateral
+I
+I
+I
+I
+I
+I
+I
+*
+Suspensión
+I
+I
+I
+I
+I
+I
+I
+*
+Tuercas, tornillos y 
+ﬁjadores
+NOTA 4
+I
+I
+I
+I
+I
+** Ruedas/Neumáticos 
+NOTA 4
+I
+I
+I
+I
+I
+I
+I
+** Columna de dirección
+I
+I
+I
+I
+• * Procedimientos que deben ser efectuados por un distribuidor Honda, a menos que el propietario disponga de las 
+herramientas apropiadas e informaciones de servicio, y sea mecánicamente caliﬁcado.
+• ** Por razones de seguridad, recomendamos que todos los servicios presentados en esta tabla se realicen en un 
+distribuidor Honda.
+• Recomendamos también que su distribuidor Honda efectúe una prueba de rodaje después de cada servicio de 
+mantenimiento.
+NOTAS:
+1. Para lecturas mayores del odómetro, repita los intervalos especiﬁcados en esta tabla.
+2. Efectúe el servicio con más frecuencia en condiciones severas de uso, de mucho polvo, barro o humedad.
+3. Efectúe el servicio con más frecuencia bajo condiciones de lluvia, aceleración máxima o aceleraciones rápidas 
+frecuentes.
+4. Efectúe el servicio con más frecuencia en pilotaje Off-Road
+5. El cambio requiere habilidad mecánica.
+
+===== PAGE 28 =====
+NOTAS
+
+===== PAGE 29 =====
+2-1
+XR190L
+2. COMBUSTIBLE Y MOTOR
+LÍNEA DE COMBUSTIBLE ..................................................................................................... 2-2
+UNIDAD DE LA BOMBA DE COMBUSTIBLE ....................................................................... 2-4
+TANQUE DE COMBUSTIBLE ................................................................................................ 2-6
+FILTRO DE AIRE..................................................................................................................... 2-7
+CUERPO DEL ACELERADOR ............................................................................................... 2-8
+SISTEMA DE LUBRICACIÓN ............................................................................................... 2-12
+CULATA ................................................................................................................................. 2-14
+CILINDRO/PISTÓN ............................................................................................................... 2-20
+EMBRAGUE/ARTICULACIÓN DEL SELECTOR DE MARCHAS ....................................... 2-21
+ALTERNADOR/EMBRAGUE DE ARRANQUE .................................................................... 2-24
+CARCASA DEL MOTOR/CIGÜEÑAL/BALANCÍN ............................................................... 2-26
+TRANSMISIÓN...................................................................................................................... 2-28
+UNIDAD DEL MOTOR  ......................................................................................................... 2-31
+
+===== PAGE 30 =====
+2-2
+XR190L
+COMBUSTIBLE Y MOTOR
+• Este vehículo utiliza resina para algunas partes en la 
+manguera de combustible. No doble o tuerza la manguera 
+de combustible.
+• Asiento è 3-4
+• Carenado del tanque de combustible è 3-8
+• 1  Conector 5P de la bomba de combustible
+• Mantenga el motor en ralentí por 3 – 5 minutos.
+• Cable negativo (–) de la batería è 4-28
+• No use herramientas para la remoción. Si el conector no se 
+mueve, tire alternadamente el conector hasta que pueda 
+soltarse fácilmente.
+• Veriﬁque el acople de conexión rápida de combustible con 
+respecto a suciedad, y limpie si es necesario.
+• Ponga una toalla sobre el acople de conexión rápida.
+• 1  Empuje la lengüeta del retén hacia adelante.
+• 2  Presione hacia abajo el retén y desacople el conector 
+de la bomba/inyector de combustible.
+• Veriﬁque la condición del retén y reemplace la manguera 
+de combustible si es necesario.
+• Para evitar daños y penetración de materiales extraños, 
+selle el conector suelto y el extremo del tubo con bolsas 
+plásticas.
+• Presione el conector en la unión de combustible hasta que 
+el retén se encaje, emitiendo un ruido “clic”. Si hay diﬁcultad 
+durante el acople, aplique una pequeña cantidad de aceite 
+para motor en el extremo del tubo.
+• Asegúrese de que la conexión esté firme; verifique 
+visualmente y también tirando del conector.
+• Después de instalar las piezas desmontadas, active el 
+interruptor de encendido. (No encienda el motor.) La bomba 
+de combustible deberá funcionar por 2 segundos, elevando 
+la presión de combustible. Repita los procedimientos 2 
+o 3 veces y asegúrese si no hay fugas en el sistema de 
+alimentación de combustible.
+LÍNEA DE COMBUSTIBLE
+
+===== PAGE 31 =====
+2-3
+XR190L
+COMBUSTIBLE Y MOTOR
+PRUEBA DE SUMINISTRO DE COMBUSTIBLE
+PRUEBA DE PRESIÓN DEL COMBUSTIBLE 
+INSPECCIÓN DEL FLUJO DE COMBUSTIBLE
+• Si el combustible en el tanque es suﬁciente, pero hay 
+síntoma de rendimiento bajo del motor, la falta de 
+combustible, o el fracaso de arranque del motor existen, 
+realizar lo siguiente.
+ –  Realizar la prueba de presión de combustible. è 2-3
+ –  Inspección de flujo de combustible si la presión de 
+combustible está dentro de las especiﬁcaciones. è 2-3
+ –  Inspección de ﬂujo de combustible en la cantidad de 
+combustible especiﬁcado. è 2-3
+• Conector de acople rápido (lado de la bomba de 
+combustible) 
+• Acople el medidor de presión de combustible y su accesorio.
+ [A] Manómetro de combustible: 07406-0040004
+ [B] Accesorio del medidor de presión: 070MJ-K260100
+• Conecte temporalmente el cable negativo a la batería y 
+el conector 5P de la bomba de combustible. Arranque el 
+motor y déjelo funcionando en ralentí, y entonces mida la 
+presión del combustible. Estándar: 294 kPa
+• Si la presión del combustible es superior a la especiﬁcada, 
+cambie la bomba de combustible è 2-4
+• Si la presión del combustible es menor que la especiﬁcada, 
+inspeccione lo siguiente.
+ –  Fuga en la línea de combustible
+ –  Cualquier oscilación errática o vibración de la aguja del 
+medidor del manómetro.
+• Si la aguja es oscilante o vibración, reemplace el ﬁltro 
+de combustible. è 2-5
+• Si la aguja no es oscilante o vibración, reemplace la 
+unidad de la bomba de combustible. è 2-4
+• Conector de acople rápido (lado del inyector) è 2-2 
+• Posicione el extremo de la manguera en un recipiente de 
+gasolina aprobado. Limpie la gasolina derramada.
+•  La bomba de combustible funciona por 2 segundos. Repita 
+5 veces para alcanzar el tiempo total de medición. 
+ Estándar: mínimo de 58,6 cm3/10 segundos 
+• Si el flujo de combustible es menor al especificado, 
+inspeccione lo siguiente:
+ – Manguera de combustible obstruida
+ – Unidad de la bomba de combustible è 2-5 
+• 1  Coloque el vehículo en el suelo nivelado con su 
+soporte lateral. Ajuste el combustible en el tanque para 
+que el indicador de combustible esté colocado en el rango 
+especiﬁcado [A], e inspeccionar el ﬂujo de combustible.
+ –  Si el flujo de combustible está por encima de la 
+especiﬁcación, compruebe si hay otras piezas anormales.
+ –  Si el ﬂujo de combustible está bajo especiﬁcación, sustituir 
+el ﬁltro de combustible. è 2-5
+[A]
+[B]
+[A]
+hacia el INYECTOR
+(manguera de 
+alimentación de 
+combustible)
+de la BOMBA DE 
+COMBUSTIBLE
+de la BOMBA DE 
+COMBUSTIBLE
+
+===== PAGE 32 =====
+2-4
+XR190L
+COMBUSTIBLE Y MOTOR
+UNIDAD DE LA BOMBA DE COMBUSTIBLE
+12 N.m
+• Conector de acople rápido (lado de la bomba de combustible) è 2-2
+• Tanque de combustible è 2-6
+• 1  Aﬂoje las tuercas en forma cruzada en varias etapas.
+• Quite cuidadosamente la bomba de combustible del tanque de combustible para prevenir daños en el sensor 
+del nivel de combustible.
+• 1  Instale una junta externa nueva en la canaleta de la bomba de combustible, alineando sus lengüetas con 
+la base.
+• 2  Posicione las placas de ﬁjación en la bomba de combustible alineando la base con el oriﬁcio.
+• 3  Instale la bomba de combustible dentro del tanque de combustible alineando las marcas triangulares de 
+la placa de ﬁjación con las del tanque de combustible.
+• 4  Apriete las tuercas de la placa de ﬁjación en la secuencia especiﬁcada como se muestra.
+• 5  Veriﬁque con respecto a obstrucción en el pasaje del tamiz del ﬁltro. Si está obstruido, limpie el tamiz del 
+ﬁltro con gasolina.
+• Inspección de falla en la bomba de combustible
+
+===== PAGE 33 =====
+2-5
+XR190L
+COMBUSTIBLE Y MOTOR
+FILTRO DE COMBUSTIBLE
+• Para evitar que suciedad o fragmentos entren en la unidad de la bomba de combustible, siempre limpie antes 
+del desarmado.
+• Limpie la unidad de la bomba de combustible y su ﬁltro con gasolina limpia. Nunca utilice limpiadores de 
+carburador convencionales.
+• 1  Suelte los ganchos de los topes separándolos levemente, utilice la herramienta especial.
+ Extractor de la carcasa de la bomba de combustible: 070MF-KVS0300
+• 2  Suelte los ganchos de los topes separándolos levemente, despues gire el ﬁltro.
+• Filtro de combustible obstruido o daño excesivo.
+• Si el ﬁltro de combustible está obstruido, cámbielo por un nuevo.
+• Antes de instalar el ﬁltro de la bomba de combustible, veriﬁque la bomba de combustible con respecto a 
+suciedad. Si es necesario, limpie la bomba de combustible con aire comprimido. No aplique el aire dentro de 
+la unidad de la bomba de combustible.
+• Si los conectores de los cables R o Bl están desconectados, reemplace el sensor de nivel de combustible por 
+uno nuevo.
+• 1  Conecte los cables del motor de la bomba de combustible en la posición especiﬁcada.
+• 2  Asegúrese de oír el sonido de “clic” cuando la unidad de la bomba de combustible está montada.
+• 3  Pase los cables del motor de la bomba de combustible y los cables del sensor de nivel de combustible en 
+las terminales y guías adecuadas. 
+G
+G
+Y
+Y
+Y
+Y
+G
+G
+R
+Bl
+
+===== PAGE 34 =====
+2-6
+XR190L
+COMBUSTIBLE Y MOTOR
+TANQUE DE COMBUSTIBLE
+• Conector de acople rápido (lado del inyector) è 2-2
+
+===== PAGE 35 =====
+2-7
+XR190L
+COMBUSTIBLE Y MOTOR
+FILTRO DE AIRE
+• 1  Deseche el elemento del ﬁltro de aire de acuerdo con la tabla de mantenimiento. è 1-25
+• Cambie el elemento en cualquier momento si está sucio o dañado. 
+• Asiento è 3-4
+• Tapa lateral è 3-7
+• Carenado Lateral è 3-5
+• Caja de la batería è 3-11
+1.0 N.m
+1.0 N.m
+1.0 N.m
+
+===== PAGE 36 =====
+2-8
+XR190L
+COMBUSTIBLE Y MOTOR
+CUERPO DEL ACELERADOR
+• Inyector è 2-11
+• Si se altera el cuerpo del acelerador, el sensor TP debe ser inicializado. è 2-10
+• Inspección y limpieza del cuerpo del acelerador
+12 N.m
+2.5 N.m
+4.5 N.m
+
+===== PAGE 37 =====
+2-9
+XR190L
+COMBUSTIBLE Y MOTOR
+3.4 N.m
+3.4 N.m
+2.1 N.m
+[A]
+• El cuerpo del acelerador es preajustado en la fábrica. No desmonte de otra manera diferente de la mostrada en el 
+manual.
+• No suelte o apriete los ﬁjadores pintados de blanco. Soltarlos o apretarlos puede causar la falla en el cuerpo del 
+acelerador.
+Unidad del sensor
+ • Cuerpo del acelerador è 2-8
+ •  1  Instale la unidad del sensor en el cuerpo del acelerador, alineando el prendedor de la unidad del sensor 
+con la base de la válvula de aceleración.
+ • Ejecute el proceso de reinicialización del TP. è 2-10
+IACV
+ • Cobertura del acelerador è 2-8
+ • Gire la válvula deslizante [A] en el sentido horario hasta que asiente levemente en la IACV.
+ • 2  Ajuste la placa, alineando el resalte de la IACV con la cavidad en la placa de ﬁjación.
+  
+• 3  Alinee el perno con el encaje de la válvula deslizante.
+ • Inspeccione la IACV con respecto a desgaste o daños.
+ • La operación de la IACV puede ser visualmente veriﬁcada como a continuación:
+  
+ 1. Conecte el conector 4P de la IACV.
+  
+ 2. Gire el interruptor de encendido a la posición ON, veriﬁque la operación de la válvula deslizante. 
+
+===== PAGE 38 =====
+2-10
+XR190L
+COMBUSTIBLE Y MOTOR
+PROCEDIMIENTO DE REINICIALIZACIÓN DEL SENSOR TP
+[A]
+[B]
+Y/Bu
+G/W
+[B]
+0.1 sec
+0.3 sec
+0.3 sec
+1.3 sec
+Procedimiento de inicialización y estándar de parpadeo de la MIL 
+dentro de 10 s 
+dentro de 10 s 
+Inicialización
+Inicialización concluida 
+• Asegúrese de que no haya DTC almacenado en el ECM. 
+Si el DTC está almacenado en el ECM, el modo de 
+inicialización del ECM no será inicializado por el siguiente 
+procedimiento.
+• Tapa lateral izquierda è 3-7
+• Capa del conector del DLC [A].
+• Conecte la herramienta especial al DLC.
+ Conector SCS: 070PZ-ZY30100
+• Conecte el interruptor de encendido, y enseguida 
+desconecte el jumper del conector 2P del sensor EOT 
+dentro de 10 segundos mientras la MIL esté parpadeando 
+(estándar de recibimiento de la inialización).
+• Veriﬁque si la MIL parpadea. Después de desconectar el 
+jumper, la MIL deberá empezar a parpadear. (Estándar de 
+conclusión de la inicialización) 
+  Si el cable jumper es conectado por más de 10 segundos, 
+la MIL permanecerá encendida (estándar de falla en el 
+procedimiento). Reintente desde la primera etapa. 
+• Veriﬁque el ralentí del motor. 
+• Conector 2P del sensor EOT [B].
+• Cause un cortocircuito entre las terminales del conector 2P 
+del EOT, utilizando un cable jumper.
+ Conexión: Y/Bu – G/W
+
+===== PAGE 39 =====
+2-11
+XR190L
+COMBUSTIBLE Y MOTOR
+INYECTOR DE COMBUSTIBLE 
+5.1 N.m
+• Tapa del cable del acelerador è 3-11
+• Conector de acople rápido (lado del inyector) è 2-2 
+
+===== PAGE 40 =====
+2-12
+XR190L
+COMBUSTIBLE Y MOTOR
+BOMBA DE ACEITE
+TAMIZ DEL FILTRO 
+DE ACEITE
+FILTRO CENTRÍFUGO 
+DE ACEITE
+SUPERIOR
+INFERIOR
+SISTEMA DE LUBRICACIÓN
+DIAGRAMA DEL SISTEMA
+VERIFICACIÓN DEL NIVEL DE ACEITE DEL MOTOR
+• Posicione el vehículo en una superﬁcie plana.
+• Mantenga el motor en ralentí por 3 – 5 minutos.
+• Aguarde 2 – 3 minutos.
+• Limpie e inserte la tapa de llenado de aceite/varilla de 
+medición sin enroscarla, quítela y veriﬁque el nivel de aceite 
+del motor.
+• Si el nivel de aceite esté debajo o cerca de la línea inferior 
+de la varilla de medición, añada el aceite recomendado 
+hasta la línea superior.
+• Compruebe que el anillo tórico de la tapa de llenado de 
+aceite esté en buen estado y reemplácelo si es necesario.
+• ACEITE RECOMENDADO PARA MOTOR: “Aceite para 
+motocicletas 4 tiempos” Honda o un aceite de motor 
+equivalente.
+ Clasiﬁcación de servicio API: SG o superior
+ JASO T903 estándar: MA
+ Viscosidad: SAE 10W-30 
+Aceite
+
+===== PAGE 41 =====
+2-13
+XR190L
+COMBUSTIBLE Y MOTOR
+CAMBIO DE ACEITE DEL MOTOR
+TAMIZ DEL FILTRO DE ACEITE DEL MOTOR/BOMBA DE ACEITE
+30 N.m
+3.0 N.m
+• Drene completamente el aceite.
+• Complete la carcasa del motor con el aceite para motor 
+recomendado.
+• CAPACIDAD DE ACEITE DEL MOTOR
+ 1,0 litros después del drenaje Aceite 
+ 1,2 litros después del desarmado
+Aceite
+• Tapa derecha de la carcasa del motor è 2-21
+• 1  Alinee el recorte del eje de la bomba de aceite con el rotor interno.
+• Inspección de la bomba de aceite
+
+===== PAGE 42 =====
+2-14
+XR190L
+COMBUSTIBLE Y MOTOR
+CULATA
+• Este servicio puede ser ejecutado con el motor instalado en el chasis.
+HOLGURA DE LAS VÁLVULAS
+10 N.m
+15 N.m
+[B]
+[A]
+18 N.m
+• Inspeccione mientras el motor está frío (menos que 35 c). 
+• Tapa de la culata è 2-15
+• Gire el cigüeñal en sentido contra horario y alinee la marca 
+“T” del volante del motor con la marca de referencia en la 
+tapa izquierda de la carcasa del motor.
+• Las líneas de referencia del engranaje del árbol de levas 
+alineadas con la superﬁcie del reborde de la culata [A].
+• Asegúrese de que la marca [B] en el árbol de levas está 
+en la posición ilustrada (TDC).
+ Si la marca del engranaje del árbol de levas no está en la 
+posición mostrada, gire el cigüeñal una vuelta completa
+• Holgura de las válvulas (inserte un calibrador de espesores 
+entre el tornillo de ajuste y el vástago de la válvula).
+ ADM: 0,08 ± 0,02 mm, ESC: 0,24 ± 0,02 mm
+ Llave de traba de la tuerca 10 x 12 mm: 07708-0030200
+ Llave de ajuste del botador 3 x 4 mm: 07908-KE90000
+• Suelte la contratuerca y gire la tuerca de ajuste hasta que 
+arrastre levemente en el calibrador de láminas.
+• Trabe el cubo del embrague y suelte la contratuerca.
+• Veriﬁque nuevamente la holgura de las válvulas después 
+de apretarla.
+
+===== PAGE 43 =====
+2-15
+XR190L
+COMBUSTIBLE Y MOTOR
+TAPA DE LA CULATA
+• Carenado del tanque de combustible è 3-8 
+
+===== PAGE 44 =====
+2-16
+XR190L
+COMBUSTIBLE Y MOTOR
+ÁRBOL DE LEVAS/BALANCÍN
+• Posicione el pistón en el PMS de la carrera de compresión. 
+è 2-14.
+• Instale la herramienta especial en el cuerpo del tensor y 
+gire la herramienta en el sentido horario hasta que pare. 
+Sujete el accionador del tensor, empujando la herramienta 
+mientras alinea las lengüetas de la herramienta con las 
+ranuras del accionador del tensor.
+ Limitador del tensor: 070MG-0010100
+• 1  Instale el árbol de levas con el reborde de su brida hacia arriba.
+• 2  Inserte el eje de los balancines en la culata en la posición mostrada, utilizando un destornillador mientras 
+alinea los oriﬁcios de tornillos del eje con los oriﬁcios de tornillo de la culata.
+• 3  Las líneas de referencia del engranaje del árbol de levas alineadas con la superﬁcie de los rebordes de 
+la culata [A]. Asegúrese de que la marca [B] en el árbol de levas está en la posición ilustrada
+• Inspección del árbol de levas
+4.0 N.m
+Admisión
+Lado del Árbol 
+de levas 
+[B]
+[A]
+9.0 N.m
+12 N.m
+5.0 N.m
+Escape
+Lado del Árbol 
+de levas 
+
+===== PAGE 45 =====
+2-17
+XR190L
+COMBUSTIBLE Y MOTOR
+• Árbol de levas/balancín è 2-16
+• Tubo de escape/silenciador è 3-13 
+• Insulator è 2-8 
+• Soporte de ﬁjación superior del motor è 2-31 
+• Buja de encendido è 4-22 
+• Sensor EOT è 4-19
+• Sensor O2 è 4-20
+• 1  Quite los tornillos de la culata. 
+• 2  Aﬂoje las tuercas de la culata en forma cruzada en varias etapas. 
+• 3  Quite el prisionero. 
+• 1  Instale la guía de la cadena de distribución mientras alinea sus pasadores con las ranuras en el cilindro y 
+sus extremos con la ranura del lado izquierdo de la carcasa del motor. 
+• 2  Después de apretar las tuercas de la culata, veriﬁque si la distancia de la longitud de la cabeza del prisionero 
+hasta la superﬁcie superior de la tuerca de la culata está conforme lo especiﬁcado.
+7.4 – 12 mm
+30 N.m
+9.0 N.m
+
+===== PAGE 46 =====
+2-18
+XR190L
+COMBUSTIBLE Y MOTOR
+• 1  Quite las chavetas de las válvulas.
+ Compresor del resorte de la válvula: 07757-0010000
+• 2  Utilice el escariador en las guías de las válvulas para remover cualesquier depósitos de carbón antes de 
+medir las guías. Inserte el escariador por el lado de la cámara de combustión de la culata y gírelo siempre 
+en el sentido horario.
+ Escariador de la guía de válvulas, 5,0 mm: 07984-MA60001
+• 3  Apoye la culata y retire las guías de las válvulas de la culata por el lado de la cámara de combustión. 
+Instalador de la guía de la válvula, 4,8 mm: 07942-MA60000
+• 1  Instale la nueva guía de la válvula en la culata con la altura especiﬁcada con relación a la culata. 
+ Instalador de la guía de la válvula, 4,8 mm: 07942-MA60000
+ PROYECCIÓN DE LA GUÍA DE LA VÁLVULA (Referencia) 16,8 – 17,0 mm
+• Inspección de la válvula y del resorte de la válvula
+• Inspección de la guía de la válvula
+• Inspección del asiento de la válvula
+
+===== PAGE 47 =====
+2-19
+XR190L
+COMBUSTIBLE Y MOTOR
+TENSOR DE LA CADENA DE DISTRIBUCIÓN
+4.0 N.m
+• Instale la herramienta especial en el cuerpo del tensor y 
+gire la herramienta en el sentido horario hasta que pare. 
+Sujete el accionador del tensor, empujando la herramienta 
+mientras alinea las lengüetas de la herramienta con las 
+ranuras del accionador del tensor.
+ Limitador del tensor: 070MG-0010100
+• Veriﬁque el funcionamiento del accionador del tensor de la 
+cadena de distribución:
+ –  El eje del tensor no se debe retraer hacia dentro de su 
+cuerpo cuando se lo presiona.
+ –  Cuando se lo gira en sentido horario con el tope, el eje 
+del tensor debe retraerse hacia dentro de su cuerpo. El 
+eje debe saltar hacia fuera de su cuerpo así que se libera 
+el tope del tensor.
+
+===== PAGE 48 =====
+2-20
+XR190L
+COMBUSTIBLE Y MOTOR
+CILINDRO/PISTÓN
+• Este servicio puede ser ejecutado con el motor instalado en el chasis. 
+• Culata è 2-14
+• Tensor de la cadena de distribución è 2-19
+• 1  Separe cada segmento del pistón y quítelos, levantándolos por el lado opuesto a los extremos.
+• 1  Instale cuidadosamente los segmentos del pistón en sus canaletas, manteniendo sus lados marcados 
+hacia arriba.
+ Segmento superior: Marca “1R” o “TOP-1”
+ Segundo segmento: Marca “RN” o “TOP-2”
+• 2  Instale el pistón, manteniendo su marca “IN” hacia el lado de admisión.
+• 3  No alinee la apertura de los extremos del prendedor del bulón del pistón con el recorte del pistón.
+• Inspección del pistón y segmentos del pistón
+• Inspección del cilindro
+
+===== PAGE 49 =====
+2-21
+XR190L
+COMBUSTIBLE Y MOTOR
+EMBRAGUE/ARTICULACIÓN DEL SELECTOR DE MARCHAS
+1.0 mm
+0.5 – 1.0 mm
+
+===== PAGE 50 =====
+2-22
+XR190L
+COMBUSTIBLE Y MOTOR
+22 N.m
+12 N.m
+83 N.m
+12 N.m
+12 N.m
+4.0 N.m
+83 N.m
+Cada rodamiento
+Dientes de cada engranaje
+Región de cobertura:
+6,5 ± 1 mm a partir del extremo
+• Pedal selector de marchas è 3-9
+• 1  Aﬂoje la contratuerca del rotor del ﬁltro de aceite.
+ Traba para engranaje: 07724-0010200
+• 2  Aﬂoje la contratuerca del cubo del embrague.
+ Fijador del cubo del embrague: 07GMB-KT70101
+• 1  Alinee las marcas entre el engranaje conducido del balancín y el engranaje conductor.
+
+===== PAGE 51 =====
+2-23
+XR190L
+COMBUSTIBLE Y MOTOR
+[A]
+[B]
+• Instale los dos tipos de discos del embrague como se muestra.
+ [A] 22201-KRE-G01
+ [B] 22201-KTT-900
+• 1  Monte los discos del embrague, placas del embrague y la placa de presión en el cubo del embrague 
+alineando las marcas “O” del cubo del embrague y la placa de presión.
+• 2  Instale las lengüetas del disco del embrague (externo) en las ranuras rasas de la carcasa del embrague.
+• Inspección del embrague 
+
+===== PAGE 52 =====
+2-24
+XR190L
+COMBUSTIBLE Y MOTOR
+ALTERNADOR/EMBRAGUE DE ARRANQUE
+• Este servicio puede ser ejecutado con el motor instalado en el chasis.
+Limpiar
+74 N.m
+• Cobertura del piñón de transmisión è 3-9 
+• 1  Fije el volante del motor, utilizando la herramienta especial para quitar la tuerca. 
+ Fijador de volante del motor: 07725-0040001 
+• 2  Volante del motor 
+ Extractor del volante del motor: 07933-KM10001 
+• 1  Limpie los residuos de aceite y grasa de las áreas de contacto del cigüeñal y el volante del motor. Instale 
+el volante del motor en el cigüeñal, alineando el recorte del volante con la chaveta. 
+
+===== PAGE 53 =====
+2-25
+XR190L
+COMBUSTIBLE Y MOTOR
+16 N.m
+Región de cobertura:
+6,5 ± 1 mm a partir del extremo 
+Región de cobertura:
+6,5 ± 1 mm a partir del extremo 
+12 N.m
+12 N.m
+12 N.m
+• 1  Aplique junta líquida (TB 1141G, 1215, 1207G, o equivalente) en la superﬁcie selladora. 
+
+===== PAGE 54 =====
+2-26
+XR190L
+COMBUSTIBLE Y MOTOR
+CARCASA DEL MOTOR/CIGÜEÑAL/BALANCÍN
+64 N.m
+[A]
+[B]
+Región de cobertura:
+6,5 ± 1 mm a partir del extremo 
+Cada rodamiento
+Dientes de cada engranaje
+1 – 2 cm3
+10 N.m
+55 N.m
+[A]
+[B]
+• Unidad del motor è 2-31
+• Cilindro/pistón è 2-20
+• Embrague/articulación del selector de marchas 
+è 2-21
+• Alternador/embrague de arranque è 2-24
+• Bomba de aceite è 2-13
+• Interruptor de punto muerto è 4-26
+• Motor de arranque è 4-25
+• Quite los tornillos de la carcasa del motor en forma cruzada en 2 – 3 etapas.
+• Posicione la carcasa del motor con la carcasa izquierda del motor hacia abajo y separada. 
+• 1  Instale la traba para engranaje engranaje [A]. Instale temporalmente el balancín del engranaje conductor 
+y suelte la tuerca traba [B] del lado derecho delbalancín del engranaje conducido.
+ Traba para engranaje: 07724-0010200
+• 2  Instale la traba para engranaje [A] y aﬂoje la tuerca del balancín del lado izquierdo [B].
+ Traba para engranaje: 07724-0010200
+• 3  Alinee con los cortes del cigüeñal y el eje del balancín. 
+• 1  Instale el tapón, alineando su superﬁcie plana con la pista externa del rodamiento del cigüeñal.
+• 2  Instale temporalmente el balancín del engranaje conductor y alinee con las marcas de punzón del engranaje 
+conducido y engranaje conductor.
+• 3  Aplique junta líquida (TB1215, 1207G, o equivalente) en la superﬁcie de contacto de la carcasa izquierda 
+del motor.
+• Inspección de la cabeza de la biela
+• Connecting rod inspection
+
+===== PAGE 55 =====
+2-27
+XR190L
+COMBUSTIBLE Y MOTOR
+INSPECCIÓN DE LA EXCENTRICIDAD DEL CIGÜEÑAL
+• Inspección del balancín
+• Posicione el cigüeñal en bloques en V y mida el alabeo, 
+use un reloj comparador.
+ Límite: 0,03 mm 
+47.5 mm
+45.0 mm
+
+===== PAGE 56 =====
+2-28
+XR190L
+COMBUSTIBLE Y MOTOR
+Región de cobertura:
+6,5 ± 1 mm a partir del extremo
+Cada rodamiento
+Dientes de cada engranaje
+R/L
+C
+C
+R/L
+12 N.m
+0.5 – 1.0 mm
+0.5 – 1.0 mm
+TRANSMISIÓN
+• Separe la carcasa del motor è 2-26
+• 1  Cada horquilla selectora posee una marca de identiﬁcación.
+ R/L: Derecho e izquierdo
+ C: centro
+• 2  Instale el retén de aceite en la carcasa izquierda del motor con la profundidad indicada.
+• 3  Alinear el ancho del diente con la ranura ancha del husillo de pedal de arranque
+
+===== PAGE 57 =====
+2-29
+XR190L
+COMBUSTIBLE Y MOTOR
+EJE PRIMARIO
+EJE SECUNDARIO
+Dientes de cada engranaje 
+Dientes de cada engranaje 
+• Inspección de la transmisión
+• Inspección de la transmisión
+
+===== PAGE 58 =====
+2-30
+XR190L
+COMBUSTIBLE Y MOTOR
+• 1  Enganche el muelle de retorno al agujero del eje del pedal de arranque, y luego instalar el collar alineando 
+su corte con el muelle.
+• Inspección del pedal de arranque
+
+===== PAGE 59 =====
+2-31
+XR190L
+COMBUSTIBLE Y MOTOR
+35 N.m
+60 N.m
+35 N.m
+60 N.m
+35 N.m
+35 N.m
+12 N.m
+UNIDAD DEL MOTOR 
+• Tubo de escape/silenciador è 3-13
+• Cobertura del piñón de transmisión è 3-9
+• Tanque de combustible è 2-6
+• Cubierta del cable del acelerador è 3-11
+
+===== PAGE 60 =====
+NOTAS
+
+===== PAGE 61 =====
+3-1
+XR190L
+3. ARMAZÓN & CHASIS
+CARENADOS.......................................................................................................................... 3-2
+SOPORTE LATERAL  ........................................................................................................... 3-12
+TUBO DE ESCAPE/SILENCIADOR  .................................................................................... 3-13
+RUEDA DELANTERA ........................................................................................................... 3-14
+HORQUILLA ......................................................................................................................... 3-16
+MANILLAR ............................................................................................................................ 3-18
+COLUMNA DE DIRECCIÓN  ................................................................................................ 3-19
+RUEDA TRASERA ................................................................................................................ 3-21
+SUSPENSIÓN TRASERA ..................................................................................................... 3-23
+FRENO DELANTERO ........................................................................................................... 3-24
+FRENO TRASERO ............................................................................................................... 3-27
+
+===== PAGE 62 =====
+3-2
+XR190L
+ARMAZÓN & CHASIS
+CARENADOS
+[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+[9]
+[10]
+[11]
+[12]
+[13]
+[14]
+[15]
+[16]
+[7]
+[8]
+[1] Espejo retrovisor è 3-3
+[2] Caja de la batería è 3-11
+[3] Asiento è 3-4
+[4] Caja de herramientas è 3-12
+[5] Tapa de la cadena de transmisión è 3-7
+[6] Tapa del piñón de transmisión è 3-9
+[7] Pedal d câmbio è 3-9
+[8] Carenado del tanque de combustible è 3-8
+[9] Carenado delantero è 3-3
+[10] Guardabarros delantero è 3-4
+[11] Pedal de freno è 3-10
+[12] Tapa lateral è 3-7
+[13] Guardabarros trasero è 3-6
+[14] Agarradero trasero è 3-5
+[15] Carenado Central Trasero è 3-5
+[16] Tapa del cable del acelerador è 3-11
+
+===== PAGE 63 =====
+3-3
+XR190L
+ARMAZÓN & CHASIS
+ESPEJO RETROVISOR 
+CARENADO DELANTERO 
+
+===== PAGE 64 =====
+3-4
+XR190L
+ARMAZÓN & CHASIS
+GUARDABARROS DELANTERO
+ASIENTO
+• Tapa lateral è 3-7
+
+===== PAGE 65 =====
+3-5
+XR190L
+ARMAZÓN & CHASIS
+CARENADO CENTRAL TRASERO
+AGARRADERO TRASERO
+• Asiento è 3-4
+• Carenado Central Trasero è 3-5
+
+===== PAGE 66 =====
+3-6
+XR190L
+ARMAZÓN & CHASIS
+GUARDABARROS TRASERO
+Solamiente CL:
+• Carenado Central Trasero è 3-5
+• Luz del señal trasero è 3-5
+
+===== PAGE 67 =====
+3-7
+XR190L
+ARMAZÓN & CHASIS
+TAPA LATERAL 
+TAPA DE LA CADENA DE TRANSMISIÓN
+
+===== PAGE 68 =====
+3-8
+XR190L
+ARMAZÓN & CHASIS
+PROTECTOR DEL TANQUE DE COMBUSTIBLE 
+Solamiente CL:
+• Tapa lateral è 3-7
+
+===== PAGE 69 =====
+3-9
+XR190L
+ARMAZÓN & CHASIS
+PEDAL DE CÂMBIO
+ TAPA DEL PIÑÓN DE TRANSMISIÓN
+98 mm
+
+===== PAGE 70 =====
+3-10
+XR190L
+ARMAZÓN & CHASIS
+PEDAL DEL FRENO
+108 mm
+
+===== PAGE 71 =====
+3-11
+XR190L
+ARMAZÓN & CHASIS
+CAJA DE LA BATERÍA
+TAPA DEL CABLE DEL ACELERADOR
+• Batería è 4-28
+• Asiento è 3-8
+
+===== PAGE 72 =====
+3-12
+XR190L
+ARMAZÓN & CHASIS
+CAJA DE HERRAMIENTAS
+SOPORTE LATERAL 
+39 N.m
+10 N.m
+Superﬁcie Deslizante 
+• 1  Después de apretar el tornillo pivote con el par de apriete especiﬁcado, gire en el sentido contra horario 45 – 90°.
+• 2  Cuando apriete la tuerca de pivote, sujete el tornillo pivote cuidadosamente.
+
+===== PAGE 73 =====
+3-13
+XR190L
+ARMAZÓN & CHASIS
+TUBO DE ESCAPE/SILENCIADOR 
+14 N.m
+10 N.m
+20 N.m
+10 N.m
+18 N.m
+11 N.m
+21.5 ± 1.0 mm
+• Silenciador è 3-13
+
+===== PAGE 74 =====
+3-14
+XR190L
+ARMAZÓN & CHASIS
+RUEDA DELANTERA
+44 N.m
+• Inspección de la rueda
+
+===== PAGE 75 =====
+3-15
+XR190L
+ARMAZÓN & CHASIS
+15 N.m
+• Instale el cabezal del extractor de rodamiento en el rodamiento. Por el lado opuesto, instale el eje del extractor 
+de rodamientos y quite el rodamiento del cubo de la rueda.
+ Cabeza del extractor de rodamiento, 12 mm: 07746-0050300
+ Eje del extractor de rodamiento: 07746-0050100
+• 1  Instale el nuevo rodamiento alineado con su lado marcado hacia arriba hasta que esté totalmente asentado.
+ Instalador: 07749-0010000
+ Accesorio 37 x 40 mm: 07746-0010200
+ Guía, 12 mm: 07746-0040200
+• 2  Instale el espaciador lateral.
+• 3  Instale un rodamiento nuevo alineado con su lado marcado hacia afuera hasta que esté totalmente asentado 
+en el espaciador lateral.
+ Instalador: 07749-0010000
+ Accesorio 37 x 40 mm: 07746-0010200
+ Guía, 12 mm: 07746-0040200
+• Desarmado e inspección de la rueda
+
+===== PAGE 76 =====
+3-16
+XR190L
+ARMAZÓN & CHASIS
+HORQUILLA
+12 N.m
+• Guardabarros delantero è 3-4
+• Rueda delantera è 3-14
+• Cáliper del freno delantero è 3-26
+• 1  Alinee la superﬁcie de contacto con la parte superior del puente superior.
+32 N.m
+22 N.m
+
+===== PAGE 77 =====
+3-17
+XR190L
+ARMAZÓN & CHASIS
+184 mm
+22 N.m
+20 N.m
+IZQUIERDA
+DERECHO
+• 1  Quite el retén de aceite.
+ Extractor del retén de aceite: 07748-0010001
+• 1  Instale un nuevo retén de aceite con su lado marcado hacia arriba, alineándolo hasta que esté totalmente asentado. 
+ Peso del instalador del retén de la horquilla de la suspensión: 07747-0010100 
+ Accesorio del instalador del retén de la horquilla de la suspensión: 07747-001400 
+• 2  Llene el tubo de la horquilla con la cantidad especiﬁcada del ﬂuido recomendado para la horquilla de la suspensión.
+ FLUIDO RECOMENDADO PARA LA SUSPENSIÓN: CN 10# o equivalente
+ CAPACIDAD DE FLUIDO PARA LA HORQUILLA DE LA SUSPENSIÓN: 183 ± 2,5 cm3
+• Comprima completamente la horquilla de la suspensión y mida el nivel de ﬂuido a partir de la parte superior 
+de la corredera.
+ NIVEL DE FLUIDO: 184 mm
+• 3  Tire del tubo de la horquilla e instale el resorte de la horquilla de la suspensión, mantenga el lado de sus 
+espirales más juntas hacia abajo.
+• Desarmado e inspección de la horquilla de la suspensión
+
+===== PAGE 78 =====
+3-18
+XR190L
+ARMAZÓN & CHASIS
+MANILLAR
+3.8 N.m
+3.0 N.m
+3.0 N.m
+26 N.m
+1.0 N.m
+5.9 N.m
+• Cilindro maestro del freno delantero è 3-25
+• Espejo retrovisor è 3-3 
+• 1  Alinee la marca con la parte superior del puente superior.
+• 2  Alinee la marca con la superﬁcie de contacto.
+• 3  Alinee la marca con la parte inferior de la carcasa del acelerador
+• 4  Alinee el pino con el orifício del manillar.
+
+===== PAGE 79 =====
+3-19
+XR190L
+ARMAZÓN & CHASIS
+COLUMNA DE DIRECCIÓN 
+PUENTE SUPERIOR 
+22 N.m
+103 N.m
+• Velocimetro è 4-34
+• Manillar è 3-18
+
+===== PAGE 80 =====
+3-20
+XR190L
+ARMAZÓN & CHASIS
+PUENTE INFERIOR
+[A]
+3 – 5 g
+3 – 5 g
+3 – 5 g
+3 – 5 g
+[B] [C] [D]
+[B] [C] [D]
+3 – 5 g
+3 – 5 g
+[E]
+Grasa para uso general con agente de 
+extrema presión NLGI #2 (EXCELITE 
+EP2 fabricada por KYODO YUSHICO., 
+LTD. o equivalente) 
+• COLUMNA DE DIRECCIÓN
+ [A] Llave para contratuerca: 07916-KA50100
+• RODAMIENTOS DE LA COLUMNA DE DIRECCIÓN
+ [B] Conjunto del extractor de pista: 07953-MJ10000
+• RODAMIENTOS DE LA COLUMNA DE DIRECCIÓN
+ [C] Instalador: 07749-0010000
+ [D] Accesorio 42 x 47 mm 07746-0010300
+• COLUMNA DE DIRECCIÓN:
+ [A] Llave para contratuerca: 07916-KA50100
+ [E] Accesorio del instalador del retén de la horquilla de la suspensión: 07747-0010300
+• 1  Instale la tuerca de ajuste. Mantenga ﬁja la columna de dirección y apriete la tuerca de ajuste con el par 
+de apriete inicial.
+ PAR DE APRIETE: 5 N.m
+• 2  Mueva la columna de dirección de tope la tope varias veces para asentar el rodamiento. Aﬂoje completamente 
+la rosca superior.
+• 3  Apriete la tuerca de ajuste de la columna de dirección con el par de apriete especiﬁcado, utilice la herramienta especial.
+ PAR DE APRIETE: 5 N.m
+• Desarmado/armado e inspección de la dirección 
+
+===== PAGE 81 =====
+3-21
+XR190L
+ARMAZÓN & CHASIS
+RUEDA TRASERA
+93 N.m
+• Inspección de la rueda
+
+===== PAGE 82 =====
+3-22
+XR190L
+ARMAZÓN & CHASIS
+32 N.m
+• Instale el cabezal del extractor de rodamiento en el rodamiento. Por el lado opuesto, instale el eje del extractor 
+de rodamientos y quite el rodamiento del cubo de la rueda.
+ Cabeza del extractor de rodamiento, 17 mm: 07746-0050500
+ Eje del extractor de rodamiento: 07746-0050100
+• 1  Instale el nuevo rodamiento alineado con su lado marcado hacia arriba hasta que sté totalmente asentado.
+ Instalador: 07749-0010000
+ Accesorio 42 x 47 mm: 07746-0010200
+ Guía, 17 mm: 07746-0040400
+• 2  Instale el espaciador lateral.
+• 3  Instale un rodamiento nuevo alineado con su lado marcado hacia afuera hasta que esté totalmente asentado 
+en el espaciador lateral.
+ Instalador: 07749-0010000
+ Accesorio 42 x 47 mm: 07746-0010300
+ Guía, 17 mm: 07746-0040400
+• Desarmado e inspección de la rueda
+
+===== PAGE 83 =====
+3-23
+XR190L
+ARMAZÓN & CHASIS
+SUSPENSIÓN TRASERA
+44 N.m
+40 mm
+44 N.m
+88 N.m
+44 N.m
+• Tapa lateral izquierda è 3-7
+• 1  Si es necessario deshagar el amortiguador, taladro en el punto especiﬁcado como se muestra
+• Rueda trasera è 3-21
+• Tapa de la cadena de transmisión è 3-7
+
+===== PAGE 84 =====
+3-24
+XR190L
+ARMAZÓN & CHASIS
+8 – 9 mm
+6.0 N.m
+1.5 N.m
+Línea de nivel
+FRENO DELANTERO
+CAMBIO DEL FLUIDO DE FRENO
+• 1  Presione los cojinetes con el lado marcado virado para fuera.
+• Llene el depósito con ﬂuido de freno de un embalaje sellado hasta la línea marcada. 
+ FLUIDO DE FRENO RECOMENDADO: DOT 3 or DOT 4
+
+===== PAGE 85 =====
+3-25
+XR190L
+ARMAZÓN & CHASIS
+CILINDRO MAESTRO DEL FRENO
+12 N.m
+34 N.m
+1.0 N.m
+Grasa de silicona
+Grasa de silicona
+5.9 N.m
+1.2 N.m
+• 1  Instale el ﬁjador y el cilindro maestro, manteniendo la marca que indica el lado superior hacia arriba.  Alinee 
+el extremo del cilindro maestro con la marca del manillar.
+• Fluido de freno è 3-24
+• Quite el anillo elástico.
+ Alicates para anillo elástico: 07914-SA50001
+• Inspección del cilindro maestro
+
+===== PAGE 86 =====
+3-26
+XR190L
+ARMAZÓN & CHASIS
+CÁLIPER DEL FRENO
+REEMPLAZO DE LAS PASTILLAS DE FRENO
+17 N.m
+2.5 N.m
+34 N.m
+30 N.m
+• 1  Instale las pastillas de freno para que se encajen en el soporte del cáliper del freno.
+
+===== PAGE 87 =====
+3-27
+XR190L
+ARMAZÓN & CHASIS
+FRENO TRASERO 
+5.4 N.m
+Grasa de silicona
+Grasa de silicona
+Grasa de silicona
+22 N.m
+0.2 – 0.3 g
+0.2 – 0.3 g
+0.2 – 0.3 g
+0.2 – 0.3 g
+10 N.m
+• Inspección del cáliper del freno
+• Rueda trasera è 3-21
+• Alinee las marcas de perforación del brazo del freno y de la leva del freno.
+
+===== PAGE 88 =====
+NOTAS
+
+===== PAGE 89 =====
+4-1
+XR190L
+4. SISTEMA ELÉCTRICO
+SISTEMA PGM-FI ................................................................................................................... 4-2
+SISTEMA DE ENCENDIDO .................................................................................................. 4-21
+ARRANQUE ELÉCTRICO .................................................................................................... 4-23
+BATERÍA/SISTEMA DE CARGA .......................................................................................... 4-27
+SISTEMA DE ILUMINACIÓN ................................................................................................ 4-28
+VELOCÍMETRO  ................................................................................................................... 4-34
+COMPONENTES ELÉCTRICOS  ......................................................................................... 4-37
+DIAGRAMA ELÉCTRICO – XR190L
+
+===== PAGE 90 =====
+4-2
+XR190L
+SISTEMA ELÉCTRICO
+SISTEMA PGM-FI
+ •  Consulte el “Manual de Taller Básico” para las siguientes informaciones. 
+– Características técnicas del PGM-FI y función de cada sensor.  
+– Diagnóstico de averías para el sistema PGM-FI. 
+– Informaciones del MCS (Sistema de Comunicación de la Motocicleta).
+ÍNDICE DE LOS CÓDIGOS DE DTC
+DTC
+Falla de la Función
+Síntoma/Función de Seguridad
+Página
+1-1
+Mal funcionamiento del sensor MAP
+• Baja tensión en el sensor MAP
+• Motor funciona normalmente
+è4-5
+1-2
+Mal funcionamiento del sensor MAP
+• Alta tensión en el sensor MAP 
+• Motor funciona normalmente
+è4-6
+7-1
+Mal funcionamiento del sensor EOT
+• Baja tensión en el sensor EOT
+• Diﬁcultad de arranque a bajas temperaturas
+è4-7
+7-2
+Mal funcionamiento del sensor EOT
+• Alta tensión en el sensor EOT
+• Diﬁcultad de arranque a bajas temperaturas
+è4-8
+8-1
+Mal funcionamiento del sensor TP
+• Baja tensión en el sensor TP
+• Aceleración inadecuada
+è4-9
+8-2
+Mal funcionamiento del sensor TP
+• Alta tensión en el sensor TP
+• Aceleración inadecuada
+è4-10
+9-1
+Mal funcionamiento del sensor IAT
+• Baja tensión en el sensor IAT
+• Motor funciona normalmente
+è4-11
+9-2
+Mal funcionamiento del sensor IAT
+• Alta tensión en el sensor IAT
+• Motor funciona normalmente
+è4-12
+12-1
+Mal funcionamiento del inyector
+• El motor no arranca
+•  Inyector de combustible, bomba de combustible 
+y bobina de encendido desactivados 
+è4-13
+21-1
+Falla en sensor de O2
+• Motor funciona normalmente
+è4-14
+29-1
+Mal funcionamiento de la IACV
+•  El motor muere, arranque difícil o ralentí 
+irregular 
+è4-15
+33-2
+Mal funcionamiento de la EEPROM del ECM
+•  El motor muere, arranque difícil o ralentí 
+irregular
+•  No mantiene los datos de autodiagnóstico
+•  No borra los datos de autodiagnóstico con el 
+conector SCS
+è4-16
+54-1
+Mal funcionamiento del sensor de inclinación del 
+chasis
+•  Baja tensión en el sensor de inclinación del 
+chasis 
+• El motor funciona normalmente
+• Función de apagado del motor no actúa
+è4-17
+54-2
+Mal funcionamiento del sensor de inclinación del 
+chasis 
+• Alta tensión del sensor de inclinación del chasis
+• El motor funciona normalmente
+• Función de apagado del motor no actúa
+è4-18
+
+===== PAGE 91 =====
+4-3
+XR190L
+SISTEMA ELÉCTRICO
+UBICACIÓN DEL SISTEMA PGM-FI 
+INTERRUPTOR DE ENCENDIDO 
+BOMBA DE COMBUSTIBLE 
+INYECTOR 
+IACV
+DLC
+ECM
+UNIDAD DE SENSORES
+– SENSOR MAP
+– SENSOR IAT
+– SENSOR TP 
+SENSOR CKP
+SENSOR EOT
+SENSOR DE O2 
+SENSOR DE 
+INCLINACIÓN 
+
+===== PAGE 92 =====
+4-4
+XR190L
+SISTEMA ELÉCTRICO
+DIAGRAMA DEL SISTEMA PGM-FI
+BATÉRIA
+REGULADOR/
+RECTIFICADOR
+INTERRUPTOR 
+DE ENCENDIDO
+R
+R
+R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl
+W/Bu
+Br/W
+Br/Bl
+Bu/W
+Bu/Bl
+G
+G
+G/Bl
+Y
+Bu
+P/Bl
+Bl/O
+Bl/R
+R/Bu
+Y/R
+Lg/Y
+Y
+Y/Bu
+Gr/Bu
+G/W
+Bu/Y
+W/Y
+Bl/W
+DLC
+IACV
+Bl/G
+R/W
+R/Bu
+Bl/R
+15A
+10A
+10A
+RELE DE 
+CORTE DE 
+LA CARGA
+BOMBA DE 
+COMBUSTIBLE
+INYECTOR
+CONECTOR DE 
+CURTO SCS
+SENSOR O2
+SENSOR 
+CKP
+SENSOR EOT
+SENSOR IAT
+SENSOR TP
+SENSOR MAP
+SENSOR DEL 
+ANGULO DE CHASIS
+SENSOR UNIT
+DTC
+El motor no arranca al 
+detectar el DTC
+Cause un cortocircuito 
+entre las terminales
+CONECTOR 33P DEL ECM
+(Lado de las terminales machos del ECM)
+
+===== PAGE 93 =====
+4-5
+XR190L
+SISTEMA ELÉCTRICO
+DIAGNÓSTICO DE AVERÍAS POR DTC 
+DTC 1-1 (BAJA TENSIÓN DEL SENSOR MAP)
+ • Protector del tanque de combustible è 3-8
+Diagrama del Sensor MAP
+Conector 5P de la Unidad de Sensores
+Conector 33P del ECM
+Y/R
+Y/R
+Lg/Y
+G/W
+Y/R
+G/W
+G/W
+Lg/Y
+Lg/Y
+Unidad de Sensores 
+(Sensor MAP)
+VCC
+5 V
+5 V
+PB
+SG
+ECM
+1. Inspección del Sistema del Sensor MAP
+Sí ▼
+• Veriﬁque la tensión en el sensor MAP con el MCS. 
+• ¿Indica la tensión de aproximadamente 0 V? 
+• Falla intermitente
+• Conector suelto o con mal contacto 
+No
+►
+2. Inspección de la Tensión de Entrada para Alimentación de la Unidad de Sensores
+Sí ▼
+1
+1
+ð
+ð
+• Conexión: Y/R (+) – G/W (–) 
+• ¿La tensión está entre 4,75 - 5,25 V?
+• Circuito abierto o cortocircuito en los Cables Y/R.
+•  Si no hay circuito abierto o cortocircuito, reemplace 
+el ECM por uno nuevo è  4-19, y verifique 
+nuevamente. 
+No
+►
+3. Inspección de la Tensión de Salida del Sensor MAP
+No ▼
+1
+• Conexión: Lg/Y (+) – G/W (–)
+• ¿La tensión está entre 3,80 - 5,25 V ?
+• Reemplace la unidad de sensores (sensor MAP) por 
+una nueva è 2-8, y veriﬁque nuevamente. 
+Sí
+►
+4. Inspección de la Línea de Salida del Sensor MAP
+• Veriﬁque con respecto a cortocircuito en el cable 
+Lg/Y.
+• Si no hay cortocircuito, reemplace el ECM por uno 
+nuevo è 4-19, y veriﬁque nuevamente
+
+===== PAGE 94 =====
+4-6
+XR190L
+SISTEMA ELÉCTRICO
+DTC 1-2 (TENSIÓN ALTA DEL SENSOR MAP) 
+ • Protector del tanque de combustible è 3-8
+Diagrama del Sensor MAP
+Conector 5P de la Unidad de Sensores
+Conector 33P del ECM
+Y/R
+Y/R
+G/W
+G/W
+Lg/Y
+Lg/Y
+ECM
+5 V
+5 V
+VCC
+PB
+SG
+Unidad de Sensores 
+(Sensor MAP)
+Y/R
+Lg/Y
+G/W
+1. Inspección del Sistema del Sensor MAP
+Sí ▼
+• Veriﬁque la tensión en el sensor MAP con el MCS. 
+• ¿Indica la tensión de aproximadamente 5 V? 
+• Falla intermitente
+• Conector suelto o con mal contacto
+No
+►
+2. Inspección del Sistema del Sensor MAP 2
+No ▼
+1
+• Instale un cable jumper entre las terminales 
+ Conexión: Lg/Y – G/W
+• Veriﬁque la tensión en el sensor MAP con el MCS.
+• ¿Indica la tensión de aproximadamente 0 V?
+• Reemplace la unidad de sensores (sensor MAP) por 
+una nueva è 2-8, y veriﬁque nuevamente 
+Sí
+►
+3. Inspección de la Línea de Salida del Sensor MAP
+• Veriﬁque con respecto a circuito abierto en el cable 
+Lg/Y e G/W.
+• Si no hay circuito abierto, reemplace el ECM por 
+uno nuevo è 4-19, y veriﬁque nuevamente.
+
+===== PAGE 95 =====
+4-7
+XR190L
+SISTEMA ELÉCTRICO
+DTC 7-1 (BAJA TENSIÓN EN EL SENSOR EOT) 
+ • Protector del tanque de combustible è 3-8
+Diagrama del Sensor EOT
+Conector 2P del Sensor EOT
+Conector 33P del ECM
+Y/Bu
+Y/Bu
+G/W
+G/W
+ECM
+5 V
+TO
+SG
+Y/Bu
+G/W
+Sensor EOT
+1. Inspección del Sistema del Sensor EOT
+Sí ▼
+• Veriﬁque la tensión del sensor EOT con el MCS.
+• ¿Indica la tensión de aproximadamente 0 V? 
+• Falla intermitente 
+• Conector suelto o con mal contacto
+No
+►
+2. Inspección del Sensor EOT
+Sí ▼
+1
+ð
+• Veriﬁque la tensión del sensor EOT con el MCS.
+• ¿Indica la tensión de aproximadamente 0 V?
+• Reemplace el sensor EOT por uno nuevo è 4-19, 
+y veriﬁque nuevamente.
+No
+►
+3. Inspección de la Línea de Salida del Sensor EOT 
+• Veriﬁque con respecto a cortocircuito en el cable Y/
+Bu.
+• Si no hay circuito abierto, reemplace el ECM por 
+uno nuevo è 4-19, y veriﬁque nuevamente. 
+
+===== PAGE 96 =====
+4-8
+XR190L
+SISTEMA ELÉCTRICO
+DTC 7-2 (ALTA TENSIÓN EN EL SENSOR EOT) 
+ • Protector del tanque de combustible è 3-8
+Diagrama del Sensor EOT
+Conector 2P del Sensor EOT
+Conector 33P del ECM
+G/W
+G/W
+Y/Bu
+Y/Bu
+5 V
+TO
+SG
+ECM
+Sensor EOT
+Y/Bu
+G/W
+1. Inspección del Sistema del Sensor EOT
+Sí ▼
+• Veriﬁque la tensión del sensor EOT con el MCS. 
+• ¿Indica la tensión de aproximadamente 5 V?
+• Falla intermitente
+• Conector suelto o con mal contacto 
+No
+►
+2. Inspección del Sensor EOT 
+No ▼
+1
+ð
+• Instale un cable jumper entre las terminales. 
+Conexión: Y/Bu – G/W
+• Veriﬁque la tensión del sensor EOT con el MCS
+• ¿Indica la tensión de aproximadamente 0 V?
+• Reemplace el sensor EOT por uno nuevo è 4-19 
+y veriﬁque nuevamente. 
+Sí
+►
+3. Inspección de la Línea de Salida del Sensor EOT
+• Veriﬁque con respecto a circuito abierto en el cable 
+Y/Bu e G/W.
+• Si no hay circuito abierto, reemplace el ECM por 
+uno nuevo è 4-19, y veriﬁque nuevamente. 
+
+===== PAGE 97 =====
+4-9
+XR190L
+SISTEMA ELÉCTRICO
+DTC 8-1 (BAJA TENSIÓN EN EL SENSOR TP) 
+ • Protector del tanque de combustible è 3-8
+Diagrama del sensor TP
+Conector 5P de la Unidad de Sensores
+Conector 33P del ECM
+Y/R
+G/W
+G/W
+Y/R
+Y
+Y
+ECM
+Unidad de Sensores 
+(Sensor TP)
+5 V
+VCC
+THL
+SG
+Y/R
+Y
+G/W
+1. Inspección del Sistema del Sensor TP
+Sí ▼
+• Veriﬁque la tensión del sensor TP con el MCS.
+• ¿Indica la tensión de aproximadamente 0 V?
+• Falla intermitente
+• Conector suelto o con mal contacto
+No
+►
+2. Inspección de la Tensión de Entrada para Alimentación de la Unidad de Sensores
+Sí ▼
+1
+1
+ð
+ð
+• Conexión: Y/R (+) – G/W (–)
+• ¿La tensión está entre 4,75 - 5,25 V?
+• Cable Y/R averiado
+• Si no hay circuito abierto o cortocircuito reemplace 
+el ECM por uno nuevo è  4-19, y verifique 
+nuevamente. 
+No
+►
+3. Inspección de la Línea de Salida del Sensor TP 
+No ▼
+• Veriﬁque con respecto a circuito abierto o cortocircuito 
+en el cable Y.
+• ¿Hay circuito abierto o cortocircuito?
+• Cable Y averiado 
+Sí
+►
+4. Inspección del Sensor TP
+• Reemplace la unidad de sensores (sensor TP) por 
+una nueva è 2-8
+• Borre los DTC.
+• Veriﬁque el sensor TP con el MCS.
+• Si indica el DTC 8-1, reemplace el ECM por uno 
+nuevo è 4-19, y veriﬁque nuevamente. 
+
+===== PAGE 98 =====
+4-10
+XR190L
+SISTEMA ELÉCTRICO
+DTC 8-2 (ALTA TENSIÓN EN EL SENSOR TP)
+ • Protector del tanque de combustible è 3-8
+Diagrama del sensor TP
+Conector 5P de la Unidad de Sensores
+Conector 33P del ECM
+Y/R
+Y/R
+G/W
+G/W
+Y
+Y
+5 V
+ECM
+Unidad de Sensores 
+(Sensor TP)
+VCC
+THL
+SG
+Y/R
+Y
+G/W
+1. Inspección del Sistema del Sensor TP
+Sí ▼
+• Veriﬁque la tensión del sensor TP con el MCS. 
+estando el acelerador totalmente cerrado.
+• ¿Indica la tensión de aproximadamente 5 V?
+• Veriﬁque la tensión del sensor TP con el MCS.
+• Estando el acelerador totalmente cerrado hasta 
+totalmente abierto
+• Si la tensión no aumenta continuamente, reemplace 
+la unidad de sensores (sensor TP) por una nueva 
+è 2-8, y veriﬁque nuevamente
+No
+►
+2. Inspección de la Línea de Tierra del Sensor TP
+Sí ▼
+• Veriﬁque con respecto a circuito abierto en el cable 
+G/W.
+• ¿No hay circuito abierto?
+• Cable G/W averiado
+No
+►
+3. Inspección del Sensor TP
+• Reemplace la unidad de sensores (sensor TP) por 
+una nueva è 2-8
+• Borre los DTC.
+• Veriﬁque el sensor TP con el MCS.
+• Si indica el DTC 8-2, reemplace el ECM por uno 
+nuevo è 4-19, y veriﬁque nuevamente. 
+
+===== PAGE 99 =====
+4-11
+XR190L
+SISTEMA ELÉCTRICO
+DTC 9-1 (BAJA TENSIÓN EN EL SENSOR IAT)
+ • Protector del tanque de combustible è 3-8
+Diagrama del Sensor IAT
+Conector 5P de la Unidad de Sensores
+Conector 33P del ECM
+G/W
+G/W
+Gr/Bu
+Gr/Bu
+5 V
+ECM
+Unidad de Sensores 
+(Sensor IAT)
+G/W
+Gr/Bu
+TA
+SG
+1. Inspección del Sistema del Sensor IAT
+Sí ▼
+• Veriﬁque la tensión del sensor IAT con el MCS.
+• ¿Indica la tensión de aproximadamente 0 V?
+• Falla intermitente
+• Conector suelto o con mal contacto 
+No
+►
+2. Inspección del Sensor IAT
+Sí ▼
+1
+ð
+• Veriﬁque la tensión del sensor IAT con el MCS.
+• ¿Indica la tensión de aproximadamente 0 V?
+• Reemplace la unidad de sensores (sensor IAT) por 
+una nueva è 2-8, y veriﬁque nuevamente. 
+No
+►
+3. Inspección de la Línea de Salida del Sensor IAT
+• Veriﬁque con respecto a cortocircuito en el cable Gr/
+Bu.
+• Si no hay circuito abierto, reemplace el ECM por 
+uno nuevo è 4-19, y veriﬁque nuevamente. 
+
+===== PAGE 100 =====
+4-12
+XR190L
+SISTEMA ELÉCTRICO
+DTC 9-2 (ALTA TENSIÓN EN EL SENSOR IAT)
+ • Protector del tanque de combustible è 3-8
+Diagrama del Sensor IAT
+Conector 5P de la Unidad de Sensores
+Conector 33P del ECM
+G/W
+G/W
+Gr/Bu
+Gr/Bu
+5 V
+ECM
+Unidad de Sensores 
+(Sensor IAT)
+G/W
+Gr/Bu
+TA
+SG
+1. Inspección del Sistema del Sensor IAT
+Sí ▼
+• Veriﬁque la tensión del sensor IAT con el MCS.
+• ¿Indica la tensión de aproximadamente 5 V?
+• Falla intermitente
+• Conector suelto o con mal contacto 
+No
+►
+2. Inspección del Sensor IAT
+No ▼
+1
+ð
+• Instale un cable jumper entre las terminales.
+ Conexión: Y/Bu – G/W
+• Veriﬁque la tensión del sensor IAT con el MCS.
+• ¿Indica la tensión de aproximadamente 0 V? 
+• Reemplace la unidad de sensores (sensor IAT) por 
+una nueva è 2-8, y veriﬁque nuevamente. 
+Sí
+►
+3. Inspección de la Línea de Entrada del Sensor IAT
+• Veriﬁque con respecto a circuito abierto en el cable 
+Gr/Bu e G/W.
+• Si no hay circuito abierto, reemplace el ECM por 
+uno nuevo è 4-19, y veriﬁque nuevamente. 
+
+===== PAGE 101 =====
+4-13
+XR190L
+SISTEMA ELÉCTRICO
+DTC 12-1 (INYECTOR) 
+ • Protector del tanque de combustible è 3-8
+Diagrama del Inyector
+Conector 2P del inyector 
+(lado del inyector)
+Conector 2P del inyector 
+(lado del cable)
+Conector 33P del ECM
+A
+B
+ECM
+Inyector
+Bl/R
+Bl/R
+P/Bl
+P/Bl
+P/Bl
+INJ
+De la bateria
+1. Inspección del Sistema del Inyector 
+Sí ▼
+• Veriﬁque el inyector con el MCS.
+• ¿Indica el DTC 12-1?
+• Falla intermitente
+• Conector suelto o con mal contacto 
+No
+►
+2. Inspección de la Tensión de Entrada en el Inyector
+Sí ▼
+1
+1
+ð
+ð
+• Conexión: Bl/Bu (+) – Tierra (–)
+• ¿Hay tensión de la batería?
+• Circuito abierto en el cable BI/R
+No
+►
+3. Inspección de la Línea de Señal del Inyector
+No ▼
+• Veriﬁque con respecto a circuito abierto o cortocircuito 
+en el cable P/W.
+• ¿Hay circuito abierto o cortocircuito?
+• Cable P/W averiado
+Sí
+►
+4. Inspección de la Resistencia del Inyector
+Sí ▼
+1
+• Conexión: A – B
+• ¿La resistencia está entre 11 – 13 Ω (24 °C)? 
+• Inyector averiado
+No
+►
+• Reemplace el ECM por uno nuevo è 4-19, y 
+veriﬁque nuevamente. 
+
+===== PAGE 102 =====
+4-14
+XR190L
+SISTEMA ELÉCTRICO
+DTC 21-1 (SENSOR O2)
+ • Protector del tanque de combustible è 3-8
+Diagrama del Sensor O2
+Conector 2P del Sensor O2
+Conector 33P del ECM
+Bl/W
+Bl/W
+ECM
+O2
+Bl/W
+Sensor O2
+1. Inspección del Sistema del Sensor de O2
+Sí ▼
+• Realice la prueba de rodaje del vehículo y veriﬁque 
+el sensor de O2 con el MCS.
+• ¿Indica el DTC 21-1?
+• Falla intermitente 
+• Mal contacto o conector ﬂojo
+No
+►
+2. Inspección del Circuito del Sensor de O2
+No ▼
+• Verifique con respecto a circuito abierto o 
+cortocircuito en el cable BI/W.
+• ¿Hay circuito abierto o cortocircuito?
+• Cable BI/W averiado
+Sí
+►
+3. Inspección del Sensor de O2
+• Remplace el sensor de O2 por uno nuevo. è 4-20 
+• Borre los DTC. 
+• Realice la prueba de rodaje del vehículo y veriﬁque 
+el sensor de O2 con el MCS. 
+• Si indica el DTC 21-1, reemplace el ECM por uno 
+nuevo è 4-19, y veriﬁque nuevamente.
+
+===== PAGE 103 =====
+4-15
+XR190L
+SISTEMA ELÉCTRICO
+DTC 29-1 (IACV)
+ • Protector del tanque de combustible è 3-8
+Diagrama de la IACV
+Conector 4P del IACV 
+(lado del IACV)
+Conector 4P del IACV 
+(lado del cable)
+Conector 33P del ECM
+Br/W
+Br/W
+Br/W
+Br/Bl
+Br/Bl
+Br/Bl
+Bu/W
+Bu/W
+Bu/W
+Bu/Bl
+Bu/Bl
+Bu/Bl
+ECM
+IACV1A
+IACV1B
+IACV2A
+IACV2B
+IACV
+1. Inspección del Sistema de la IACV
+Sí ▼
+• Veriﬁque la IACV con el MCS.
+• ¿Indica el DTC 29-1?
+• Falla intermitente
+• Conector suelto o con mal contacto 
+No
+►
+2. Inspección del Circuito de la IACV
+No ▼
+• Veriﬁque con respecto a circuito abierto o cortocircuito 
+en los cables Bu/W, Br/W, Br/Bl y Bu/Bl.
+• ¿Hay circuito abierto o cortocircuito?
+• Cables Bu/W, Br/W, Br/Bl o Bu/Bl averiados
+Sí
+►
+3. Inspección de la Resistencia de la IACV
+Sí ▼
+1
+1
+ð
+• Conexión: A – D, B – C
+• ¿La resistencia está entre 110 – 150 Ω (25°C)?
+• IACV averiada 
+No
+►
+4. Inspección de Cortocircuito en la IACV
+No ▼
+• Conexión: A – B, C – D
+• ¿Hay continuidad?
+• IACV averiada
+Sí
+►
+• Reemplace el ECM por uno nuevo è 4-19, y 
+veriﬁque nuevamente
+
+===== PAGE 104 =====
+4-16
+XR190L
+SISTEMA ELÉCTRICO
+DTC 33-2 (EEPROM)
+1. Inspección del Sistema de la EEPROM
+Sí ▼
+• Veriﬁque la EEPROM con el MCS.
+• ¿Indica el DTC 33-2?
+• Falla intermitente
+• Conector suelto o con mal contacto 
+No
+►
+• Reemplace el ECM por uno nuevo è 4-19, y 
+veriﬁque nuevamente. 
+
+===== PAGE 105 =====
+4-17
+XR190L
+SISTEMA ELÉCTRICO
+DTC 54-1 (BAJA TENSIÓN EN EL SENSOR DE INCLINACIÓN DEL CHASIS)
+ • Protector del tanque de combustible è 3-8
+Diagrama del sensor de inclinación del chasis
+Conector 3P del sensor 
+de inclinación del chasis
+Conector 33P del ECM
+G/W
+G/W
+R/Bu
+R/Bu
+Y/R
+Y/R
+ECM
+5 V
+5 V
+VCC
+BANK
+SG
+Sensor de inclinación 
+del chasis
+G/W
+R/Bu
+Y/R
+1. Inspección del Sistema del Sensor del Ángulo de Inclinación
+Sí ▼
+• Veriﬁque la tensión del sensor de inclinación del 
+chasis con el MCS.
+• ¿Indica la tensión de aproximadamente 0 V?
+• Falla intermitente
+• Conector suelto o con mal contacto 
+No
+►
+2. Inspección de la Tensión de Entrada para Alimentación del Sensor de Inclinación del Chasis
+Sí ▼
+1
+1
+ð
+ð
+• Conexión: Y/R (+) – G/W (–)
+• ¿Indica una tensión de cerca de 5 V?
+• Cable Y/R averiado
+• Si no hay circuito abierto o cortocircuito, reemplace 
+el ECM por uno nuevo è  4-19, y verifique 
+nuevamente. 
+No
+►
+3. Inspección de la Línea de Salida del Sensor de Inclinación del Chasis
+No ▼
+• Veriﬁque con respecto a cortocircuito en el cable 
+R/Bu.
+• ¿Hay cortocircuito?
+• Cable R/Bu averiado 
+Sí
+►
+4. Inspección del Sensor de Inclinación del Chasis
+• Remplace el sensor de inclinación del chasis por 
+uno nuevo. è 4-20
+• Borre los DTC.
+• Veriﬁque el sensor de inclinación del chasis con el 
+MCS.
+• Si indica el DTC 54-1, reemplace el ECM por uno 
+nuevo è 4-19, y veriﬁque nuevamente.
+
+===== PAGE 106 =====
+4-18
+XR190L
+SISTEMA ELÉCTRICO
+DTC 54-2 (ALTA TENSIÓN EN EL SENSOR DE INCLINACIÓN DEL CHASIS)
+ • Sensor de inclinación del chasis (Con el conector conectado) è 4-20
+Diagrama del sensor de inclinación del chasis
+Conector 3P del sensor 
+de inclinación del chasis
+Conector 33P del ECM
+G/W
+G/W
+G/W
+R/Bu
+R/Bu
+R/Bu
+Y/R
+Y/R
+Y/R
+Sensor de inclinación 
+del chasis
+ECM
+5 V
+5 V
+VCC
+BANK
+SG
+1. Inspección del Sistema del Sensor de Inclinación del Chasis
+Sí ▼
+• Veriﬁque la tensión del sensor de inclinación del 
+chasis con el MCS.
+• ¿Indica la tensión de aproximadamente 5 V?
+• Falla intermitente
+• Conector suelto o con mal contacto
+No
+►
+2. Inspección de la Tensión de Entrada para Alimentación del Sensor de Inclinación del Chasis
+Sí ▼
+1
+1
+ð
+ð
+• Conexión: Y/R (+) – G/W (–)
+• ¿Indica la tensión de aproximadamente 5 V?
+• Cable G/W averiado
+No
+►
+3. Inspección de la Línea de Salida del Sensor de Inclinación del Chasis
+No ▼
+• Veriﬁque con respecto a circuito abierto en el cable 
+R/Bu
+• ¿Hay circuito abierto? 
+• Cable R/Bu averiado
+Sí
+►
+4. Inspección del Sensor de Inclinación del Chasis
+• Remplace el sensor de inclinación del chasis por 
+uno nuevo. è 4-20
+• Borre los DTC.
+• Veriﬁque el sensor de inclinación del chasis con el 
+MCS.
+• Si indica el DTC 54-2, reemplace el ECM por uno 
+nuevo è 4-19, y veriﬁque nuevamente.
+
+===== PAGE 107 =====
+4-19
+XR190L
+SISTEMA ELÉCTRICO
+ECM
+SENSOR EOT
+15 N.m
+• Tapa lateral izquierda è 3-7
+• Inspección del circuito de alimentación y del tierra del ECM.
+• Inspección del Sensor EOT
+
+===== PAGE 108 =====
+4-20
+XR190L
+SISTEMA ELÉCTRICO
+SENSOR DE O2
+SENSOR DE INCLINACIÓN DEL CHASIS 
+25 N.m
+5.8 N.m
+• Protector del tanque de combustible è 3-8
+ 
+1  Quite el sensor de O2.
+ Llave para sensor de oxígeno: FRXM17 (Snap on) o equivalente
+• Protector del tanque de combustible è 3-8
+• Inspección del Sensor de Inclinación del Chasis
+
+===== PAGE 109 =====
+4-21
+XR190L
+SISTEMA ELÉCTRICO
+SISTEMA DE ENCENDIDO
+UBICACIÓN DEL SISTEMA DE ENCENDIDO 
+DIAGRAMA DEL SISTEMA DE ENCENDIDO
+INTERRUPTOR DE ENCENDIDO
+BOBINA DE 
+ENCENDIDO
+FUSIBLE PRINCIPAL 
+DE 15 A
+ECM
+CAJA DE 
+FUSIBLE 10 A
+BATERIA
+SENSOR CKP
+BUJIA DE ENCENDIDO
+15 A
+10 A
+INTERRUPTOR 
+DE ENCENDIDO
+R/Bu
+P/Bu
+Bl/R
+Bl/R
+Bl/R
+BOBINA DE 
+ENCENDIDO
+BUJIA DE ENCENDIDO
+ECM
+G
+G
+G/Bl
+W/Y
+Bu/Y
+REGULADOR/
+RECTIFICADOR
+BATERIA
+SENSOR CKP
+
+===== PAGE 110 =====
+4-22
+XR190L
+SISTEMA ELÉCTRICO
+SUSTITUCIÓN DE LA BUJÍA DE ENCENDIDO
+INSPECCIÓN
+PICO DE TENSIÓN EN EL LADO PRIMARIO DE LA BOBINA DE ENCENDIDO
+DISTRIBUICAO DE ENCENDIDO
+• Inspección de la bujía de encendido
+• Consulte "Manual de Taller Básico” para informaciones 
+detalladas sobre la inspección del pico de tensión en el 
+lado primario de la bobina de encendido.
+• Apoyar el vehículo sobre una superﬁcie nivelada.
+• Protector del tanque de combustible è 3-8
+• Desenchufe el cable de la bujía de encendido.
+• 1  Conecte una bujía de encendido en buenas condiciones 
+al cable y ponga a tierra con el tornillo de la culata, de la 
+misma manera que en la prueba de chispa.
+• 2  Con los cables del lado primario de la bobina de 
+encendido conectados, conecte un adaptador para pico de 
+tensión a la terminal primaria de la bobina de encendido y 
+ponga a tierra.
+ CONEXIÓN: P/Bu (+) – Tierra (–)
+• Veriﬁque la tensión inicial en este momento.
+ TENSIÓN ESTÁNDAR: Tensión de la batería
+• Coloque la transmisión en punto muerto.
+• Accione el motor por el motor de arranque y mida el pico 
+de tensión del circuito primario de la bobina de encendido.
+ PICO DE TENSIÓN: Mínimo de 100 V
+• Calentar el motor a la temperatura normal de funcionamiento
+• Tapa del distribuidor de encendido – 2-14
+• Conecte la luz de comprobación de la distribución al cable 
+de la bujía.
+• Ponga en marcha el motor y déjelo a ralentí.
+VELOCIDAD DE RALENTÍ: 1.400 ± 100 min-
+• La distribución del encendido es correcta si la marca "F" 
+del estator queda alineada con la marca de referencia de 
+la tapa izquierda del motor.
+16 N.m
+
+===== PAGE 111 =====
+4-23
+XR190L
+SISTEMA ELÉCTRICO
+ARRANQUE ELÉCTRICO
+UBICACIÓN DEL SISTEMA DE ARRANQUE ELÉCTRICO
+DIAGRAMA DEL SISTEMA DE ARRANQUE ELÉCTRICO
+INTERRUPTOR 
+DEL EMBRAGUE
+INTERRUPTOR DEL 
+RELE DE ARRANQUE
+MOTOR DE ARRANQUE
+INTERRIPTOR DEL NEUTRO
+BATERIA
+CAJA DE FUSIBLE 10 A
+INTERRUPTOR DE ENCENDIDO
+MOTOR DE 
+ARRANQUE 
+INTERRUPTOR 
+DEL RELE DE 
+ARRANQUE
+BATERIA
+INTERRIPTOR 
+DEL NEUTRO
+INTERRUPTOR 
+DE ARRANQUE
+INTERRUPTOR 
+DEL EMBRAGUE
+FUSIBLE 
+PRINCIPAL 
+DE 15 A
+REGULADOR/
+RECTIFICADOR
+INTERRUPTOR DE ENCENDIDO
+INTERRUPTOR DE ARRANQUE
+FUSIBLE PRINCIPAL DE 15 A
+R/Bu
+10 A
+Bl/R
+Y/R
+R/W
+R
+R
+G/R
+Lg/R
+Bl
+G
+
+===== PAGE 112 =====
+4-24
+XR190L
+SISTEMA ELÉCTRICO
+DIAGNÓSTICO DE AVERÍAS EN EL ARRANQUE ELÉCTRICO
+EL MOTOR DE ARRANQUE NO FUNCIONA
+ • Protector del tanque de combustible è 3-8
+ • Conector o terminales relacionados sueltos o con mal contacto
+ • Condiciones de la batería 
+ • Fusible quemado
+Diagrama del Conector
+1
+ Conector 4P del interruptor del rele de arranque (vista desde el lado del mazo)
+G/R
+Y/R
+1. Inspección del Circuito de Entrada de la Bobina del Relé del Motor de Arranque
+Sí ▼
+ð
+1
+• Conexión: Y/R (+) – Tierra (–)  
+(Conector conectado)
+• Mantenga presionado el botón de arranque.
+• ¿Hay tensión de la batería?
+• Inspeccione lo siguiente.
+ – Interruptor de encendido
+ – Interruptor de arranque
+ – Regulador/rectiﬁcador
+ –  Circuito relacionado al circuito de entrada de la 
+bobina del relé del motor de arranque
+No
+►
+2. Inspección del Circuito del Tierra de la Bobina del Relé del Motor de Arranque
+Sí ▼
+1
+1
+ð
+• Conexión: G/R – Tierra
+• Accione la palanca del embrague y la transmisión 
+para la posición neutra
+• ¿Hay continuidad?
+• Inspeccione lo siguiente.
+ – Diodo
+ – Interruptor del embrague
+ – Interruptor de punto muerto 
+ –  Circuito relacionado al circuito tierra de la bobina 
+del relé del motor de arranque
+No
+►
+3. Inspección del Relé del Motor de Arranque
+Sí ▼
+• Reemplace el relé del motor de arranque por uno 
+nuevo, y veriﬁque nuevamente
+• ¿El motor de arranque es accionado?
+• Relé del motor de arranque original averiado
+No
+►
+• Veriﬁque con respecto a cortocircuito o circuito 
+abierto en el cable del motor de arranque.
+• Si no hay falla en el circuito, reemplace el motor de 
+arranque por uno nuevo, y veriﬁque nuevamente. 
+
+===== PAGE 113 =====
+4-25
+XR190L
+SISTEMA ELÉCTRICO
+MOTOR DE ARRANQUE 
+• Inspección del arranque eléctrico
+
+===== PAGE 114 =====
+4-26
+XR190L
+SISTEMA ELÉCTRICO
+INTERRUPTOR DE PUNTO MUERTO
+• Tapa del piñón de transmisión è 3-9
+
+===== PAGE 115 =====
+4-27
+XR190L
+SISTEMA ELÉCTRICO
+BATERÍA/SISTEMA DE CARGA
+UBICACIÓN DE LA BATERÍA/SISTEMA DE CARGA 
+DIAGRAMA DE LA BATERÍA/SISTEMA DE CARGA
+INTERRUPTOR DE ENCENDIDO
+REGULADOR/
+RECTIFICADOR 
+BATERÍA 
+ALTERNADOR 
+FUSIBLE PRINCIPAL DE 15A 
+ALTERNADOR 
+REGULADOR/
+RECTIFICADOR 
+BATERÍA
+R
+R
+G
+G
+W
+15 A
+• Informaciones de la batería/sistema de carga, diagnóstico de averías e inspección
+
+===== PAGE 116 =====
+4-28
+XR190L
+SISTEMA ELÉCTRICO
+BATERÍA 
+SISTEMA DE ILUMINACIÓN
+• Tapa lateral izquierda è 3-7
+• Carenado delantero è 3-3
+• Haz del faro è 4-33
+
+===== PAGE 117 =====
+4-29
+XR190L
+SISTEMA ELÉCTRICO
+19 N.m
+• Carenado central delantero è 3-5
+• Guardabarros trasero è 3-6
+
+===== PAGE 118 =====
+4-30
+XR190L
+SISTEMA ELÉCTRICO
+REEMPLAZO DE LA LÁMPARA 
+• Agarradero trasero è 3-6
+• Carenado delantero è 3-3
+
+===== PAGE 119 =====
+4-31
+XR190L
+SISTEMA ELÉCTRICO
+• Carenado delantero è 3-3
+
+===== PAGE 120 =====
+4-32
+XR190L
+SISTEMA ELÉCTRICO
+
+===== PAGE 121 =====
+4-33
+XR190L
+SISTEMA ELÉCTRICO
+HAZ DEL FARO
+Levanta el haz
+Baja el haz
+
+===== PAGE 122 =====
+4-34
+XR190L
+SISTEMA ELÉCTRICO
+VELOCÍMETRO 
+• Carenado delantero è 3-3 
+1.2 N.m
+
+===== PAGE 123 =====
+4-35
+XR190L
+SISTEMA ELÉCTRICO
+SENSOR DE NIVEL DE COMBUSTIBLE 
+R
+Bl
+R
+Bl
+Y
+G
+• Unidad de la bomba de combustible è 2-4
+• 1  Pase los cables del sensor del nivel de combustible correctamente.
+
+===== PAGE 124 =====
+4-36
+XR190L
+SISTEMA ELÉCTRICO
+INDICACIÓN DE FALLA DEL MEDIDOR DE COMBUSTIBLE
+LAS AGUJAS DEL MEDIDOR DE COMBUSTIBLE NO SI MUEVE
+ • Unidad de la bomba de combustible è 2-4
+ • Conector o terminales relacionados sueltos o con mal contacto
+A
+B
+VACÍO
+LLENO
+1. Inspección del Circuito del Sensor de Nivel de Combustible
+No ▼
+• Veriﬁque los cables Y/W y G.
+• ¿No hay circuito abierto o cortocircuito?
+• Cables Y/W y G averiados 
+Sí
+►
+2. Inspección del Sensor de Nivel de Combustible
+Sí ▼
+• Conexión: A – B
+• Estándar: LLENO 6 – 10 Ω, VACÍO 90 – 100 Ω.
+• ¿Hay resistencia estándar? 
+• Reemplace el sensor del nivel del combustible por 
+uno nuevo è 4-35, y veriﬁque nuevamente. 
+No
+►
+• Reemplace el medidor por uno nuevo è 4-34, y 
+veriﬁque nuevamente. 
+
+===== PAGE 125 =====
+4-37
+XR190L
+SISTEMA ELÉCTRICO
+COMPONENTES ELÉCTRICOS 
+INTERRUPTOR DE ENCENDIDO
+BOCINA 
+• Puente superior è 3-19 
+
+===== PAGE 126 =====
+NOTAS
+
+===== PAGE 127 =====
+5-1
+XR190L
+Addendum
+5. XR190CT-H (2017) ADDENDUM
+ALGUNAS PALABRAS SOBRE SEGURIDAD ...................................................................... 5-2
+COMO USAR ESTE MANUAL ............................................................................................... 5-3
+IDENTIFICACIÓN DEL MODELO  .......................................................................................... 5-4
+ESPECIFICACIONES ............................................................................................................. 5-5
+VALORES DE PAR DE APRIETE ........................................................................................... 5-7
+LISTA DE HERRAMIENTAS ESPECIALES ........................................................................... 5-8
+PASAJE DE CABLES Y CABLEADO .................................................................................... 5-9
+TABLA DE MANTENIMIENTO (LA Type) ............................................................................ 5-14
+TABLA DE MANTENIMIENTO (U Type)  ............................................................................. 5-15
+CARENADOS ....................................................................................................................... 5-16
+SOPORTE LATERAL DIRECHO .......................................................................................... 5-18
+RUEDA DELANTERA  .......................................................................................................... 5-19
+HORQUILLA ......................................................................................................................... 5-21
+COLUMNA DE DIRECCIÓN  ................................................................................................ 5-23
+SUSPENSIÓN TRASERA  .................................................................................................... 5-24
+FRENO DELANTERO ........................................................................................................... 5-26
+ARRANQUE ELÉCTRICO .................................................................................................... 5-27
+VELOCÍMETRO .................................................................................................................... 5-27
+DIGRAMA ELÉCTRICO – XR190CT-H (LA, U)
+
+===== PAGE 128 =====
+5-2
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+Algunas palabras sobre seguridad
+INFORMACIONES DE SERVICIO
+Las informaciones de servicios y reparaciones contenidas en este manual se destinan al uso por técnicos profesionales 
+caliﬁcados.
+Intentar efectuar servicios o reparaciones sin la capacitación, herramientas y equipos correctos podría causarle heridas 
+a usted o a otras personas. También podría dañar el vehículo o crear una condición insegura.
+Este manual describe los métodos y procedimientos correctos para efectuar servicios, mantenimiento y reparaciones. 
+Algunos procedimientos requieren el uso de herramientas especialmente proyectadas y equipo dedicado. Cualquier 
+persona que pretenda usar una pieza de repuesto, procedimiento de servicio o una herramienta que no sean 
+recomendados por Honda deberá determinar los riesgos a su seguridad personal y a la operación segura del vehículo.
+Si usted necesita reemplazar una pieza, use piezas genuinas Honda con el número de pieza correcto o una pieza 
+equivalente. Recomendamos enfáticamente que usted no utilice piezas de repuesto de calidad inferior.
+PARA LA SEGURIDAD DE SU CLIENTE
+Servicios y mantenimiento correctos son esenciales para la seguridad del cliente y la ﬁabilidad del vehículo. Cualquiera 
+error o descuido durante los servicios en un vehículo pueden resultar en operación defectuosa, daño al vehículo o 
+heridas a otras personas.
+!  ADVERTENCIA
+Servicios o reparaciones incorrectos pueden crear una condición insegura que puede hacer con que su cliente sea 
+herido gravemente o muerto.
+Siga cuidadosamente los procedimientos y precauciones presentados en este manual y otros materiales de servicios.
+PARA SU SEGURIDAD
+Como este manual se destina a técnicos de servicios profesionales, no son suministradas advertencias acerca de 
+muchas prácticas de seguridad básicas de talleres (p.ej., Piezas calientes – use guantes). Si usted no ha recibido 
+capacitación de seguridad para talleres o no se siente seguro en cuanto a su conocimiento de prácticas de servicio 
+seguras, recomendamos que no intente efectuar los procedimientos descritos en este manual.
+Algunas de las informaciones de seguridad de servicios más importantes se suministran a continuación. Sin embargo, no 
+podemos alertarlo en cuanto a todos los riesgos concebibles que puedan surgir durante la realización de procedimientos 
+de servicio y reparaciones. Solamente usted podrá decidir si debe o no realizar una tarea determinada.
+!  ADVERTENCIA
+La falla en seguir correctamente las instrucciones y precauciones puede hacer con que usted sufra heridas graves o muera.
+Siga cuidadosamente los procedimientos y precauciones presentados en este manual.
+PRECAUCIONES IMPORTANTES DE SEGURIDAD
+Asegúrese de poseer una comprensión clara de todas las prácticas básicas de seguridad en el taller y de usar ropas 
+y equipos de seguridad apropiados. Cuando efectúe cualquier tarea de servicio, sea especialmente cuidadoso en 
+cuanto a lo siguiente:
+•  Lea todas las instrucciones antes de empezar y asegúrese de poseer las herramientas, las piezas de repuesto o 
+reparación y las habilidades requeridas para efectuar las tareas de manera segura y completa.
+•  Proteja sus ojos usando anteojos de seguridad, anteojos de protección o protectores faciales siempre que martille, 
+perfore, esmerile, haga fuerza con palanca o trabaje en cerca de aire o líquidos a presión y resortes u otros componentes 
+con energía almacenada. Si tiene cualquier duda, use protección ocular.
+•  Use otras ropas de protección cuando sea necesario, por ejemplo, guantes o zapatos de seguridad. Manipular piezas 
+calientes o puntiagudas puede causar quemaduras o cortes graves. Antes de sujetar algo que aparentemente podrá 
+lastimarlo, pare y colóquese guantes.
+•  Protéjase y a las otras personas siempre que eleve el vehículo por encima del suelo. Siempre que usted eleve el 
+vehículo, sea con un cabrestante o un gato mecánico, asegúrese de que siempre esté apoyado ﬁrmemente. Use 
+caballetes ajustables.
+Asegúrese de que el motor esté apagado antes de iniciar cualesquier procedimientos de servicio, a menos que la 
+instrucción lo oriente a actuar de otro modo. Esto ayudará a eliminar diferentes riesgos potenciales:
+•  Envenenamiento por monóxido de carbono proveniente del escape del motor. Asegúrese de que exista ventilación 
+adecuada siempre que ponga el motor en funcionamiento.
+•  Quemaduras por piezas o líquido de refrigeración calientes. Deje que el motor y el sistema de escape se enfríen 
+antes de trabajar en esas áreas.
+•  Herida por piezas móviles. Si la instrucción lo orienta a poner el motor en funcionamiento, asegúrese de que sus 
+manos, dedos y ropas estén fuera del camino.
+Vapores de gasolina y gas hidrógeno provenientes de las baterías son explosivos. Para reducir la posibilidad de un 
+incendio o explosión, tenga cuidado al trabajar cerca de gasolina o baterías.
+•  Use solamente un disolvente no inﬂamable para limpiar las piezas. Nunca use gasolina.
+•  Nunca drene o almacene gasolina en un recipiente abierto.
+•  Mantenga todos los cigarrillos, chispas y llamas alejados de la batería y todas las piezas relacionadas al combustible.
+
+===== PAGE 129 =====
+Addendum
+5-3
+XR190L
+XR190CT-H (2017) ADDENDUM
+Como usar este manual
+Este material es un “Manual de Taller Espec” (Especíﬁco). Las informaciones de servicios y reparaciones para este 
+modelo están descritas en este manual como informaciones especíﬁcas. Consulte el “Manual de Taller Básico” para 
+instrucciones e informaciones de mantenimiento básicas y comunes.
+Siga las recomendaciones de la Tabla de Mantenimiento para asegurar que el vehículo esté en perfectas condiciones 
+de funcionamiento.
+La ejecución de los mantenimientos iniciales es de gran importancia. Compensa el desgaste inicial que ocurre durante 
+el periodo de ablande.
+Encuentre la sección deseada en esta página y, enseguida, consulte el índice en la primera página de la sección.
+Su seguridad y la de otras personas es muy importante. Para ayudarlo a tomar decisiones con base en informaciones, 
+suministramos mensajes y otras informaciones de seguridad a lo largo de este manual. Lógicamente, no es práctico 
+o posible alertarlo de todos los riesgos asociados con la realización de servicios en este vehículo.
+Usted debe usar su propio sentido común.
+Encontrará informaciones importantes de seguridad en una variedad de formas incluyendo:
+• Etiquetas de Seguridad – en el vehículo
+•  Mensajes de Seguridad – precedidas por un símbolo de alerta de seguridad 
+ y una de las tres palabras de 
+señalización, PELIGRO, ADVERTENCIA, o ATENCIÓN. Estas palabras de señalización signiﬁcan:
+PELIGRO : Usted SERÁ MUERTO o HERIDO GRAVEMENTE si no sigue las instrucciones.
+ADVERTENCIA: Usted podrá ser MUERTO o HERIDO GRAVEMENTE si no sigue las instrucciones.
+ATENCIÓN: Usted podrá ser HERIDO si no sigue las instrucciones.
+• Instrucciones – cómo efectuar servicios en este vehículo correctamente y de manera segura.
+Conforme usted lee este manual, encontrará informaciones que son precedidas por un símbolo 
+AVISO . La ﬁnalidad 
+de este mensaje es ayudar a prevenir daños a su vehículo, propiedades de terceros o el ambiente.
+TODAS LAS INFORMACIONES, ILUSTRACIONES, INSTRUCCIONES Y ESPECIFICACIONES INCLUIDAS EN ESTA 
+PUBLICACIÓN SON BASADAS EN LAS INFORMACIONES MÁS RECIENTES DISPONIBLES EN LA OCASIÓN 
+DE LA APROBACIÓN DE LA CONFECCIÓN DEL MANUAL. Moto Honda da Amazônia Ltda. SE RESERVA EL 
+DERECHO DE ALTERAR LAS CARACTERÍSTICAS DE LA MOTOCICLETA EN CUALQUIER MOMENTO Y SIN 
+PREVIO AVISO, NO INCURRIENDO, ASÍ, EN OBLIGACIONES DE CUALQUIER ESPECIE. NINGUNA PARTE 
+DE ESTA PUBLICACIÓN PUEDE SER REPRODUCIDA SIN PERMISO POR ESCRITO. ESTE MANUAL FUE 
+ELABORADO PARA PERSONAS QUE TIENEN CONOCIMIENTOS BÁSICOS SOBRE EL MANTENIMIENTO DE 
+LAS MOTOCICLETAS, MOTONETAS, O CUADRICICLOS HONDA.
+
+===== PAGE 130 =====
+5-4
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+NÚMERO DE IDENTIFICACIÓN DEL 
+VEHÍCULO 
+ETIQUETA DE COLOR
+NÚMERO DE SERIE DEL MOTOR
+IDENTIFICACIÓN DEL MODELO 
+• Nombre del modelo: XR190CT-H
+Código/Tipo
+Destino
+LA
+Latin America
+U
+Australia, New Zealand, South Africa
+
+===== PAGE 131 =====
+Addendum
+5-5
+XR190L
+XR190CT-H (2017) ADDENDUM
+ESPECIFICACIONES
+ESPECIFICACIONES TÉCNICAS
+ÍTEM
+ESPECIFICACIONES
+DIMENSIONES
+Largo total
+2.103 mm
+Ancho total
+842 mm
+Altura total
+1,127 mm
+Entre ejes
+1,369 mm
+Altura del asiento
+827 mm
+Altura del descansapie
+292 mm
+Altura libre del suelo
+237 mm
+Peso en orden de marcha
+137 kg
+Capacidad de peso máximo
+95 kg
+CHASIS
+Tipo del chasis
+Tipo cuna semidoble
+Suspensión delantera
+Horquilla telescópica
+Carrera del eje delantero
+160 mm
+Suspensión trasera
+Mono Shock
+Carrera del eje trasero
+151 mm 
+Tamaño del neumático delantero
+2.75 – 21 45M
+Tamaño del neumático trasero
+90/100-18M/C 54P
+Marca/Modelo del neumático delantero
+CM-725 (CHENG SHIN)
+Marca/Modelo del neumático trasero
+CM-726(CHENG SHIN)
+Freno delantero
+Freno hidráulico a disco
+Freno trasero
+Zapata
+Ángulo de avance
+27°10’
+Trail
+101 mm
+Capacidad del tanque de combustible
+12,0 litros
+Capacidad de la reserva del tanque de combustible
+3,9 litros
+MOTOR
+Disposición del cilindro
+Monocilíndrico inclinado a15° de la vertical
+Diámetro y carrera
+61,000 x 63,096 mm
+Cilindrada
+184.43 cm3
+Relación de compresión
+9,5: 1
+Tren de válvulas
+Accionado por corriente, OHC
+Válvula de admisión
+abre
+0° APMS en apertura de 1 mm
+cierra
+25° DPMI en apertura de 1 mm
+Válvula de escape
+abre
+30° APMI en apertura de 1 mm
+cierra
+-5° PMS en apertura de 1 mm
+Sistema de lubricación
+Forzado por bomba de aceite y cárter húmedo
+Tipo de la bomba de aceite
+Trocoidal
+Sistema de Refrigeración
+Enfriado por aire
+Sistema de ﬁltración de aire
+Elemento de papel viscoso
+Peso en seco del motor
+29,6 kg
+Sistema de control de emisiones
+Sistema de control de emisiones de la carcasa de 
+motor con catalizador de tres vías
+SISTEMA DE 
+ALIMENTACIÓN 
+Tipo
+PGM-FI
+Cavidad de la válvula de aceleración
+30 mm
+
+===== PAGE 132 =====
+5-6
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+ÍTEM
+ESPECIFICACIONES
+SISTEMA DE 
+TRANSMISIÓN
+Sistema de Embrague
+Multidiscos en baño de ace
+Sistema de accionamiento del embrague
+Por cable
+Transmisión
+5 velocidades
+Reducción primaria
+3,136 (69/22)
+Reducción ﬁnal
+3,467 (48/16)
+Relación de transmisión
+1ª
+2,785 (39/14)
+2ª
+1,789 (34/19)
+3ª
+ 1,368 (26/19)
+4ª
+1,090 (24/22)
+5ª
+0,928 (26/28)
+Sistema de cambio de marchas
+Sistema de retorno operado por el pie zquierdo 
+1 - N - 2 - 3 - 4 - 5 
+SISTEMA 
+ELÉCTRICO
+Sistema de encendido
+Totalmente transistorizado
+Sistema de arranque
+Arranque eléctrico 
+Sistema de carga
+Alternador de salida monofásica
+Regulador/rectiﬁcador
+Cargamento de media onda monofásica y SCR 
+abierto
+Sistema de Iluminación
+Alternador
+ESPECIFICACIONES DE ALIMENTACIÓN Y MOTOR
+CULATA/VÁLVULAS
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Árbol de levas
+Altura del lóbulo de comando
+ADM
+33,977 – 34,217
+33,947
+ESC
+33,807 – 34,047
+33,777
+ESPECIFICACIONES DE CHASIS
+RUEDA DELANTERA/SUSPENSIÓN
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Horquilla
+Líquido recomendado
+CN10#
+–
+Nivel de líquido
+140 mm
+–
+Capacidad de ﬂuido
+420 cm3
+–
+RUEDA TRASERA
+Unit: mm
+ÍTEM
+ESTÁNDAR
+LÍMITE
+Tamaño/eslabones de la cadena de transmisión
+428HO-132LE
+–
+
+===== PAGE 133 =====
+Addendum
+5-7
+XR190L
+XR190CT-H (2017) ADDENDUM
+VALORES DE PAR DE APRIETE
+• Cada ﬁjador debe ser apretado con el valor de par de apriete estándar, excepto los ﬁjadores con valor de par de 
+apriete especiﬁcado.
+• CANT.: Cantidad, DIA: Diámetro de la rosca (mm), PAR: Par de Apriete (N.m) 
+PAR DE APRIETE ESTÁNDAR
+TIPO DE FIJADOR
+TRQ
+TIPO DE FIJADOR
+TRQ
+Tornillo embridado y tuerca 5 mm
+5,2
+Tornillo Phillips 5 mm
+4,2
+Tornillo embridado y tuerca 6 mm
+10
+Tornillo Phillips 6 mm
+9,0
+Tornillo embridado y tuerca 8 mm
+22
+Tornillo embridado 6 mm
+12
+Tornillo embridado y tuerca 10 mm
+34
+Tornillo embridado y tuerca 8mm
+27
+Tornillo embridado y tuerca 12 mm
+54
+Tornillo embridado y tuerca 10 mm
+39
+SOPORTE LATERAL
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de la articulación del soporte lateral
+1
+10
+10
+è 5-18
+Tuerca de la articulación del soporte lateral
+1
+10
+39
+Tuerca autoblocante è 5-18
+RUEDA DELANTERA
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tuerca del eje delantero
+1
+12
+59
+Tornillo el disco del freno delantero
+5
+6
+20
+Tornillo revestido (ALOC), reemplace 
+por por uno nuevo.
+HORQUILLA DE LA SUSPENSIÓN
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de ﬁjación del puente superior
+4
+8
+20
+Tornillo de ﬁjación del puente inferior
+4
+8
+32
+Tornillo de la manguera de freno
+2
+6
+12
+Tornillo de la horquilla de la suspensión
+2
+27
+22
+Tornillo Allen de la horquilla de la suspensión
+2
+8
+20
+Aplique traba química.
+SUSPENSIÓN TRASERA
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tuerca de la articulación del amortiguador 
+(lado del bastidor)
+1
+10
+44
+Tuerca autoblocante
+Tuerca de la articulación del amortiguador 
+(lado del brazo del amortiguador)
+1
+10
+44
+Tuerca autoblocante
+Tuerca del brazo del amortiguador 
+(lado del del brazo oscilante)
+1
+10
+44
+Tuerca autoblocante
+Tornillo superior del amortiguador
+1
+10
+44
+Tuerca inferior del amortiguador
+1
+10
+44
+Tuerca autoblocante
+Tuerca de la articulación del brazo oscilante
+1
+14
+88
+Tuerca autoblocante
+Tornillo del deslizador de la cadena de transmisión
+1
+5
+6,0
+FRENO DELANTERO
+ÍTEM
+CANT.
+DIA
+TRQ
+OBSERVACIONES
+Tornillo de la articulación de la palanca del freno
+1
+6
+1,3
+Tuerca de la articulación de la palanca del freno
+1
+6
+5,9
+Tornillos del interruptor de la luz del freno delantero
+1
+4
+1,2
+
+===== PAGE 134 =====
+5-8
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+LISTA DE HERRAMIENTAS ESPECIALES
+TÍTULO
+Nº DE LA HERRAMIENTA
+NOMBRE DE LA HERRAMIENTA
+Combustible y Motor
+07406-0040004
+Medidor de presión de combustible
+070MJ-K260100
+Conjunto de accesorios del manómetro de combustible
+070MF-KVS0300
+Extractor de la carcasa de la bomba de combustible
+070PZ-ZY30100
+Conector SCS
+07708-0030200
+Llave de traba de la tuerca, 10 x 12 mm
+07908-KE90000
+Llave de ajuste del botador, 3 x 4 mm
+070MG-0010100
+Limitador del tensor
+07757-0010000
+Compresor del resorte de la válvula
+07984-MA60001
+Escariador de la guía de válvula, 5,0 mm
+07942-MA60000
+Instalador de la guía de la válvula, 4,8 mm
+07724-0010200
+Traba para engranaje
+07GMB-KT70101
+Fijador del cubo del embrague
+07725-0040001
+Fijador de volante del motor
+07933-KM10001
+Extractor del volante del motor
+Chasis
+07746-0050300
+Cabeza extractora de rodamiento, 15 mm
+07746-0050100
+Eje extractor de rodamiento
+07746-0010200
+Accesorio, 37 x 40 mm
+07746-0040200
+Guía, 15 mm
+07749-0010000
+Instalador
+07748-0010001
+Extractor del retén de aceite
+07747-0010100
+Peso del instalador del retén de la horquilla de la suspensión
+07747-0010300
+Accesorio del instalador del retén de la horquilla de la 
+suspensión
+07747-0010400
+Accesorio del instalador del retén de la horquilla de la 
+suspensión
+07916-KA50100
+Llave para contratuerca
+07746-0050500         
+Cabeza extractora de rodamiento, 17 mm
+07746-0040400
+Guía, 17 mm
+07953-MJ10000
+Conjunto del extractor de pista
+07746-0010300
+Accesorio, 42 x 47 mm
+07914-SA50001
+Alicates para anillo elástico
+
+===== PAGE 135 =====
+Addendum
+5-9
+XR190L
+XR190CT-H (2017) ADDENDUM
+5 – 10 mm
+CABLEADO DEL INTERRUPTOR 
+DEL TABLERO DE INSTRUMENTOS
+CABLEADO 
+DEL FARO
+CABLEADO DEL 
+INTERRUPTOR 
+IZQUIERDO DEL 
+MANILLAR
+CABLEADO DEL 
+INTERRUPTOR 
+IZQUIERDO DEL 
+MANILLAR
+CABLEADO 
+PRINCIPAL
+INTERIOR DE LOS CONECTORES:
+•  CONECTOR 9P DEL MANILLAR IZQUIERDO
+•  CABLEADO DEL INTERRUPTOR IZQUIERDO 
+DEL MANILLAR
+CABLEADO PRINCIPAL
+INTERIOR DE LOS CONECTORES:
+•  INTERRUPTOR 6P DEL MANILLAR 
+IZQUIERDO
+•  CABLEADO DEL INTERMITENTE DELANTERO 
+IZQUIERDO
+•  CABLEADO DEL INTERMITENTE DELANTERO 
+DERECHO 
+•  CABLE TIERRA DEL INTERMITENTE 
+DELANTERO
+CABLEADO 
+PRINCIPAL
+CABLEADO 
+DEL 
+INTERMITENTE 
+CABLEADO DEL INTERRUPTOR 
+DERECHO DEL MANILLAR
+CABLEADO DEL INTERRUPTOR 
+DERECHO DEL MANILLAR
+PASAJE DE CABLES Y CABLEADO
+
+===== PAGE 136 =====
+5-10
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+2 – 4 mm
+CABLE A DEL ACELERADOR
+CABLE B DEL ACELERADOR
+CABLEADO DEL 
+VELOCÍMETRO
+MARCA BLANCA 
+ÁREA DE MARCA 
+BLANCA  (15 mm)
+
+===== PAGE 137 =====
+Addendum
+5-11
+XR190L
+XR190CT-H (2017) ADDENDUM
+45° ± 5°
+Ser golpeado.
+INTERIOR DE LOS CONECTORES:
+•  CONECTOR 2P DEL INTERRUPTOR DE LA LUZ DEL FRENO TRASERO
+•  ALTERNATOR 3P
+•  ALTERNATOR 2P
+•  CABLEADO DEL INTERRUPTOR DE PUNTO MUERTO
+CABLE NEGATIVO 
+(–) DE LA BATERÍA 
+CABLEADO DEL 
+INTERRUPTOR DE 
+PUNTO MUERTO
+CABLEADO DEL 
+ALTERNATOR
+DLC
+CONECTOR 
+33P DEL ECM 
+CONECTOR 2P 
+DEL SENSOR EOT
+CONECTOR 2P 
+DEL SENSOR EO2
+CABLE DEL 
+MOTOR DE 
+ARRANQUE
+CABLE NEGATIVO 
+(–) DE LA BATERÍA
+CABLE NEGATIVO 
+(–) DE LA BATERÍA
+CABLEADO DEL INTERRUPTOR 
+DE PUNTO MUERTO
+CABLEADO DEL 
+ALTERNADOR
+
+===== PAGE 138 =====
+5-12
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+CABLEADO DEL 
+INTERRUPTOR DE 
+PUNTO MUERTO
+CABLEADO DEL 
+INTERRUPTOR DE 
+PUNTO MUERTO
+TAPA DE PIÑÓN 
+DE TRANSMISIÓN
+TAPA DE PIÑÓN 
+DE TRANSMISIÓN
+TAPA DE PIÑÓN 
+DE TRANSMISIÓN
+CONECTOR 3P DEL SENSOR 
+DEL ÁNGULO DEL BASTIDOR
+CABLE DE 
+LA BUJÍA DE 
+ENCENDIDO
+CABLEADO DEL 
+INTERRUPTOR DE 
+PUNTO MUERTO
+
+===== PAGE 139 =====
+Addendum
+5-13
+XR190L
+XR190CT-H (2017) ADDENDUM
+CABLEADO 
+PRINCIPAL
+CABLEADO 
+PRINCIPAL
+CONECTOR 2P 
+DEL INYECTOR
+CONECTOR 
+4P DEL IACV
+CABLEADO DEL 
+INTERMITENTE 
+INTERIOR DE LOS CONECTORES:
+• CONECTOR 2P DE LA LUZ DE LA PLACA DE LICENCIA
+• CONECTOR 3P DE LA LUZ DE FRENO/LUZ TRASERA
+• CABLEADO DEL INTERMITENTE TRASERO IZQUIERDO
+• CABLEADO DEL INTERMITENTE TRASERO DERECHO 
+• CABLE TIERRA DEL INTERMITENTE TRASERO
+CABLEADO 
+PRINCIPAL
+
+===== PAGE 140 =====
+5-14
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+TABLA DE MANTENIMIENTO (LA Type)
+• Efectúe la inspección antes del Uso en el Manual del Propietario en cada intervalo programado de mantenimiento.
+• I: Inspeccione y Limpie, Ajuste, Lubrique o Reemplace si es necesario. C: Limpie. R: Reemplace. A: Ajuste L: Lubrique.
+• Los siguientes ítems requieren algún conocimiento mecánico. Ciertos ítems (particularmente aquellos marcados 
+con * y **) pueden requerir más informaciones técnicas y herramientas. Consulte su concesionario.
+ •  Consulte el "Manual de Taller Básico” para cada instrucción de mantenimiento, excepto las instrucciones 
+descritas en este manual.
+ÍTEMS 
+NOTA 
+FRECUENCIA (NOTA 1)
+INSPECCIÓN 
+ANUAL
+CAMBIAR 
+REGULARMENTE 
+VÉASE
+LA
+PÁGINA
+X1.000 km
+1
+6
+12
+18
+24
+30
+36
+*
+Línea de combustible
+I
+I
+I
+I
+I
+I
+I
+*
+Acelerador
+I
+I
+I
+I
+I
+I
+I
+*
+Filtro de aire
+NOTA 2
+R
+R
+è 2-7
+Respiradero del motor
+NOTA 3
+C
+C
+C
+C
+C
+C
+Bujía de encendido
+I
+R
+I
+R
+I
+R
+è 4-22
+*
+Holgura de las válvulas
+I
+I
+I
+I
+I
+I
+è 2-14
+Aceite del motor
+R
+R
+R
+R
+R
+R
+R
+R
+è 2-13
+** Tamiz del ﬁltro de aceite
+C
+C
+C
+è 2-13
+** Filtro centrífugo de aceite
+C
+C
+C
+è 2-21
+*
+Ralentí
+I
+I
+I
+I
+I
+I
+I
+I
+Cadena de transmisión
+NOTA 4
+Cada 600 km I, L
+Deslizador de la cadena 
+de transmisión
+I
+I
+I
+I
+I
+I
+Fluido de freno
+NOTA 5
+I
+I
+I
+I
+I
+I
+I
+2 años
+Pastillas de freno
+I
+I
+I
+I
+I
+I
+I
+Sistema de frenos
+I
+I
+I
+I
+I
+I
+I
+I
+Interruptor de la luz de 
+freno
+I
+I
+I
+I
+I
+I
+I
+Faro
+I
+I
+I
+I
+I
+I
+I
+è 4-33
+Embrague
+I
+I
+I
+I
+I
+I
+I
+I
+Soporte Lateral
+I
+I
+I
+I
+I
+I
+I
+*
+Suspensión
+I
+I
+I
+I
+I
+I
+I
+*
+Tuercas, tornillos y 
+ﬁjadores
+NOTA 4
+I
+I
+I
+I
+I
+** Ruedas/Neumáticos
+NOTA 4
+I
+I
+I
+I
+I
+I
+I
+** Columna de dirección
+I
+I
+I
+I
+• * Procedimientos que deben ser efectuados por un distribuidor Honda, a menos que el propietario disponga de las 
+herramientas apropiadas e informaciones de servicio, y sea mecánicamente caliﬁcado.
+• ** Por razones de seguridad, recomendamos que todos los servicios presentados en esta tabla se realicen en un 
+distribuidor Honda.
+• Recomendamos también que su distribuidor Honda efectúe una prueba de rodaje después de cada servicio de 
+mantenimiento.
+NOTAS:
+1. Para lecturas mayores del odómetro, repita los intervalos especiﬁcados en esta tabla.
+2. Efectúe el servicio con más frecuencia en condiciones severas de uso, de mucho polvo, barro o humedad.
+3. Efectúe el servicio con más frecuencia bajo condiciones de lluvia, aceleración máxima o aceleraciones rápidas 
+frecuentes.
+4. Efectúe el servicio con más frecuencia en pilotaje Off-Road
+5. El cambio requiere habilidad mecánica.
+
+===== PAGE 141 =====
+Addendum
+5-15
+XR190L
+XR190CT-H (2017) ADDENDUM
+TABLA DE MANTENIMIENTO (U Type) 
+• Efectúe la inspección antes del Uso en el Manual del Propietario en cada intervalo programado de mantenimiento.
+• I: Inspeccione y Limpie, Ajuste, Lubrique o Reemplace si es necesario. C: Limpie. R: Reemplace. A: Ajuste L: Lubrique.
+• Los siguientes ítems requieren algún conocimiento mecánico. Ciertos ítems (particularmente aquellos marcados 
+con * y **) pueden requerir más informaciones técnicas y herramientas. Consulte su concesionario.
+ •  Consulte el "Manual de Taller Básico” para cada instrucción de mantenimiento, excepto las instrucciones 
+descritas en este manual.
+ÍTEMS 
+NOTA 
+FRECUENCIA (NOTA 1)
+INSPECCIÓN 
+ANUAL
+CAMBIAR 
+REGULARMENTE 
+VÉASE
+LA
+PÁGINA
+X1.000 km
+1
+6
+12
+18
+24
+30
+36
+*
+Línea de combustible
+I
+I
+I
+I
+I
+I
+I
+*
+Acelerador
+I
+I
+I
+I
+I
+I
+I
+*
+Filtro de aire
+NOTA 2
+R
+R
+è 2-7
+Respiradero del motor
+NOTA 3
+C
+C
+C
+C
+C
+C
+Bujía de encendido
+I
+R
+I
+R
+I
+R
+è 4-22
+*
+Holgura de las válvulas
+I
+I
+I
+I
+I
+I
+è 2-14
+Aceite del motor
+R
+R
+R
+R
+R
+R
+R
+R
+è 2-13
+** Tamiz del ﬁltro de aceite
+C
+C
+C
+è 2-13
+** Filtro centrífugo de aceite
+C
+C
+C
+è 2-21
+*
+Ralentí
+I
+I
+I
+I
+I
+I
+I
+I
+Cadena de transmisión
+NOTA 4
+Cada 600 km I, L
+Deslizador de la cadena 
+de transmisión
+I
+I
+I
+I
+I
+I
+I
+Fluido de freno
+NOTA 5
+I
+I
+I
+I
+I
+I
+I
+I
+2 años
+Pastillas de freno
+I
+I
+I
+I
+I
+I
+I
+I
+Sistema de frenos
+I
+I
+I
+I
+I
+I
+I
+I
+Interruptor de la luz de 
+freno
+I
+I
+I
+I
+I
+I
+I
+I
+Faro
+I
+I
+I
+I
+I
+I
+I
+I
+è 4-33
+Embrague
+I
+I
+I
+I
+I
+I
+I
+I
+Soporte Lateral
+I
+I
+I
+I
+I
+I
+I
+I
+*
+Suspensión
+I
+I
+I
+I
+I
+I
+I
+I
+*
+Tuercas, tornillos y 
+ﬁjadores
+NOTA 4
+I
+I
+I
+I
+** Ruedas/Neumáticos
+NOTA 4
+I
+I
+I
+I
+I
+I
+I
+** Columna de dirección
+I
+I
+I
+I
+• * Procedimientos que deben ser efectuados por un distribuidor Honda, a menos que el propietario disponga de las 
+herramientas apropiadas e informaciones de servicio, y sea mecánicamente caliﬁcado.
+• ** Por razones de seguridad, recomendamos que todos los servicios presentados en esta tabla se realicen en un 
+distribuidor Honda.
+• Recomendamos también que su distribuidor Honda efectúe una prueba de rodaje después de cada servicio de 
+mantenimiento.
+NOTAS:
+1. Para lecturas mayores del odómetro, repita los intervalos especiﬁcados en esta tabla.
+2. Efectúe el servicio con más frecuencia en condiciones severas de uso, de mucho polvo, barro o humedad.
+3. Efectúe el servicio con más frecuencia bajo condiciones de lluvia, aceleración máxima o aceleraciones rápidas 
+frecuentes.
+4. Efectúe el servicio con más frecuencia en pilotaje Off-Road
+5. El cambio requiere habilidad mecánica.
+
+===== PAGE 142 =====
+5-16
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+PROTECTOR DEL MOTOR   
+GUARDABARROS
+CARENADOS 
+TAPA DE LA CADENA DE TRANSMISIÓN (Solo tipo  U)
+
+===== PAGE 143 =====
+Addendum
+5-17
+XR190L
+XR190CT-H (2017) ADDENDUM
+PORTAEQUIPAJES TRASERO
+BASE PORTAEQUIPAJES TRASERO
+• Carenado central trasero è3-5
+
+===== PAGE 144 =====
+5-18
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+SOPORTE LATERAL DIRECHO
+10 N.m
+Superﬁcie  
+Deslizante 
+• 1  Después de apretar el tornillo pivote con el par de apriete especiﬁcado, gire en el sentido contra horário 
+45 – 90°. 
+• 2  Cuando apriete la tuerca de pivote, sujete el tornillo pivote cuidadosamente.
+39 N.m
+
+===== PAGE 145 =====
+Addendum
+5-19
+XR190L
+XR190CT-H (2017) ADDENDUM
+RUEDA DELANTERA 
+59 N.m
+• Inspección de la rueda
+
+===== PAGE 146 =====
+5-20
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+20 N.m
+• Instale el cabezal del extractor de rodamiento en el rodamiento. Por el lado opuesto, instale el eje del extractor 
+de rodamientos y quite el rodamiento del cubo de la rueda.
+ Cabeza del extractor de rodamiento, 15 mm: 07746-0050400
+ Eje del extractor de rodamiento: 07746-0050100
+• 1  Instale el nuevo rodamiento alineado con su lado marcado hacia arriba hasta que esté totalmente asentado.
+ Instalador: 07749-0010000
+ Accesorio 32 x 35 mm: 07746-0010100
+ Guía, 15 mm: 07746-0040300
+• 2  Instale el espaciador lateral.
+• 3  Instale un rodamiento nuevo alineado con su lado marcado hacia afuera hasta que esté totalmente 
+asentado en el espaciador lateral.
+ Instalador: 07749-0010000
+ Accesorio 32 x 35 mm: 07746-0010100
+ Guía, 15 mm: 07746-0040300
+• Desarmado e inspección de la rueda
+
+===== PAGE 147 =====
+Addendum
+5-21
+XR190L
+XR190CT-H (2017) ADDENDUM
+HORQUILLA
+20 N.m
+32 N.m
+12 N.m
+• Guardabarros delantero è3-4
+• Rueda delantera è3-14
+• Cáliper del freno delantero è3-26
+• 1  Alinee la superﬁcie de contacto con la parte superior del puente superior.
+
+===== PAGE 148 =====
+5-22
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+140 mm
+22 N.m
+20 N.m
+IZQUIERDA
+DERECHO
+• 1  Quite el retén de aceite.
+ Extractor del retén de aceite: 07748-0010001
+• 1  Instale un nuevo retén de aceite con su lado marcado hacia arriba, alineándolo hasta que esté totalmente 
+asentado. 
+ Peso del instalador del retén de la horquilla de la suspensión: 07747-0010100 
+ Accesorio del instalador del retén de la horquilla de la suspensión: 07747-001600 
+• 2  Llene el tubo de la horquilla con la cantidad especiﬁcada del ﬂuido recomendado para la horquilla de la 
+suspensión.
+ FLUIDO RECOMENDADO PARA LA SUSPENSIÓN: CN 10#  o equivalente
+ CAPACIDAD DE FLUIDO PARA LA HORQUILLA DE LA SUSPENSIÓN: 390 cm3
+• Comprima completamente la horquilla de la suspensión y mida el nivel de ﬂuido a partir de la parte superior 
+de la corredera.
+ NIVEL DE FLUIDO: 140 mm
+• 3  Tire del tubo de la horquilla e instale el resorte de la horquilla de la suspensión, mantenga el lado de sus 
+espirales más juntas hacia abajo.
+• Desarmado e inspección de la horquilla de la suspensión
+
+===== PAGE 149 =====
+Addendum
+5-23
+XR190L
+XR190CT-H (2017) ADDENDUM
+COLUMNA DE DIRECCIÓN 
+PUENTE SUPERIOR 
+20 N.m
+103 N.m
+• Velocimetro è4-34
+• Manillar è3-18
+
+===== PAGE 150 =====
+5-24
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+SUSPENSIÓN TRASERA 
+• Tapa lateral izquierda è3-7
+• Rueda trasera è3-21
+• Tapa de la cadena de transmisión è3-7
+44 N.m
+44 N.m
+88 N.m
+44 N.m
+44 N.m
+
+===== PAGE 151 =====
+Addendum
+5-25
+XR190L
+XR190CT-H (2017) ADDENDUM
+• 1  Presione los cojinetes con el lado marcado virado para fuera.
+44 N.m
+44 N.m
+4.5 mm
+0.7 mm
+0.7 mm
+0.5 mm
+3.8 – 4.2 mm
+6.8 – 7.2 mm
+6.0 N.m
+8 – 9 mm
+
+===== PAGE 152 =====
+5-26
+XR190L
+Addendum
+XR190CT-H (2017) ADDENDUM
+FRENO DELANTERO
+CILINDRO MAESTRO DEL FRENO
+• Fluido de freno è3-24
+• Quite el anillo elástico.
+ Alicates para anillo elástico: 07914-SA50001
+• Inspección del cilindro maestro
+1.0 N.m
+1.2 N.m
+5.9 N.m
+Grasa de silicona
+Grasa de silicona
+
+===== PAGE 153 =====
+Addendum
+5-27
+XR190L
+XR190CT-H (2017) ADDENDUM
+ARRANQUE ELÉCTRICO
+MOTOR DE ARRANQUE 
+VELOCÍMETRO
+SENSOR VS
+• Motor de arranque è4-25
+• Inspección del arranque eléctrico
+
+===== PAGE 154 =====
+NOTAS
+
+===== PAGE 155 =====
+2P
+2P
+15A
+10A
+10A
+SUB2
+SUB1
+VO1
+BAT1
+4P
+R
+4P
+Bl
+4P
+R
+2P
+3P
+OUT
+Vcc
+GND
+A-33
+A-32
+A-31
+A-30
+A-29
+A-28
+A-27
+A-26
+A-25
+A-24
+A-23
+A-22
+A-21
+A-20
+A-19
+A-18
+A-17
+A-16
+A-15
+A-14
+A-13
+A-12
+A-11
+A-10
+A- 9
+A- 8
+A- 7
+A- 6
+A- 5
+A- 4
+A- 3
+A- 2
+A- 1
+ -
+IACV1B
+IACV2B
+K-LINE
+NLSW
+-
+PB
+BANK
+-
+TO
+PCM
+-
+IACV1A
+IACV2A
+-
+FI IND
+-
+INJ
+SCS
+TA
+-
+PCP
+IGPLS
+PG2
+PG1
+FFP
+PCR
+VCC
+THL
+SG
+O2
+LG
+IGP
+33P
+2P
+2P
+3P
+2P
+6P
+2P
+5P
+L
+LO
+R
+HI
+W
+HL
+HO
+BAT
+ST
+BAT
+6P
+9P Bl
+4P R
+4P Bl
+9P Bl
+5P
+2P
+Bl
+2P
+3P
+VO1
+BAT1
+OFF
+ON
+IGNITION
+SWITCH
+BAT
+ST
+FREE
+PUSH
+STARTER
+SWITCH
+HO
+BAT
+FREE
+PUSH
+HORN
+SWITCH
+N
+R
+L
+W
+L
+R
+TURN SIGNAL
+SWITCH
+N
+LO
+HI
+HL
+HI
+LO
+DIMMER
+SWITCH
+W/Y
+Bu/Y
+W
+G
+W/Y
+Lg/R
+Bu/Y
+W
+G
+Gr/Bu
+Y
+Y/R
+Y/R
+Y/R
+G
+Y
+Lb
+G
+G
+G
+O
+G/Y
+G
+Y
+G
+Y
+G
+Y
+Lb
+G
+Lb
+O
+G
+O
+G/Y
+G
+Y
+G/Y
+G
+Y
+G/Bl
+Bl
+Y/W
+G
+Bu
+W/Bu
+W/Bu
+Bl
+Lg/R
+Lg/R
+Bl
+G
+Y
+G
+G/Bl
+O
+Lb
+O
+Lb
+Bl
+G/Y
+Y/R
+Bl/R
+Y/R
+Bl/R
+Bl
+G/Y
+Y/R
+Bl/R
+Bl
+G/Y
+G
+Y
+Bu
+Bl
+Y/W
+Y
+W/Bu
+Lg/R
+G
+G/Bl
+O
+Lb
+Bu
+Bl
+Y/W
+Y
+G
+Lb
+Lb
+W
+Bl
+G
+Y
+Y
+G
+O
+G
+W
+Bl
+G
+G
+G
+O
+Lb
+Y
+W
+Bu
+G
+G
+O
+Gr
+O
+Lb
+Y
+W
+Bu
+Lg
+Bl
+Y
+W
+Bu
+Lg
+Bl
+Bl
+G
+Bl
+G
+Gr
+O
+Lb
+Y
+W
+Bu
+Lg
+Bl
+G/R
+G
+Gr
+O
+Lb
+Lg
+G
+Y/Bu
+Bl/R
+Bl/O
+Y/W
+G/Bl
+Lg/R
+Bu/Y
+G
+W
+Y
+R/W
+G/W
+G/W
+G/W
+G/W
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+P/Bl
+Bl/R
+Bl
+Bl/W
+P/Bu
+G/Bl
+G/Bl
+Y/R
+G/W
+Gr/Bu
+G/W
+Lg/Y
+Y/R
+G/W
+Lg/Y
+Gr/Bu
+Y
+Y/R
+G/W
+Lg/Y
+Y
+G/W
+Y/R
+G
+G
+G
+R
+W/Y
+W
+G
+Y/W
+G/Bl
+Bl/R
+Bl/O
+G/W
+Lg/R
+G/R
+G/R
+Lg/R
+Y
+G/Bl
+Bl/R
+Bl
+G/Y
+Bl
+G/Y
+Bu
+G/Bl
+Bl/R
+G/W
+Bl/W
+Y/R
+Y
+Bl/O
+Bl/G
+G
+G
+Bu/Y
+P/Bu
+Gr/Bu
+P/Bl
+W/Bu
+Bu
+Bu/W
+Br/W
+Y/Bu
+W/Y
+Lg/Y
+R/Bu
+Y
+G/R
+Bu/Bl
+Br/Bl
+Br/Bl
+Bu/Bl
+Br/W
+Bu/W
+Bl/G
+Bl/R
+R
+Bl/R
+G/W
+R/Bu
+Y/R
+R
+G/R
+R
+R
+R
+Y/R
+G/R
+Bl/R
+Bl
+Bl
+R/Bu
+Bl/R
+R/W
+R/Bu
+Bl
+Gr
+R/W
+R/Bu
+ECM
+IACV
+BANK
+ANGLE
+SENSOR
+DC-LOAD
+CUT RELAY
+BATTERY
+12V 6Ah
+STARTER
+MOTOR
+STARTER
+RELAY
+SWITCH
+FUSE BOX
+IGNITION
+SWITCH
+TURN
+SIGNAL
+RELAY
+FRONT
+BRAKE
+LIGHT
+SWITCH
+STARTER
+SWITCH
+FUEL METER
+HI-BEAM IND
+12V 1.7W
+FI IND
+12V 3.4W
+N IND
+12V 3.4W
+TURN IND
+12V 3.4W
+METER ILLUMI 2
+12V 1.7W
+METER ILLUMI 1
+12V 2.0W
+DIMMER
+SWITCH
+CLUTCH 
+SWITCH
+HORN
+SWITCH
+TURN
+SIGNAL
+SWITCH
+HORN
+EOT SENSOR
+FUEL
+PUMP
+FUEL
+LEVEL
+SENSOR
+NEUTRAL
+SWITCH
+CKP
+SENSOR
+ALTERNATOR
+REGULATOR
+/RECTIFIER
+INJECTOR
+IGNITION
+COIL
+TP
+SENSOR
+IAT
+SENSOR
+MAP
+SENSOR
+O2
+SENSOR
+DIODE
+DLC
+RIGHT FRONT
+TURN SIGNAL
+LIGHT
+12V 10W
+LEFT FRONT
+TURN SIGNAL
+LIGHT
+12V 10W
+HEAD LIGHT
+12V 35W/35W
+POSITION
+LIGHT
+12V 5W
+LICENSE LIGHT
+12V 5W
+RIGHT REAR
+TURN SIGNAL LIGHT
+12V 10W
+LEFT REAR
+TURN SIGNAL LIGHT
+12V 10W
+BRAKE/TAIL LIGHT
+12V 5W/21W
+REAR
+BRAKE LIGHT
+SWITCH
+Black
+Yellow
+Blue
+Green
+Red
+White
+Bl
+Y
+Bu
+G
+R
+W
+TWO COLORED WIRE (EXAMPLE:YELLOW/RED)
+Br
+O
+Lb
+Lg
+P
+Gr
+Brown
+Orange
+Light Blue
+Light Green
+Pink
+Gray
+XR190L
+DIAGRAMA ELÉCTRICO – XR190L
+
+===== PAGE 156 =====
+NOTAS
+
+===== PAGE 157 =====
+XR190CT-H (LA, U)
+DIGRAMA ELÉCTRICO – XR190CT-H (LA, U)
+2P
+2P
+15A
+10A
+10A
+SUB2
+SUB1
+VO1
+BAT1
+4P
+R
+4P
+Bl
+4P
+R
+2P
+3P
+OUT
+Vcc
+GND
+A-33
+A-32
+A-31
+A-30
+A-29
+A-28
+A-27
+A-26
+A-25
+A-24
+A-23
+A-22
+A-21
+A-20
+A-19
+A-18
+A-17
+A-16
+A-15
+A-14
+A-13
+A-12
+A-11
+A-10
+A- 9
+A- 8
+A- 7
+A- 6
+A- 5
+A- 4
+A- 3
+A- 2
+A- 1
+ -
+IACV1B
+IACV2B
+K-LINE
+NLSW
+-
+PB
+BANK
+-
+TO
+PCM
+-
+IACV1A
+IACV2A
+-
+FI IND
+SP-SE
+INJ
+SCS
+TA
+-
+PCP
+IGPLS
+PG2
+PG1
+FFP
+PCR
+VCC
+THL
+SG
+O2
+LG
+IGP
+33P
+2P
+2P
+3P
+2P
+6P
+2P
+3P
+5P
+L
+LO
+R
+HI
+W
+HL
+HO
+BAT
+ST
+BAT
+6P
+9P Bl
+4P R
+4P Bl
+9P Bl
+5P
+2P
+Bl
+2P
+3P
+VO1
+BAT1
+OFF
+ON
+IGNITION
+SWITCH
+BAT
+ST
+FREE
+PUSH
+STARTER
+SWITCH
+HO
+BAT
+FREE
+PUSH
+HORN
+SWITCH
+N
+R
+L
+W
+L
+R
+TURN SIGNAL
+SWITCH
+N
+LO
+HI
+HL
+HI
+LO
+DIMMER
+SWITCH
+W/Y
+Bu/Y
+W
+G
+W/Y
+Lg/R
+Bu/Y
+W
+G
+Gr/Bu
+Y
+Y/R
+Y/R
+Y/R
+G
+Y
+Lb
+G
+G
+G
+O
+G/Y
+G
+Y
+G
+Y
+G
+Y
+Lb
+G
+Lb
+O
+G
+O
+G/Y
+G
+Y
+G/Y
+G
+Y
+G/Bl
+Bl
+Y/W
+G
+Bu
+W/Bu
+W/Bu
+Bl
+Lg/R
+Lg/R
+Bl
+G
+Y
+G
+G/Bl
+O
+Lb
+O
+Lb
+Bl
+G/Y
+Y/R
+Bl/R
+Y/R
+Bl/R
+Bl
+G/Y
+Y/R
+Bl/R
+Bl
+G/Y
+G
+Y
+Bu
+Bl
+Y/W
+Y
+W/Bu
+Lg/R
+G
+G/Bl
+O
+Lb
+Bu
+Bl
+Y/W
+Y
+G
+Lb
+Lb
+W
+Bl
+G
+Y
+Y
+G
+O
+G
+W
+Bl
+G
+G
+G
+O
+Lb
+Y
+W
+Bu
+G
+G
+O
+Gr
+O
+Lb
+Y
+W
+Bu
+Lg
+Bl
+Y
+W
+Bu
+Lg
+Bl
+Bl
+G
+Bl
+G
+Gr
+O
+Lb
+Y
+W
+Bu
+Lg
+Bl
+G/R
+G
+Gr
+O
+Lb
+Lg
+G
+Y/Bu
+Bl/R
+Bl/O
+Y/W
+G/Bl
+Lg/R
+Bu/Y
+G
+W
+Y
+R/W
+G/W
+G/W
+G/W
+G/W
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+Bl/R
+P/Bl
+Bl/R
+Bl
+Bl/W
+P/Bu
+G/Bl
+G/Bl
+Y/R
+G/W
+Gr/Bu
+G/W
+Lg/Y
+Y/R
+G/W
+Lg/Y
+Gr/Bu
+Y
+Y/R
+G/W
+Lg/Y
+Y
+G/W
+Y/R
+G
+G
+G
+R
+W/Y
+W
+G
+Y/W
+G/Bl
+Bl/R
+Bl/O
+G/W
+G/Bl
+P
+B/R
+Lg/R
+G/R
+G/R
+Lg/R
+Y
+G/Bl
+Bl/R
+Bl
+G/Y
+Bl
+G/Y
+Bu
+G/Bl
+Bl/R
+G/W
+Bl/W
+Y/R
+Y
+Bl/O
+Bl/G
+G
+G
+Bu/Y
+P/Bu
+Gr/Bu
+P/Bl
+P
+W/Bu
+Bu
+Bu/W
+Br/W
+Y/Bu
+W/Y
+Lg/Y
+R/Bu
+Y
+G/R
+Bu/Bl
+Br/Bl
+Br/Bl
+Bu/Bl
+Br/W
+Bu/W
+Bl/G
+Bl/R
+R
+Bl/R
+G/W
+R/Bu
+Y/R
+R
+G/R
+R
+R
+R
+Y/R
+G/R
+Bl/R
+Bl
+Bl
+R/Bu
+Bl/R
+R/W
+R/Bu
+Bl
+Gr
+R/W
+R/Bu
+G/Bl
+G/Bl
+G/Bl
+G/Bl
+G/Bl
+G/Bl
+G/Bl
+ECM
+IACV
+BANK
+ANGLE
+SENSOR
+DC-LOAD
+CUT RELAY
+BATTERY
+12V 6Ah
+STARTER
+MOTOR
+STARTER
+RELAY
+SWITCH
+FUSE BOX
+IGNITION
+SWITCH
+TURN
+SIGNAL
+RELAY
+FRONT
+BRAKE
+LIGHT
+SWITCH
+STARTER
+SWITCH
+FUEL METER
+HI-BEAM IND
+12V 1.7W
+FI IND
+12V 3.4W
+N IND
+12V 3.4W
+TURN IND
+12V 3.4W
+METER ILLUMI 2
+12V 1.7W
+METER ILLUMI 1
+12V 2.0W
+DIMMER
+SWITCH
+CLUTCH 
+SWITCH
+HORN
+SWITCH
+TURN
+SIGNAL
+SWITCH
+HORN
+EOT
+SENSOR
+FUEL
+PUMP
+FUEL
+LEVEL
+SENSOR
+NEUTRAL
+SWITCH
+CKP
+SENSOR
+ALTERNATOR
+REGULATOR
+/RECTIFIER
+INJECTOR
+IGNITION
+COIL
+TP
+SENSOR
+IAT
+SENSOR
+MAP
+SENSOR
+O2
+SENSOR
+DIODE
+DLC
+RIGHT FRONT
+TURN SIGNAL
+LIGHT
+12V 10W
+LEFT FRONT
+TURN SIGNAL
+LIGHT
+12V 10W
+HEAD LIGHT
+12V 35W/35W
+POSITION
+LIGHT
+12V 5W
+LICENSE LIGHT
+12V 5W
+RIGHT REAR
+TURN SIGNAL LIGHT
+12V 10W
+LEFT REAR
+TURN SIGNAL LIGHT
+12V 10W
+BRAKE/TAIL LIGHT
+12V 5W/21W
+REAR
+BRAKE LIGHT
+SWITCH
+Black
+Yellow
+Blue
+Green
+Red
+White
+Bl
+Y
+Bu
+G
+R
+W
+TWO COLORED WIRE (EXAMPLE:YELLOW/RED)
+Br
+O
+Lb
+Lg
+P
+Gr
+Brown
+Orange
+Light Blue
+Light Green
+Pink
+Gray
+VS SENSOR
+
+===== PAGE 158 =====
+NOTAS
+
+===== PAGE 159 =====
+Moto Honda da Amazônia Ltda.
+00X65-K79A-001

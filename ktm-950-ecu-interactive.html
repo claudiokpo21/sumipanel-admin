@@ -1,0 +1,2486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECU-GLOBAL – Visualizador de Diagramas Eléctricos</title>
+<style>
+  :root {
+    --bg-0: #0b0f14; --bg-1: #11161d; --bg-2: #181f29; --bg-3: #232c39;
+    --border: #2a3441; --border-strong: #3a4757;
+    --text-0: #e6edf3; --text-1: #b0bcc9; --text-2: #7a8696; --text-3: #4d5868;
+    --accent: #ff6b1a; --accent-2: #ffa463; --accent-soft: rgba(255,107,26,0.12);
+    --info: #4cb0ff; --ok: #5cd97a; --warn: #ffc34c; --err: #ff5577;
+    --wire-rd: #e53935; --wire-bk: #1a1a1a; --wire-bu: #2196f3; --wire-gn: #4caf50;
+    --wire-wh: #f5f5f5; --wire-or: #ff9800; --wire-br: #795548; --wire-ye: #fdd835;
+    --wire-vt: #8e24aa; --wire-pk: #ec407a; --wire-gr: #9e9e9e;
+    --shadow: 0 4px 18px rgba(0,0,0,0.35); --radius: 8px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-0); color: var(--text-0); font-size: 14px; line-height: 1.45; overflow: hidden;
+  }
+  .mono { font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .app {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 280px 1fr 360px;
+    grid-template-areas: "header header header" "toolbar canvas info";
+    height: 100vh;
+  }
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: 240px 1fr; grid-template-rows: auto 1fr 220px;
+      grid-template-areas: "header header" "toolbar canvas" "info info"; }
+  }
+  @media (max-width: 720px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr 240px;
+      grid-template-areas: "header" "toolbar" "canvas" "info"; }
+  }
+
+  header.app-header {
+    grid-area: header; display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px; background: linear-gradient(180deg, var(--bg-2), var(--bg-1));
+    border-bottom: 1px solid var(--border); gap: 12px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark {
+    width: 38px; height: 38px; background: var(--accent); color: #000; border-radius: 6px;
+    display: grid; place-items: center; font-weight: 900; font-size: 14px; letter-spacing: 0.5px;
+    box-shadow: 0 0 0 2px #000, 0 0 0 3px var(--accent);
+  }
+  .brand-text h1 { font-size: 15px; margin: 0; font-weight: 700; }
+  .brand-text small { color: var(--text-2); font-size: 11px; }
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+  .pill {
+    background: var(--bg-3); border: 1px solid var(--border); color: var(--text-1);
+    padding: 4px 10px; border-radius: 999px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+  .mode-toggle {
+    background: var(--bg-3); border: 1px solid var(--border); color: var(--text-1);
+    padding: 6px 12px; border-radius: 6px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .mode-toggle.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-2); }
+  .mode-toggle:hover { border-color: var(--border-strong); }
+
+  .toolbar {
+    grid-area: toolbar; background: var(--bg-1); border-right: 1px solid var(--border);
+    overflow-y: auto; padding: 14px;
+  }
+  .toolbar h3 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-2);
+    margin: 14px 0 8px 0; font-weight: 700;
+  }
+  .toolbar h3:first-child { margin-top: 0; }
+  .sub-btns, .filter-btns { display: flex; flex-direction: column; gap: 4px; }
+  .sub-btns button, .filter-btns button {
+    text-align: left; background: transparent; border: 1px solid transparent; color: var(--text-1);
+    padding: 7px 10px; border-radius: 6px; font-size: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .sub-btns button:hover, .filter-btns button:hover { background: var(--bg-2); color: var(--text-0); }
+  .sub-btns button.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-2); }
+  .filter-btns button.active { background: var(--bg-3); border-color: var(--border-strong); color: var(--text-0); }
+  .filter-btns button .swatch {
+    width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);
+  }
+  .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; font-size: 11px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; color: var(--text-1); }
+  .legend-swatch { width: 14px; height: 8px; border-radius: 1px; }
+
+  .canvas {
+    grid-area: canvas; position: relative; overflow: auto;
+    background: radial-gradient(circle at 30% 20%, rgba(255,107,26,0.04) 0%, transparent 50%),
+                linear-gradient(180deg, var(--bg-0) 0%, #050709 100%);
+  }
+  .canvas-inner { padding: 18px; min-width: 1100px; }
+  svg.diagram { display: block; width: 100%; height: auto; }
+
+  .component-box { cursor: pointer; transition: filter 0.15s; }
+  .component-box:hover { filter: brightness(1.15); }
+  .component-box.selected .comp-bg { stroke: var(--accent); stroke-width: 2.5; }
+  .component-box.selected .comp-label { fill: var(--accent-2); }
+  .comp-bg { fill: var(--bg-2); stroke: var(--border-strong); stroke-width: 1.2; }
+  .comp-label { fill: var(--text-0); font-size: 11px; font-weight: 600; pointer-events: none; }
+  .comp-sub { fill: var(--text-2); font-size: 9px; pointer-events: none; }
+  .pin-circle {
+    fill: var(--bg-3); stroke: var(--text-2); stroke-width: 0.8; cursor: pointer; transition: all 0.12s;
+  }
+  .pin-circle:hover { stroke: var(--accent-2); stroke-width: 1.5; }
+  .pin-circle.active { stroke: var(--accent-2); stroke-width: 1.8; }
+  .pin-num { font-size: 7px; fill: var(--text-1); pointer-events: none; text-anchor: middle; font-weight: 700; }
+  .zone-label { fill: var(--text-3); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; }
+
+  .wire {
+    fill: none; stroke-width: 2.2; stroke-linecap: round; cursor: pointer; transition: opacity 0.2s, stroke-width 0.15s;
+  }
+  .wire:hover { stroke-width: 3.5; }
+  .wire.dim { opacity: 0.10; }
+  .wire.highlight { stroke-width: 3.8; filter: drop-shadow(0 0 6px currentColor); }
+  .wire.flow { stroke-dasharray: 8 6; animation: flow 0.9s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -14; } }
+
+  .ecu-frame { fill: var(--bg-3); stroke: var(--accent); stroke-width: 2; }
+  .ecu-title { fill: var(--accent-2); font-size: 14px; font-weight: 800; letter-spacing: 2px; }
+  .battery-cell { fill: none; stroke: var(--text-0); stroke-width: 1.5; }
+
+  .tooltip {
+    position: absolute; pointer-events: none; background: var(--bg-2);
+    border: 1px solid var(--border-strong); border-radius: var(--radius);
+    padding: 10px 12px; font-size: 12px; color: var(--text-0); box-shadow: var(--shadow);
+    z-index: 100; min-width: 220px; max-width: 320px; opacity: 0; transition: opacity 0.12s;
+  }
+  .tooltip.visible { opacity: 1; }
+  .tooltip-title { font-weight: 700; margin-bottom: 6px; color: var(--accent-2); }
+  .tooltip-row { display: flex; gap: 6px; margin: 3px 0; font-size: 11px; }
+  .tooltip-row .k { color: var(--text-2); min-width: 80px; flex-shrink: 0; }
+  .tooltip-row .v { color: var(--text-0); }
+  .color-chip {
+    display: inline-block; width: 10px; height: 10px; border-radius: 2px;
+    border: 1px solid rgba(255,255,255,0.15); margin-right: 4px; vertical-align: middle;
+  }
+  .dir-input { color: var(--info); }
+  .dir-output { color: var(--ok); }
+  .dir-ground { color: var(--text-2); }
+  .dir-power { color: var(--accent-2); }
+
+  .info {
+    grid-area: info; background: var(--bg-1); border-left: 1px solid var(--border);
+    overflow-y: auto; padding: 14px;
+  }
+  .info h2 { font-size: 14px; margin: 0 0 4px 0; color: var(--text-0); }
+  .info .sub { font-size: 11px; color: var(--text-2); margin-bottom: 12px; }
+  .info .empty {
+    text-align: center; color: var(--text-2); font-size: 12px; padding: 30px 10px;
+    border: 1px dashed var(--border); border-radius: 6px;
+  }
+  .info .empty .icon { font-size: 24px; margin-bottom: 6px; opacity: 0.4; }
+  .pin-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
+  .pin-table th, .pin-table td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--border); }
+  .pin-table th {
+    color: var(--text-2); font-weight: 600; text-transform: uppercase; font-size: 9.5px;
+    letter-spacing: 0.5px; background: var(--bg-2);
+  }
+  .pin-table tbody tr { cursor: pointer; transition: background 0.1s; }
+  .pin-table tbody tr:hover { background: var(--bg-2); }
+  .pin-table tr.active { background: var(--accent-soft); }
+  .pin-table tr.active td { color: var(--accent-2); }
+  .pin-table .pin-n { font-weight: 700; color: var(--accent-2); }
+  .dir-badge {
+    display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.3px;
+  }
+  .dir-IN  { background: rgba(76,176,255,0.15); color: var(--info); }
+  .dir-OUT { background: rgba(92,217,122,0.15); color: var(--ok); }
+  .dir-GND { background: rgba(122,134,150,0.18); color: var(--text-1); }
+  .dir-PWR { background: rgba(255,107,26,0.15); color: var(--accent-2); }
+  .dir-BI  { background: rgba(255,195,76,0.15); color: var(--warn); }
+
+  .diag-card {
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-top: 10px;
+  }
+  .diag-card h4 { margin: 0 0 6px 0; font-size: 12px; color: var(--accent-2); display: flex; align-items: center; gap: 6px; }
+  .diag-card p, .diag-card li { font-size: 11.5px; color: var(--text-1); margin: 4px 0; }
+  .diag-card ul { padding-left: 18px; margin: 4px 0; }
+  .diag-step {
+    background: var(--bg-3); border-left: 3px solid var(--accent); padding: 6px 8px;
+    margin: 4px 0; font-size: 11.5px; border-radius: 0 4px 4px 0;
+  }
+  .diag-step .label {
+    font-weight: 700; color: var(--accent-2); display: block; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;
+  }
+  .value-ok { color: var(--ok); font-weight: 700; }
+  .value-warn { color: var(--warn); font-weight: 700; }
+  .value-err { color: var(--err); font-weight: 700; }
+
+  .pin-diagram {
+    display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-top: 8px; padding: 10px;
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 6px;
+  }
+  .pin-slot {
+    aspect-ratio: 1; background: var(--bg-3); border: 1px solid var(--border-strong); border-radius: 50%;
+    display: grid; place-items: center; font-size: 9px; font-weight: 700; color: var(--text-1);
+    cursor: pointer; transition: all 0.12s;
+  }
+  .pin-slot.has-data { background: var(--bg-1); }
+  .pin-slot:hover, .pin-slot.active { background: var(--accent); color: #000; border-color: var(--accent-2); transform: scale(1.1); }
+
+  .section-head {
+    display: flex; align-items: center; gap: 6px; margin: 14px 0 4px 0; padding-bottom: 4px;
+    border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text-2); font-weight: 700;
+  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-0); }
+  ::-webkit-scrollbar-thumb { background: var(--bg-3); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+  svg { user-select: none; }
+
+  /* ====== SEARCH ====== */
+  .search-box { position: relative; margin-bottom: 8px; }
+  .search-box input {
+    width: 100%; background: var(--bg-2); border: 1px solid var(--border);
+    color: var(--text-0); padding: 7px 10px 7px 28px; border-radius: 6px;
+    font-size: 12px; font-family: inherit;
+  }
+  .search-box input:focus { outline: none; border-color: var(--accent); }
+  .search-box::before {
+    content: '🔍'; position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+    font-size: 11px; pointer-events: none; opacity: 0.6;
+  }
+  .search-box .clear-search {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    background: transparent; border: none; color: var(--text-2); font-size: 14px;
+    cursor: pointer; padding: 2px 6px; display: none;
+  }
+  .search-box .clear-search:hover { color: var(--text-0); }
+  .search-box.has-value .clear-search { display: block; }
+  .search-results { font-size: 10.5px; color: var(--text-2); margin-bottom: 6px; }
+  .search-results .count { color: var(--accent-2); font-weight: 700; }
+  .search-results-list {
+    max-height: 180px; overflow-y: auto; background: var(--bg-2);
+    border: 1px solid var(--border); border-radius: 4px; margin-bottom: 10px;
+    display: none;
+  }
+  .search-results-list.visible { display: block; }
+  .search-result {
+    padding: 5px 8px; cursor: pointer; font-size: 11px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .search-result:hover { background: var(--bg-3); }
+  .search-result:last-child { border-bottom: none; }
+  .search-result .kind {
+    display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 2px;
+    text-transform: uppercase; font-weight: 700; letter-spacing: 0.3px;
+  }
+  .kind-comp { background: rgba(76,176,255,0.15); color: var(--info); }
+  .kind-pin  { background: rgba(92,217,122,0.15); color: var(--ok); }
+  .kind-wire { background: rgba(255,107,26,0.15); color: var(--accent-2); }
+  .search-result .label { color: var(--text-0); flex: 1; }
+  .search-result mark { background: rgba(255,107,26,0.25); color: var(--accent-2); padding: 0 2px; border-radius: 2px; }
+
+  .highlight-match .comp-bg { stroke: var(--warn); stroke-width: 2.5; }
+  .highlight-match .pin-circle { stroke: var(--warn); stroke-width: 2.5; }
+  .highlight-match { filter: drop-shadow(0 0 8px rgba(255,195,76,0.6)); }
+
+  /* ====== LIBRARY ====== */
+  .lib-list {
+    display: flex; flex-direction: column; gap: 4px; margin-top: 6px;
+  }
+  .lib-item {
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 5px;
+    padding: 7px 9px; cursor: pointer; transition: all 0.12s; display: flex;
+    align-items: center; gap: 7px;
+  }
+  .lib-item:hover { background: var(--bg-3); border-color: var(--border-strong); }
+  .lib-item.active { background: var(--accent-soft); border-color: var(--accent); }
+  .lib-item .badge {
+    font-size: 8.5px; background: var(--bg-3); color: var(--text-2);
+    padding: 1px 4px; border-radius: 2px; text-transform: uppercase; font-weight: 700;
+  }
+  .lib-item.active .badge { background: var(--accent); color: #000; }
+  .lib-item .name { flex: 1; font-size: 11.5px; font-weight: 600; color: var(--text-0); }
+  .lib-item .sub { font-size: 9.5px; color: var(--text-2); }
+  .lib-item .actions { display: flex; gap: 3px; }
+  .lib-item .actions button {
+    background: transparent; border: 1px solid transparent; color: var(--text-3);
+    padding: 1px 5px; font-size: 11px; cursor: pointer; border-radius: 3px;
+  }
+  .lib-item .actions button:hover { color: var(--err); border-color: var(--border-strong); }
+  .lib-item .actions button.save { color: var(--text-2); }
+  .lib-item .actions button.save:hover { color: var(--ok); }
+  .lib-save-row {
+    display: flex; gap: 4px; margin-top: 6px;
+  }
+  .lib-save-row input {
+    flex: 1; background: var(--bg-2); border: 1px solid var(--border); color: var(--text-0);
+    padding: 5px 8px; border-radius: 4px; font-size: 11px; font-family: inherit;
+  }
+  .lib-save-row input:focus { outline: none; border-color: var(--accent); }
+  .lib-save-row button {
+    background: var(--accent); color: #000; border: none; padding: 5px 9px;
+    border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;
+  }
+  .lib-save-row button:hover { background: var(--accent-2); }
+  .lib-meta { font-size: 9.5px; color: var(--text-3); margin-top: 6px; line-height: 1.4; }
+
+  /* ====== LEGAL DISCLAIMER ====== */
+  .legal-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--text-1);
+    padding: 5px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .legal-btn:hover { border-color: var(--accent); color: var(--accent-2); }
+  .legal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.78); z-index: 200;
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .legal-overlay.show { display: flex; }
+  .legal-modal {
+    background: var(--bg-1); border: 1px solid var(--border-strong); border-radius: 8px;
+    max-width: 640px; width: 100%; max-height: 88vh; display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  }
+  .legal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+  }
+  .legal-header h2 { margin: 0; font-size: 14px; color: var(--text-0); }
+  .legal-close {
+    background: transparent; border: 1px solid var(--border-strong); color: var(--text-2);
+    width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-size: 16px;
+    display: grid; place-items: center;
+  }
+  .legal-close:hover { color: var(--accent-2); border-color: var(--accent); }
+  .legal-body { padding: 16px 20px; overflow-y: auto; font-size: 12px; line-height: 1.65; color: var(--text-1); }
+  .legal-body p { margin: 0 0 10px 0; }
+  .legal-body strong { color: var(--text-0); }
+  .legal-footer { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+  .legal-accept {
+    background: var(--accent); color: #000; border: none;
+    padding: 7px 18px; border-radius: 5px; font-size: 12px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.5px;
+  }
+  .legal-accept:hover { background: var(--accent-2); }
+  .legal-fab {
+    position: fixed; bottom: 14px; right: 14px; z-index: 50;
+    background: rgba(0,0,0,.55); color: var(--text-2);
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 10px; font-size: 10.5px; cursor: pointer;
+    backdrop-filter: blur(4px);
+  }
+  .legal-fab:hover { color: var(--text-0); border-color: var(--border-strong); }
+
+  /* ====== POWER STATE (encender/apagar/arrancar) ====== */
+  .power-btn {
+    background: var(--bg-3); color: var(--text-1); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .power-btn:hover { border-color: var(--border-strong); }
+  .power-btn.on {
+    background: rgba(92, 217, 122, 0.15); border-color: var(--ok); color: var(--ok);
+    box-shadow: 0 0 12px rgba(92, 217, 122, 0.4);
+  }
+  .power-btn.cranking {
+    background: rgba(255, 107, 26, 0.2); border-color: var(--accent); color: var(--accent-2);
+    animation: crank-pulse 0.4s ease-in-out infinite alternate;
+  }
+  @keyframes crank-pulse {
+    from { box-shadow: 0 0 8px rgba(255,107,26,0.4); }
+    to   { box-shadow: 0 0 18px rgba(255,107,26,0.8); }
+  }
+  .start-btn {
+    background: var(--bg-3); color: var(--text-1); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+  }
+  .start-btn:hover { border-color: var(--ok); color: var(--ok); }
+  .start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .system-status {
+    font-size: 10.5px; padding: 3px 8px; border-radius: 3px;
+    background: var(--bg-3); color: var(--text-3);
+    border: 1px solid var(--border); letter-spacing: 0.5px; font-weight: 700;
+  }
+  .system-status.on { background: rgba(92,217,122,0.15); color: var(--ok); border-color: var(--ok); }
+  .system-status.cranking { background: rgba(255,107,26,0.2); color: var(--accent-2); border-color: var(--accent); }
+  .system-status.running { background: rgba(92,217,122,0.2); color: var(--ok); border-color: var(--ok); animation: status-blink 1.5s ease-in-out infinite; }
+  @keyframes status-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .wire.energized { stroke-width: 2.6; filter: drop-shadow(0 0 4px currentColor); }
+  .wire.flow-crank { stroke-dasharray: 12 4; animation: flow 0.4s linear infinite !important; }
+
+  .component-box.powered .comp-bg { stroke: var(--ok); stroke-width: 1.8; filter: drop-shadow(0 0 4px rgba(92,217,122,0.4)); }
+  .component-box.charging .comp-bg { stroke: var(--warn); stroke-width: 1.8; }
+  .component-box.running .comp-bg { stroke: var(--ok); stroke-width: 2; animation: running-pulse 2s ease-in-out infinite; }
+  @keyframes running-pulse {
+    0%, 100% { filter: drop-shadow(0 0 3px rgba(92,217,122,0.3)); }
+    50%      { filter: drop-shadow(0 0 10px rgba(92,217,122,0.7)); }
+  }
+  .component-box.cranking .comp-bg { stroke: var(--accent); stroke-width: 2.2; animation: crank-pulse 0.4s ease-in-out infinite alternate; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-mark">ECU</div>
+      <div class="brand-text">
+        <h1>ECU-GLOBAL · Visualizador de ECUs</h1>
+        <small class="mono" id="brandSubtitle">Diagramas de motos · uso personal</small>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="pill"><span class="dot"></span> <span id="wireCount">—</span> cables mapeados</span>
+      <span class="system-status" id="sysStatus">⚡ SISTEMA OFF</span>
+      <button id="powerBtn" class="power-btn" title="Simular encendido de la moto">🔌 Encender</button>
+      <button id="startBtn" class="start-btn" title="Simular arranque (1.5s)" disabled>▶ Arrancar</button>
+      <button id="modeBtn" class="mode-toggle">
+        <span>🔧</span> <span id="modeLabel">Modo Normal</span>
+      </button>
+      <button class="legal-btn" onclick="document.getElementById('legal-overlay').classList.add('show')">⚖ Aviso legal</button>
+    </div>
+  </header>
+
+  <aside class="toolbar">
+    <h3>🔍 Búsqueda</h3>
+    <div class="search-box" id="searchBox">
+      <input type="text" id="searchInput" placeholder="Buscar componente, pin, cable…" autocomplete="off" />
+      <button class="clear-search" id="clearSearch" title="Limpiar">×</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+    <div class="search-results-list" id="searchResultsList"></div>
+
+    <h3>📚 Biblioteca</h3>
+    <div class="lib-list" id="libList"></div>
+    <div class="lib-save-row">
+      <input type="text" id="libNameInput" placeholder="Nombre del diagrama…" maxlength="40" />
+      <button id="libSaveBtn" title="Guardar diagrama actual">💾</button>
+    </div>
+    <div class="lib-meta">💡 Clic en un diagrama para cargarlo. Los <b>built-in</b> no se pueden borrar. Los personalizados se guardan en tu browser.</div>
+
+    <h3>Circuitos / Subsistemas</h3>
+    <div class="sub-btns" id="subBtns">
+      <button data-sub="all" class="active">⚡ Vista general</button>
+      <button data-sub="charging">🔌 Carga / Generador</button>
+      <button data-sub="starter">🚀 Arranque</button>
+      <button data-sub="ignition">🔥 Encendido (coils)</button>
+      <button data-sub="injection">⛽ Inyección / Bomba</button>
+      <button data-sub="sensors">📡 Sensores</button>
+      <button data-sub="fans">💨 Ventilador</button>
+      <button data-sub="lights">💡 Luces</button>
+      <button data-sub="instruments">🎛️ Instrumentos</button>
+      <button data-sub="signals">🔔 Bocina / Intermitentes</button>
+    </div>
+
+    <h3>Filtros por tipo</h3>
+    <div class="filter-btns" id="filterBtns">
+      <button data-filter="all" class="active">
+        <span class="swatch" style="background:linear-gradient(135deg,#e53935,#1a1a1a,#4caf50,#2196f3)"></span>
+        Todos los cables
+      </button>
+      <button data-filter="power">
+        <span class="swatch" style="background:var(--wire-rd)"></span>
+        +12V alimentación
+      </button>
+      <button data-filter="ground">
+        <span class="swatch" style="background:var(--wire-bk)"></span>
+        Masa (GND)
+      </button>
+      <button data-filter="sensor">
+        <span class="swatch" style="background:var(--wire-gn)"></span>
+        Señales de sensor
+      </button>
+      <button data-filter="actuator">
+        <span class="swatch" style="background:var(--wire-bu)"></span>
+        Salidas / actuadores
+      </button>
+      <button data-filter="ignition">
+        <span class="swatch" style="background:var(--wire-or)"></span>
+        Ignición / inyectores
+      </button>
+    </div>
+
+    <h3>Leyenda de colores KTM</h3>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-rd)"></span> rd = rojo</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-bk)"></span> bk = negro</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-bu)"></span> bu = azul</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-gn)"></span> gn = verde</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-wh)"></span> wh = blanco</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-or)"></span> or = naranja</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-br)"></span> br = marrón</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-ye)"></span> ye = amarillo</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-vt)"></span> vt = violeta</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-pk)"></span> pk = rosa</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--wire-gr)"></span> gr = gris</div>
+    </div>
+
+    <h3>💡 Ayuda</h3>
+    <p style="font-size:11px; color:var(--text-2); margin:4px 0; line-height:1.5">
+      <b>Click</b> en un cable o componente para ver detalle.<br>
+      <b>Hover</b> muestra tooltip con info rápida.<br>
+      <b>Modo Diagnóstico</b> muestra tests con multímetro.<br>
+      <b>Selecciona un circuito</b> para animar el flujo.<br>
+      <b>Búsqueda</b> arriba: tipeá cualquier cosa (ej: "TPS", "+12V", "verde").<br>
+      <b>Esc</b> resetea subsistema · <b>D</b> toggle diag.
+    </p>
+  </aside>
+
+  <main class="canvas" id="canvas">
+    <div class="canvas-inner">
+      <svg class="diagram" id="diagram" viewBox="0 0 1400 950" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="1400" height="950" fill="url(#grid)"/>
+        <text class="zone-label" x="120" y="22">ZONA A – FRENTE / LUCES</text>
+        <text class="zone-label" x="600" y="22">ZONA B – INSTRUMENTOS / SWITCHES</text>
+        <text class="zone-label" x="1080" y="22">ZONA C – ALIMENTACIÓN</text>
+        <text class="zone-label" x="120" y="560">ZONA D – SENSORES / IGNICIÓN</text>
+        <text class="zone-label" x="500" y="560">ZONA E – ECU CENTRAL</text>
+        <text class="zone-label" x="900" y="560">ZONA F – TRASERA / CARGA</text>
+        <g id="wiresLayer"></g>
+        <g id="componentsLayer"></g>
+      </svg>
+    </div>
+    <div class="tooltip" id="tooltip"></div>
+  </main>
+
+  <aside class="info" id="info">
+    <div class="empty" id="infoEmpty">
+      <div class="icon">🔍</div>
+      <div><b>Sin selección</b></div>
+      <div style="margin-top:4px">Hacé clic en un cable o un componente<br>para ver detalle de pines y diagnóstico.</div>
+    </div>
+    <div id="infoContent" style="display:none">
+      <h2 id="compName">—</h2>
+      <div class="sub" id="compType">—</div>
+      <p id="compDesc" style="font-size:12px; color:var(--text-1); margin:6px 0;"></p>
+      <div class="section-head">⚡ Conector</div>
+      <div class="pin-diagram" id="pinDiagram"></div>
+      <div class="section-head">📋 Tabla de pines</div>
+      <table class="pin-table">
+        <thead>
+          <tr><th>Pin</th><th>Color</th><th>Dir</th><th>Función</th><th>Señal</th></tr>
+        </thead>
+        <tbody id="pinTableBody"></tbody>
+      </table>
+      <div id="diagSection"></div>
+    </div>
+  </aside>
+</div>
+
+<!-- Legal Disclaimer Modal -->
+<div class="legal-overlay" id="legal-overlay">
+  <div class="legal-modal">
+    <div class="legal-header">
+      <h2>⚖ Aviso Legal – Uso Personal</h2>
+      <button class="legal-close" onclick="document.getElementById('legal-overlay').classList.remove('show')">×</button>
+    </div>
+    <div class="legal-body">
+      <p>Esta aplicación ha sido desarrollada <strong>exclusivamente para uso personal, educativo y de consulta técnica</strong>.</p>
+      <p>La información presentada, incluyendo diagramas eléctricos, asignación de pines, colores de cableado, valores de diagnóstico, configuraciones de ECU y demás datos técnicos, tiene únicamente fines de <strong>estudio, aprendizaje y referencia</strong>. No constituye documentación oficial de ningún fabricante.</p>
+      <p>Las <strong>marcas comerciales, nombres de modelos, manuales de servicio y documentación técnica</strong> mencionados son propiedad de sus respectivos titulares y se utilizan únicamente con fines descriptivos e identificativos.</p>
+      <p>Esta aplicación <strong>no está afiliada, autorizada, patrocinada ni respaldada</strong> por ningún fabricante de motocicletas o proveedor de componentes electrónicos.</p>
+      <p>Los diagramas y representaciones visuales mostrados en esta aplicación han sido <strong>adaptados, reinterpretados o reorganizados</strong> con fines didácticos para facilitar la comprensión de los sistemas eléctricos y electrónicos de los vehículos.</p>
+      <p>El usuario es <strong>responsable de verificar</strong> toda información técnica mediante la documentación oficial correspondiente antes de realizar diagnósticos, reparaciones, modificaciones o intervenciones sobre cualquier vehículo.</p>
+      <p>El autor de esta aplicación <strong>no asume responsabilidad alguna</strong> por daños materiales, pérdidas económicas, fallas mecánicas, daños electrónicos, pérdida de información o lesiones derivadas del uso directo o indirecto de la información aquí presentada.</p>
+      <p>Esta aplicación <strong>no recopila información personal ni tiene fines comerciales</strong>. Su utilización se realiza bajo exclusiva responsabilidad del usuario.</p>
+      <p>Al utilizar esta aplicación, el usuario <strong>acepta los términos</strong> establecidos en este aviso legal.</p>
+    </div>
+    <div class="legal-footer">
+      <button class="legal-accept" onclick="document.getElementById('legal-overlay').classList.remove('show')">ENTENDIDO</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ====================================================================
+   DATA & STATE
+   ==================================================================== */
+const WIRE_COLOR = {
+  // KTM / Ducati / Aprilia style (europeas)
+  rd:'#e53935',bk:'#1a1a1a',bu:'#2196f3',gn:'#4caf50',wh:'#f5f5f5',or:'#ff9800',
+  br:'#795548',ye:'#fdd835',vt:'#8e24aa',pk:'#ec407a',gr:'#9e9e9e',
+  'rd-bk':'#8b2a2a','bk-bu':'#0d3a4a','bu-wh':'#aed0e8','gn-bk':'#2e5c2e',
+  'wh-bk':'#a8a8a8','or-bk':'#a85a2a','bu-bk':'#1a3a5c','ye-bu':'#a8a040',
+  'ye-bk':'#a8a020','ye-gn':'#a0c020','ye-wh':'#e0e070','ye-rd':'#e07070',
+  'rd-wh':'#e07070','rd-ye':'#e58a58','bu-gn':'#60a0a0','bu-ye':'#6090c0',
+  'gn-or':'#80a040','or-wh':'#e0b070','wh-gn':'#b0c8a0','wh-rd':'#e0a0a0',
+  'br-bk':'#3a2018','br-wh':'#a08868','bk-wh':'#666666','bu-rd':'#a04040',
+  'bk-rd':'#5a2020','bk-gn':'#2a3a2a','bk-ye':'#3a3a1a','bk-or':'#3a2a1a',
+  'pk-bk':'#5a2840','vt-bk':'#3a1a40','ye-vt':'#a08540','gn-vt':'#408040',
+  'wh-bu':'#a8c8e0','wh-bk':'#888888','gn-vt':'#3a8050',
+  // Yamaha / Honda / Kawasaki style (japonesas)
+  R:'#E24B4A',B:'#444441',L:'#378ADD',W:'#cccccc',G:'#1D9E75',Br:'#BA7517',
+  Or:'#E8853A',Gy:'#888780',P:'#D4537E',Sb:'#85B7EB',Y:'#ffd166',Lz:'#85B7EB',
+  'R/W':'#E24B4A','R/L':'#D85A30','R/G':'#E24B4A',
+  'B/W':'#666666','B/Y':'#666666','B/L':'#4a4e6a',
+  'L/W':'#6aaae0','L/B':'#7F77DD','L/R':'#9a6abb','L/Y':'#7090cc','L/G':'#5fb5b5',
+  'G/W':'#2ab891','G/B':'#1a8060','G/Y':'#97C459',
+  'W/B':'#aaaaaa','W/G':'#bbddee','W/L':'#99bbdd',
+  'Gy/R':'#998070','Gy/G':'#88a080',
+  'Br/W':'#cc9930','Br/Y':'#c8a020','Br/L':'#a08060',
+  'Sb/W':'#9ac5f0',
+  'Y/R':'#f0b040','Y/L':'#e8c020',
+  'Or/G':'#c87830','Or/B':'#d06828'
+};
+const COLOR_NAME = {
+  rd:'Rojo',bk:'Negro',bu:'Azul',gn:'Verde',wh:'Blanco',or:'Naranja',br:'Marrón',ye:'Amarillo',vt:'Violeta',pk:'Rosa',gr:'Gris',
+  R:'Rojo (Yam)',B:'Negro (Yam)',L:'Azul (Yam)',W:'Blanco (Yam)',G:'Verde (Yam)',Br:'Marrón (Yam)',Or:'Naranja (Yam)',
+  Gy:'Gris (Yam)',P:'Rosa (Yam)',Sb:'Celeste (Yam)',Y:'Amarillo (Yam)',Lz:'Celeste claro (Yam)'
+};
+const colorOf = c => WIRE_COLOR[c] || '#888';
+
+let activeSubsystem = 'all';
+let activeFilter = 'all';
+let diagMode = false;
+
+/* --- COMPONENTS --- */
+const components = {
+  battery: { id:'battery', name:'Batería 12V', type:'power', x:1170, y:780, w:130, h:60,
+    desc:'Batería de plomo-ácido 12V. + alimenta la llave y relay de arranque. − va a masa del chasis.',
+    pins:[
+      { n:'+', color:'rd', dir:'PWR', function:'+12V batería (permanente)', signal:'12.6V reposo / 13.8–14.5V con motor' },
+      { n:'-', color:'bk', dir:'GND', function:'Masa chasis / batería',     signal:'0V (referencia)' }
+  ]},
+  mainFuse: { id:'mainFuse', name:'Fusible principal 30A', type:'protection', x:1170, y:660, w:120, h:40,
+    desc:'Fusible principal entre batería y llave. Protege todo el circuito.',
+    pins:[
+      { n:'IN',  color:'rd', dir:'PWR', function:'Entrada desde batería', signal:'+12V permanente' },
+      { n:'OUT', color:'rd', dir:'PWR', function:'Salida hacia llave',   signal:'+12V post-fusible' }
+  ]},
+  ignSwitch: { id:'ignSwitch', name:'Llave de encendido', type:'switch', x:1170, y:560, w:120, h:50,
+    desc:'Llave OFF/ON/PARK. Conecta +12V post-fusible a relays, ECU y accesorios.',
+    pins:[
+      { n:'BAT', color:'rd', dir:'PWR', function:'Entrada +12V batería (post-fusible)', signal:'+12V permanente' },
+      { n:'ON',  color:'rd', dir:'PWR', function:'Salida +12V bajo llave',               signal:'+12V con llave en ON' },
+      { n:'ST',  color:'rd', dir:'PWR', function:'Salida a relay de arranque',           signal:'+12V solo en START' },
+      { n:'P',   color:'br', dir:'OUT', function:'Salida luces de posición',             signal:'+12V en posición PARK' }
+  ]},
+  startRelay: { id:'startRelay', name:'Relay de arranque', type:'relay', x:1020, y:780, w:120, h:60,
+    desc:'Maneja la alta corriente del motor de arranque. La bobina la dispara la ECU.',
+    pins:[
+      { n:'85', color:'bk',    dir:'GND', function:'Masa bobina',                signal:'0V' },
+      { n:'86', color:'rd-wh', dir:'IN',  function:'+12V desde ECU (señal start)', signal:'+12V durante arranque' },
+      { n:'30', color:'rd',    dir:'PWR', function:'+12V directo batería',        signal:'+12V permanente' },
+      { n:'87', color:'rd',    dir:'OUT', function:'Salida a motor de arranque',  signal:'+12V durante crank' }
+  ]},
+  starterMotor: { id:'starterMotor', name:'Motor de arranque', type:'actuator', x:880, y:790, w:120, h:50,
+    desc:'Motor CC brush-type acoplado al cigüeñal. Bendix lo engrana durante arranque.',
+    pins:[
+      { n:'B+', color:'rd', dir:'IN',  function:'+12V desde relay',     signal:'+12V, picos >200A' },
+      { n:'-',  color:'bk', dir:'GND', function:'Masa al chasis',       signal:'0V' }
+  ]},
+  generator: { id:'generator', name:'Generador (alternador)', type:'generator', x:1300, y:780, w:90, h:50,
+    desc:'Generador trifásico acoplado al cigüeñal. Produce AC que el regulador rectifica.',
+    pins:[
+      { n:'AC1', color:'wh', dir:'OUT', function:'AC fase 1', signal:'~40V AC @ 5k rpm' },
+      { n:'AC2', color:'wh', dir:'OUT', function:'AC fase 2', signal:'~40V AC @ 5k rpm' },
+      { n:'AC3', color:'wh', dir:'OUT', function:'AC fase 3', signal:'~40V AC @ 5k rpm' }
+  ]},
+  regulator: { id:'regulator', name:'Regulador / Rectificador', type:'regulator', x:1300, y:660, w:90, h:50,
+    desc:'Rectifica AC del generador y regula voltaje a 14.0–14.5V DC para cargar batería.',
+    pins:[
+      { n:'IN1', color:'wh', dir:'IN',  function:'AC fase 1 entrada',    signal:'~40V AC' },
+      { n:'IN2', color:'wh', dir:'IN',  function:'AC fase 2 entrada',    signal:'~40V AC' },
+      { n:'IN3', color:'wh', dir:'IN',  function:'AC fase 3 entrada',    signal:'~40V AC' },
+      { n:'+',   color:'rd', dir:'OUT', function:'+12V regulado a batería', signal:'13.8–14.5V DC' },
+      { n:'-',   color:'bk', dir:'GND', function:'Masa chasis',           signal:'0V' }
+  ]},
+  ecu: { id:'ecu', name:'ECU – Unidad de Control', type:'control', x:560, y:620, w:300, h:220,
+    desc:'Computadora central. Gestiona inyección, encendido, idle, bomba y corte de arranque. Lee sensores (TPS, temp, lambda, pickup) y maneja actuadores (inyectores, bobinas, relay bomba, idle).',
+    pins:[
+      { n:'1',  color:'rd',    dir:'PWR', function:'+12V bajo llave',                     signal:'+12V llave ON' },
+      { n:'2',  color:'rd',    dir:'PWR', function:'+12V memoria (permanente)',            signal:'+12V permanente' },
+      { n:'3',  color:'bk',    dir:'GND', function:'Masa ECU (potencia)',                  signal:'0V' },
+      { n:'4',  color:'bk',    dir:'GND', function:'Masa ECU (señal)',                     signal:'0V' },
+      { n:'5',  color:'bu',    dir:'OUT', function:'Salida a relay bomba',                 signal:'+12V cuando motor gira' },
+      { n:'6',  color:'bu-wh', dir:'OUT', function:'Disparo inyector 1',                   signal:'Masa pulsada 2–10ms' },
+      { n:'7',  color:'bu-gn', dir:'OUT', function:'Disparo inyector 2',                   signal:'Masa pulsada 2–10ms' },
+      { n:'8',  color:'or',    dir:'OUT', function:'Disparo bobina cilindro 1',            signal:'Pulso bajo (-) para disparar' },
+      { n:'9',  color:'or-bk', dir:'OUT', function:'Disparo bobina cilindro 2',            signal:'Pulso bajo (-) para disparar' },
+      { n:'10', color:'wh',    dir:'IN',  function:'Pickup sensor RPM cigüeñal',           signal:'AC 0.5–50V según RPM' },
+      { n:'11', color:'wh-bk', dir:'GND', function:'Masa blindaje pickup',                 signal:'0V' },
+      { n:'12', color:'gn',    dir:'IN',  function:'TPS señal analógica',                  signal:'0.5V cerrado → 4.5V WOT' },
+      { n:'13', color:'gn-bk', dir:'GND', function:'Masa TPS',                              signal:'0V' },
+      { n:'14', color:'ye',    dir:'OUT', function:'+5V referencia para TPS',              signal:'+5V regulado interno' },
+      { n:'15', color:'vt',    dir:'IN',  function:'Sensor temperatura refrigerante',      signal:'0.5–4.5V (NTC inverso)' },
+      { n:'16', color:'vt-bk', dir:'GND', function:'Masa sensor temp refrigerante',        signal:'0V' },
+      { n:'17', color:'pk',    dir:'IN',  function:'Switch presión de aceite',             signal:'0V OK / 12V falla' },
+      { n:'18', color:'ye-gn', dir:'IN',  function:'Sensor lambda (O2)',                   signal:'0.1–0.9V oscilante' },
+      { n:'19', color:'bu',    dir:'BI',  function:'CAN High (diagnóstico)',               signal:'CAN 2.5V ±1V' },
+      { n:'20', color:'wh',    dir:'BI',  function:'CAN Low (diagnóstico)',                signal:'CAN 2.5V ±1V' },
+      { n:'21', color:'rd-wh', dir:'OUT', function:'Salida a relay de arranque',           signal:'+12V en START con clutch+neutral' },
+      { n:'22', color:'bu',    dir:'OUT', function:'Idle actuator bobina A',               signal:'Pulsos stepper' },
+      { n:'23', color:'bu',    dir:'OUT', function:'Idle actuator bobina B',               signal:'Pulsos stepper' },
+      { n:'24', color:'bu',    dir:'OUT', function:'Idle actuator bobina C',               signal:'Pulsos stepper' },
+      { n:'25', color:'rd-bk', dir:'IN',  function:'Sensor velocidad (VSS)',               signal:'0–12V pulsos, 4 por vuelta' },
+      { n:'26', color:'or',    dir:'IN',  function:'Sensor roll-over (tip-over)',          signal:'0V normal / 12V volcada' },
+      { n:'27', color:'wh',    dir:'IN',  function:'Switch clutch',                        signal:'0V con clutch apretado' },
+      { n:'28', color:'gn',    dir:'IN',  function:'Switch neutral',                       signal:'0V en neutral / 12V en marcha' }
+  ]},
+  pickup: { id:'pickup', name:'Pickup (sensor RPM)', type:'sensor', x:200, y:790, w:120, h:50,
+    desc:'Sensor inductivo que lee el reluctor del cigüeñal. Entrega señal AC a la ECU.',
+    pins:[
+      { n:'SIG', color:'wh',    dir:'OUT', function:'Señal AC a ECU pin 10', signal:'AC 0.5–50V pico' },
+      { n:'GND', color:'wh-bk', dir:'GND', function:'Masa blindaje',        signal:'0V' }
+  ]},
+  tps: { id:'tps', name:'TPS – Posición acelerador', type:'sensor', x:200, y:680, w:120, h:50,
+    desc:'Potenciómetro: 0.5V cerrado → 4.5V WOT. Tres cables: +5V, señal, masa.',
+    pins:[
+      { n:'+5V', color:'ye',    dir:'IN',  function:'+5V referencia de ECU', signal:'+5V' },
+      { n:'SIG', color:'gn',    dir:'OUT', function:'Señal 0.5–4.5V a ECU',   signal:'0.5–4.5V analógica' },
+      { n:'GND', color:'gn-bk', dir:'GND', function:'Masa del sensor',         signal:'0V' }
+  ]},
+  coolantTemp: { id:'coolantTemp', name:'Sensor temp. refrigerante', type:'sensor', x:340, y:680, w:130, h:50,
+    desc:'Termistor NTC. Resistencia cae al subir T°. Ajusta inyección, encendido y ventilador.',
+    pins:[
+      { n:'SIG', color:'vt',    dir:'OUT', function:'Resistencia NTC a ECU', signal:'~2.5V @ 20°C, ~1.0V @ 80°C' },
+      { n:'GND', color:'vt-bk', dir:'GND', function:'Masa',                  signal:'0V' }
+  ]},
+  oilTemp: { id:'oilTemp', name:'Sensor temp. aceite', type:'sensor', x:340, y:790, w:130, h:50,
+    desc:'Termistor para medir temperatura de aceite.',
+    pins:[
+      { n:'SIG', color:'ye-vt', dir:'OUT', function:'Resistencia NTC a instrumento', signal:'0.5–4.5V' },
+      { n:'GND', color:'bk',    dir:'GND', function:'Masa',                          signal:'0V' }
+  ]},
+  oilPressure: { id:'oilPressure', name:'Switch presión aceite', type:'sensor', x:60, y:680, w:120, h:50,
+    desc:'Switch abierto/cerrado según presión. Enciende luz de advertencia.',
+    pins:[
+      { n:'SIG', color:'pk', dir:'BI', function:'Switch a masa con presión', signal:'0V con presión / 12V sin presión' }
+  ]},
+  lambda: { id:'lambda', name:'Sensor Lambda (O2)', type:'sensor', x:60, y:790, w:120, h:50,
+    desc:'Sonda lambda banda estrecha. Genera ~0.45V en mezcla estequiométrica.',
+    pins:[
+      { n:'SIG', color:'ye-gn', dir:'OUT', function:'Voltaje lambda a ECU', signal:'0.1–0.9V oscilante' },
+      { n:'GND', color:'bk',    dir:'GND', function:'Masa',                signal:'0V' }
+  ]},
+  rollover: { id:'rollover', name:'Sensor Rollover', type:'sensor', x:60, y:590, w:100, h:40,
+    desc:'Sensor inclinación. Corta inyección y bomba si la moto se vuelca.',
+    pins:[
+      { n:'SIG', color:'or', dir:'OUT', function:'Estado a ECU',  signal:'0V normal / 12V volcada' },
+      { n:'GND', color:'bk', dir:'GND', function:'Masa',          signal:'0V' }
+  ]},
+  idleActuator: { id:'idleActuator', name:'Actuador de ralentí (stepper)', type:'actuator', x:380, y:590, w:130, h:50,
+    desc:'Motor paso-a-paso que controla la válvula de aire de ralentí. 4 cables.',
+    pins:[
+      { n:'A', color:'bu', dir:'IN', function:'Bobina A desde ECU', signal:'Pulsos' },
+      { n:'B', color:'bu', dir:'IN', function:'Bobina B desde ECU', signal:'Pulsos' },
+      { n:'C', color:'bu', dir:'IN', function:'Bobina C desde ECU', signal:'Pulsos' },
+      { n:'D', color:'bu', dir:'IN', function:'Bobina D desde ECU', signal:'Pulsos' }
+  ]},
+  fuelPumpRelay: { id:'fuelPumpRelay', name:'Relay bomba combustible', type:'relay', x:780, y:790, w:130, h:55,
+    desc:'Comandado por la ECU. Cierra el circuito de la bomba al girar el motor.',
+    pins:[
+      { n:'85', color:'bk',     dir:'GND', function:'Masa bobina',                signal:'0V' },
+      { n:'86', color:'bu',     dir:'IN',  function:'+12V desde ECU pin 5',        signal:'+12V cuando motor gira' },
+      { n:'30', color:'rd',     dir:'PWR', function:'+12V post-llave entrada',     signal:'+12V llave ON' },
+      { n:'87', color:'bk-bu',  dir:'OUT', function:'Salida a bomba combustible', signal:'+12V durante operación' }
+  ]},
+  fuelPump: { id:'fuelPump', name:'Bomba de combustible', type:'actuator', x:1170, y:440, w:120, h:50,
+    desc:'Bomba eléctrica sumergida en el tanque. Presión típica 3.0–3.5 bar.',
+    pins:[
+      { n:'+', color:'bk-bu', dir:'IN',  function:'+12V desde relay', signal:'+12V' },
+      { n:'-', color:'bk',    dir:'GND', function:'Masa tanque',     signal:'0V' }
+  ]},
+  fuelLevel: { id:'fuelLevel', name:'Sensor nivel combustible', type:'sensor', x:1300, y:440, w:90, h:50,
+    desc:'Resistencia variable flotante. Manda señal al instrumento de nivel.',
+    pins:[
+      { n:'SIG', color:'ye-bu', dir:'OUT', function:'Resistencia variable a instrumento', signal:'0.5–4.5V' },
+      { n:'GND', color:'bk',    dir:'GND', function:'Masa', signal:'0V' }
+  ]},
+  fuseBox: { id:'fuseBox', name:'Caja de fusibles', type:'protection', x:900, y:600, w:120, h:100,
+    desc:'10 slots. Protege cada circuito: luces, inyectores, bobinas, instrumentos, bomba, etc.',
+    pins:[
+      { n:'F1', color:'rd', dir:'PWR', function:'Luz baja',           signal:'+12V post-llave' },
+      { n:'F2', color:'rd', dir:'PWR', function:'Luz alta',            signal:'+12V post-llave' },
+      { n:'F3', color:'rd', dir:'PWR', function:'Instrumentos / cluster', signal:'+12V post-llave' },
+      { n:'F4', color:'rd', dir:'PWR', function:'Inyectores + relay bomba', signal:'+12V post-llave' },
+      { n:'F5', color:'rd', dir:'PWR', function:'Bobinas encendido',  signal:'+12V post-llave' },
+      { n:'F6', color:'rd', dir:'PWR', function:'Intermitentes / bocina', signal:'+12V post-llave' },
+      { n:'F7', color:'rd', dir:'PWR', function:'Ventilador',          signal:'+12V post-llave' },
+      { n:'F8', color:'rd', dir:'PWR', function:'Accesorios 12V',      signal:'+12V post-llave' }
+  ]},
+  ignCoil1: { id:'ignCoil1', name:'Bobina encendido – Cil. 1', type:'actuator', x:60, y:480, w:140, h:50,
+    desc:'Bobina cilindro delantero. Recibe 12V del fusible y descarga al bujía.',
+    pins:[
+      { n:'+12V', color:'rd', dir:'IN', function:'+12V desde fusible F5',  signal:'+12V' },
+      { n:'TRG',  color:'or', dir:'IN', function:'Disparo desde ECU pin 8', signal:'Pulso bajo (-)' },
+      { n:'GND',  color:'bk', dir:'GND', function:'Masa primario',          signal:'0V' },
+      { n:'OUT',  color:'or', dir:'OUT', function:'Salida AT a bujía',      signal:'15–25 kV' }
+  ]},
+  ignCoil2: { id:'ignCoil2', name:'Bobina encendido – Cil. 2', type:'actuator', x:60, y:380, w:140, h:50,
+    desc:'Bobina cilindro trasero.',
+    pins:[
+      { n:'+12V', color:'rd',    dir:'IN', function:'+12V desde fusible F5',   signal:'+12V' },
+      { n:'TRG',  color:'or-bk', dir:'IN', function:'Disparo desde ECU pin 9',  signal:'Pulso bajo (-)' },
+      { n:'GND',  color:'bk',    dir:'GND', function:'Masa primario',           signal:'0V' },
+      { n:'OUT',  color:'or',    dir:'OUT', function:'Salida AT a bujía',       signal:'15–25 kV' }
+  ]},
+  injector1: { id:'injector1', name:'Inyector 1 (frente)', type:'actuator', x:240, y:380, w:130, h:40,
+    desc:'Inyector electromagnético. Pulso de masa para abrir (lado alto a +12V).',
+    pins:[
+      { n:'+12V', color:'rd',    dir:'PWR', function:'+12V directo (fuse F4)', signal:'+12V' },
+      { n:'TRG',  color:'bu-wh', dir:'IN',  function:'Disparo desde ECU pin 6', signal:'Masa pulsada' }
+  ]},
+  injector2: { id:'injector2', name:'Inyector 2 (atrás)', type:'actuator', x:240, y:300, w:130, h:40,
+    desc:'Inyector electromagnético del cilindro 2.',
+    pins:[
+      { n:'+12V', color:'rd',    dir:'PWR', function:'+12V directo (fuse F4)', signal:'+12V' },
+      { n:'TRG',  color:'bu-gn', dir:'IN',  function:'Disparo desde ECU pin 7', signal:'Masa pulsada' }
+  ]},
+  fanRelay: { id:'fanRelay', name:'Relay ventilador', type:'relay', x:780, y:440, w:120, h:50,
+    desc:'Enciende el ventilador cuando la ECU lo comanda (temp > 95°C).',
+    pins:[
+      { n:'85', color:'bk', dir:'GND', function:'Masa bobina',         signal:'0V' },
+      { n:'86', color:'bu', dir:'IN',  function:'+12V desde ECU',       signal:'+12V con temp > umbral' },
+      { n:'30', color:'rd', dir:'PWR', function:'+12V entrada',         signal:'+12V post-llave' },
+      { n:'87', color:'gn', dir:'OUT', function:'Salida a ventilador',  signal:'+12V' }
+  ]},
+  fan: { id:'fan', name:'Ventilador refrigerante', type:'actuator', x:1170, y:300, w:120, h:50,
+    desc:'Se activa > 95°C y se apaga < 90°C.',
+    pins:[
+      { n:'+', color:'gn', dir:'IN',  function:'+12V desde relay', signal:'+12V' },
+      { n:'-', color:'bk', dir:'GND', function:'Masa',              signal:'0V' }
+  ]},
+  tempSwitch: { id:'tempSwitch', name:'Switch térmico ventilador', type:'sensor', x:620, y:440, w:130, h:40,
+    desc:'Switch bimetálico. Cierra el circuito del ventilador sin pasar por ECU (respaldo).',
+    pins:[
+      { n:'IN',  color:'rd', dir:'IN',  function:'+12V desde fusible',  signal:'+12V' },
+      { n:'OUT', color:'gn', dir:'OUT', function:'Al relay / ventilador', signal:'+12V con temp > 95°C' }
+  ]},
+  headlight: { id:'headlight', name:'Faro delantero', type:'light', x:60, y:120, w:170, h:70,
+    desc:'Lámpara H4 (high/low beam). Conmutado por switch de luz y switch de cruce.',
+    pins:[
+      { n:'LOW',  color:'wh-bu', dir:'IN', function:'Luz baja', signal:'+12V' },
+      { n:'HIGH', color:'wh',    dir:'IN', function:'Luz alta', signal:'+12V' },
+      { n:'GND',  color:'bk',    dir:'GND', function:'Masa',     signal:'0V' }
+  ]},
+  tailLight: { id:'tailLight', name:'Luz trasera / freno', type:'light', x:60, y:230, w:170, h:60,
+    desc:'Luz trasera combinada con freno. Doble filamento.',
+    pins:[
+      { n:'POS', color:'br', dir:'IN', function:'Posición',       signal:'+12V en PARK/ON' },
+      { n:'BRK', color:'gn', dir:'IN', function:'Luz de freno',  signal:'+12V al frenar' },
+      { n:'GND', color:'bk', dir:'GND', function:'Masa',           signal:'0V' }
+  ]},
+  flasherF: { id:'flasherF', name:'Intermitentes delanteros', type:'light', x:280, y:120, w:140, h:50,
+    desc:'Par de intermitentes delanteros, alimentados por el flasher relay.',
+    pins:[
+      { n:'+', color:'vt-bk', dir:'IN', function:'Desde flasher relay', signal:'+12V pulsado ~1.5Hz' },
+      { n:'-', color:'bk',    dir:'GND', function:'Masa',                signal:'0V' }
+  ]},
+  flasherR: { id:'flasherR', name:'Intermitentes traseros', type:'light', x:280, y:230, w:140, h:50,
+    desc:'Par de intermitentes traseros.',
+    pins:[
+      { n:'+', color:'vt-bk', dir:'IN', function:'Desde flasher relay', signal:'+12V pulsado ~1.5Hz' },
+      { n:'-', color:'bk',    dir:'GND', function:'Masa',                signal:'0V' }
+  ]},
+  flasherRelay: { id:'flasherRelay', name:'Relay intermitentes', type:'relay', x:460, y:120, w:130, h:50,
+    desc:'Flasher. Conmuta +12V a 1.5Hz cuando se activa el switch.',
+    pins:[
+      { n:'X',  color:'rd',    dir:'PWR', function:'+12V desde llave',  signal:'+12V post-llave' },
+      { n:'L',  color:'vt-bk', dir:'OUT', function:'A lámparas',         signal:'+12V pulsado' },
+      { n:'49', color:'bk',    dir:'GND', function:'Masa',                signal:'0V' }
+  ]},
+  horn: { id:'horn', name:'Bocina', type:'actuator', x:640, y:120, w:120, h:50,
+    desc:'Bocina electromagnética. Se activa al pulsar el botón en el manillar.',
+    pins:[
+      { n:'+', color:'gn', dir:'IN',  function:'+12V desde switch', signal:'+12V al pulsar' },
+      { n:'-', color:'bk', dir:'GND', function:'Masa',               signal:'0V' }
+  ]},
+  brakeSwitch: { id:'brakeSwitch', name:'Switch freno delantero', type:'switch', x:460, y:230, w:130, h:40,
+    desc:'Switch mecánico en la maneta de freno. Cierra circuito a masa al frenar.',
+    pins:[
+      { n:'OUT', color:'ye-gn', dir:'OUT', function:'A luz de freno y a ECU', signal:'+12V al frenar' },
+      { n:'GND', color:'bk',    dir:'GND', function:'Masa',                   signal:'0V' }
+  ]},
+  clutchSwitch: { id:'clutchSwitch', name:'Switch clutch', type:'switch', x:640, y:230, w:120, h:40,
+    desc:'Switch en maneta de clutch. Necesario para habilitar arranque (junto con neutral).',
+    pins:[
+      { n:'OUT', color:'wh', dir:'OUT', function:'A ECU pin 27', signal:'0V con clutch apretado' },
+      { n:'GND', color:'bk', dir:'GND', function:'Masa',          signal:'0V' }
+  ]},
+  neutralSwitch: { id:'neutralSwitch', name:'Switch neutral', type:'switch', x:820, y:230, w:120, h:40,
+    desc:'Switch en caja de cambios. Cierra a masa en neutral.',
+    pins:[
+      { n:'OUT', color:'gn', dir:'OUT', function:'A ECU pin 28 e instrumento', signal:'0V neutral / 12V en marcha' },
+      { n:'GND', color:'bk', dir:'GND', function:'Masa',                       signal:'0V' }
+  ]},
+  speedometer: { id:'speedometer', name:'Speedometer (multi-func)', type:'instrument', x:1080, y:120, w:170, h:80,
+    desc:'Velocímetro digital multifunción. Muestra velocidad, RPM, nivel combustible, temperatura.',
+    pins:[
+      { n:'+12V', color:'rd',  dir:'PWR', function:'+12V post-llave',           signal:'+12V' },
+      { n:'GND',  color:'bk',  dir:'GND', function:'Masa',                       signal:'0V' },
+      { n:'VSS',  color:'rd-bk', dir:'IN', function:'Sensor velocidad',         signal:'Pulsos 0–12V' },
+      { n:'CAN-H',color:'bu',  dir:'BI',  function:'CAN High a ECU',            signal:'CAN 2.5V' },
+      { n:'CAN-L',color:'wh',  dir:'BI',  function:'CAN Low a ECU',             signal:'CAN 2.5V' },
+      { n:'TEMP', color:'ye-gn', dir:'IN', function:'Indicador temperatura',    signal:'0.5–4.5V' },
+      { n:'FUEL', color:'ye-bu', dir:'IN', function:'Indicador combustible',    signal:'0.5–4.5V' },
+      { n:'NEUT', color:'gn',  dir:'IN',  function:'Indicador neutral',         signal:'0V/12V' }
+  ]},
+  tachometer: { id:'tachometer', name:'Tachometer (RPM)', type:'instrument', x:1080, y:230, w:170, h:60,
+    desc:'Tacómetro analógico/digital. Muestra RPM.',
+    pins:[
+      { n:'+12V', color:'rd', dir:'PWR', function:'+12V post-llave',  signal:'+12V' },
+      { n:'GND',  color:'bk', dir:'GND', function:'Masa',              signal:'0V' },
+      { n:'SIG',  color:'bu', dir:'IN',  function:'Pulso RPM desde ECU/pickup', signal:'Pulsos' }
+  ]},
+  speedSensor: { id:'speedSensor', name:'Sensor velocidad (VSS)', type:'sensor', x:1300, y:120, w:90, h:50,
+    desc:'Sensor Hall en la caja de cambios. Genera pulsos según velocidad.',
+    pins:[
+      { n:'+12V', color:'rd-bk', dir:'IN',  function:'Alimentación desde speedo', signal:'+12V' },
+      { n:'GND',  color:'bk',    dir:'GND', function:'Masa',                    signal:'0V' },
+      { n:'OUT',  color:'rd-bk', dir:'OUT', function:'Pulsos a ECU/speedometer', signal:'0–12V pulsos' }
+  ]},
+  roadbook: { id:'roadbook', name:'Accesorios / Roadbook', type:'instrument', x:1300, y:230, w:90, h:60,
+    desc:'Conector para GPS, roadbook, calentador de puños.',
+    pins:[
+      { n:'+12V', color:'rd', dir:'PWR', function:'+12V',         signal:'+12V' },
+      { n:'GND',  color:'bk', dir:'GND', function:'Masa',          signal:'0V' },
+      { n:'SIG',  color:'bu', dir:'BI',  function:'Señal/datos',   signal:'Variable' }
+  ]},
+  groundBus: { id:'groundBus', name:'Bus de masa (chasis)', type:'ground', x:40, y:920, w:1320, h:14,
+    desc:'Bus común de masa al chasis. Todos los retornos (-) terminan aquí.',
+    pins:[{ n:'GND', color:'bk', dir:'GND', function:'Masa chasis', signal:'0V' }]
+  }
+};
+
+/* --- WIRES --- */
+const wires = [
+  // Power / carga
+  { id:'w1',  from:['battery','+'],      to:['mainFuse','IN'],       color:'rd',  cat:'power',  function:'Batería → Fusible principal', signal:'+12V permanente', dir:'PWR',  test:'Mide entre B+ y B-: 12.6V (motor apagado), 13.8–14.5V (motor en marcha).' },
+  { id:'w2',  from:['mainFuse','OUT'],   to:['ignSwitch','BAT'],     color:'rd',  cat:'power',  function:'Fusible → Llave encendido',     signal:'+12V post-fusible', dir:'PWR', test:'Llave OFF: ~0V. Llave ON: +12V respecto a masa.' },
+  { id:'w3',  from:['ignSwitch','ON'],   to:['fuseBox','F1'],        color:'rd',  cat:'power',  function:'Llave → Fusibles (varios)',     signal:'+12V bajo llave',  dir:'PWR', test:'Con multímetro en cada slot de fusible: 0V sin llave, +12V con llave ON.' },
+  { id:'w4',  from:['ignSwitch','ON'],   to:['ecu','1'],             color:'rd',  cat:'power',  function:'+12V llave a ECU',              signal:'+12V llave ON',    dir:'PWR', test:'Pin 1 vs masa: 12.0V con llave ON. <11.5V = problema de carga.' },
+  { id:'w5',  from:['ignSwitch','ST'],   to:['ecu','21'],            color:'rd-wh', cat:'power', function:'Llave START a ECU',           signal:'+12V en START',     dir:'PWR', test:'Pin 21 vs masa: +12V SOLO con botón de arranque apretado + clutch + neutral.' },
+  { id:'w6',  from:['battery','+'],      to:['startRelay','30'],     color:'rd',  cat:'power',  function:'+12V directo a relay arranque', signal:'+12V permanente',   dir:'PWR', test:'Pin 30 vs masa: siempre +12V. Cable grueso (rojo) al relay.' },
+  { id:'w7',  from:['startRelay','87'],  to:['starterMotor','B+'],   color:'rd',  cat:'power',  function:'Relay → Motor de arranque',     signal:'+12V en crank',     dir:'PWR', test:'Pin 87 vs masa durante arranque: 10–12V. Caída <0.5V bajo carga = OK.' },
+  { id:'w8',  from:['battery','-'],      to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa batería',                  signal:'0V',                dir:'GND', test:'Resistencia entre B- y chasis: <0.5Ω. Si >1Ω: limpiar bornes y masa.' },
+  { id:'w9',  from:['ecu','3'],          to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa ECU (potencia)',          signal:'0V',                dir:'GND', test:'Pin 3 y Pin 4 a chasis: <0.1Ω. Si >0.5Ω: problema de masa, motor no anda bien.' },
+  { id:'w10', from:['ecu','4'],          to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa ECU (señal)',             signal:'0V',                dir:'GND', test:'Pin 4 a chasis: <0.1Ω. Misma masa que pin 3.' },
+  { id:'w11', from:['regulator','+'],    to:['battery','+'],         color:'rd',  cat:'power',  function:'Carga batería (reg → bat)',    signal:'13.8–14.5V DC',     dir:'PWR', test:'Regulador → batería: 13.8–14.5V con motor >3000 rpm. Si >15V: regulador quemado.' },
+
+  // Generator / regulator
+  { id:'w12', from:['generator','AC1'],  to:['regulator','IN1'],     color:'wh',  cat:'power',  function:'Fase 1 alternador → regulador', signal:'~40V AC @ 5k rpm', dir:'BI',  test:'Cada fase a masa con motor girando: AC 20–60V. Asimétrico = estator dañado.' },
+  { id:'w13', from:['generator','AC2'],  to:['regulator','IN2'],     color:'wh',  cat:'power',  function:'Fase 2 alternador → regulador', signal:'~40V AC @ 5k rpm', dir:'BI',  test:'Idem w12.' },
+  { id:'w14', from:['generator','AC3'],  to:['regulator','IN3'],     color:'wh',  cat:'power',  function:'Fase 3 alternador → regulador', signal:'~40V AC @ 5k rpm', dir:'BI',  test:'Idem w12. Si una fase da 0V: bobinado quemado.' },
+  { id:'w15', from:['regulator','-'],    to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa regulador',                signal:'0V',                dir:'GND', test:'Masa del regulador a chasis: <0.3Ω.' },
+
+  // ECU start command
+  { id:'w16', from:['ecu','21'],         to:['startRelay','86'],     color:'rd-wh', cat:'actuator', function:'ECU dispara relay arranque', signal:'+12V en START', dir:'OUT', test:'Desconectar relay, medir pin 86 a masa al dar START: debe pulsar +12V.' },
+
+  // Pickup
+  { id:'w17', from:['pickup','SIG'],     to:['ecu','10'],            color:'wh',  cat:'sensor', function:'Pickup señal RPM a ECU',         signal:'AC 0.5–50V',        dir:'IN',  test:'Pin 10 a masa con motor girando: AC 0.5V (ralentí) a 50V+ (alto régimen). Si 0V: pickup o cable roto.' },
+  { id:'w18', from:['pickup','GND'],     to:['groundBus','GND'],     color:'wh-bk', cat:'ground', function:'Masa blindaje pickup',         signal:'0V',                dir:'GND', test:'Pin 11 a masa: <0.3Ω.' },
+
+  // TPS
+  { id:'w19', from:['ecu','14'],         to:['tps','+5V'],           color:'ye',  cat:'sensor', function:'+5V referencia a TPS',            signal:'+5V regulado',      dir:'OUT', test:'Pin +5V del TPS a masa: 4.95–5.05V. Si inestable: regulador interno en ECU dañado.' },
+  { id:'w20', from:['tps','SIG'],        to:['ecu','12'],            color:'gn',  cat:'sensor', function:'TPS señal a ECU',                 signal:'0.5V cerrado → 4.5V WOT', dir:'IN',  test:'Pin SIG a masa, llave ON, gas abierto: 0.5V → 4.5V suavemente. Saltos = TPS gastado.' },
+  { id:'w21', from:['tps','GND'],        to:['groundBus','GND'],     color:'gn-bk', cat:'ground', function:'Masa TPS',                      signal:'0V',                dir:'GND', test:'Pin GND a masa: <0.2Ω.' },
+
+  // Coolant temp
+  { id:'w22', from:['coolantTemp','SIG'], to:['ecu','15'],           color:'vt',  cat:'sensor', function:'Sensor temp refrigerante a ECU', signal:'0.5–4.5V (NTC)',     dir:'IN',  test:'Desconectar sensor: pin a masa debe marcar ~4.5V. Conectar: cae a 2.5V (20°C). Motor caliente: <1.5V.' },
+  { id:'w23', from:['coolantTemp','GND'], to:['groundBus','GND'],    color:'vt-bk', cat:'ground', function:'Masa sensor temp',              signal:'0V',                dir:'GND', test:'Masa a chasis: <0.2Ω.' },
+
+  // Oil pressure
+  { id:'w24', from:['oilPressure','SIG'], to:['ecu','17'],           color:'pk',  cat:'sensor', function:'Switch presión aceite a ECU',     signal:'0V OK / 12V falla',  dir:'IN',  test:'Motor apagado: 12V. Motor en marcha: 0V. Si queda en 12V con motor girando: switch o baja presión.' },
+
+  // Lambda
+  { id:'w25', from:['lambda','SIG'],     to:['ecu','18'],            color:'ye-gn', cat:'sensor', function:'Sonda lambda a ECU',             signal:'0.1–0.9V oscilante',  dir:'IN',  test:'Motor caliente, ralentí: oscila 0.1–0.9V. Si fijo en 0.45V: sonda fría o desconectada.' },
+  { id:'w26', from:['lambda','GND'],     to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa sonda',                    signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+
+  // Rollover
+  { id:'w27', from:['rollover','SIG'],   to:['ecu','26'],            color:'or',  cat:'sensor', function:'Sensor rollover a ECU',           signal:'0V normal / 12V volcada', dir:'IN', test:'Moto vertical: 0V. Inclinada >60°: 12V. Si detecta volcada con la moto parada: sensor trabado.' },
+  { id:'w28', from:['rollover','GND'],   to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa rollover',                  signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+
+  // Idle actuator (4 cables)
+  { id:'w30', from:['ecu','22'],         to:['idleActuator','A'],    color:'bu',  cat:'actuator', function:'ECU → bobina A idle',           signal:'Pulsos stepper',     dir:'OUT', test:'Resistencia bobina A-B: 50–200Ω. Si infinita: bobina quemada.' },
+  { id:'w31', from:['ecu','22'],         to:['idleActuator','B'],    color:'bu',  cat:'actuator', function:'ECU → bobina B idle',           signal:'Pulsos stepper',     dir:'OUT', test:'Idem w30.' },
+  { id:'w32a', from:['ecu','23'],        to:['idleActuator','C'],    color:'bu',  cat:'actuator', function:'ECU → bobina C idle',           signal:'Pulsos stepper',     dir:'OUT', test:'Resistencia bobina: 50–200Ω.' },
+  { id:'w32b', from:['ecu','24'],        to:['idleActuator','D'],    color:'bu',  cat:'actuator', function:'ECU → bobina D idle',           signal:'Pulsos stepper',     dir:'OUT', test:'Idem w32a.' },
+
+  // Fuel pump relay
+  { id:'w33', from:['fuseBox','F4'],     to:['fuelPumpRelay','30'],  color:'rd',  cat:'power',  function:'+12V a relay bomba',              signal:'+12V post-llave',  dir:'PWR', test:'Pin 30 a masa con llave ON: +12V.' },
+  { id:'w34', from:['ecu','5'],          to:['fuelPumpRelay','86'],  color:'bu',  cat:'actuator', function:'ECU dispara relay bomba',       signal:'+12V con motor gira', dir:'OUT', test:'Pin 86 a masa: 0V en reposo. +12V al girar motor.' },
+  { id:'w35', from:['fuelPumpRelay','87'], to:['fuelPump','+'],      color:'bk-bu', cat:'power', function:'Relay → Bomba combustible',      signal:'+12V durante operación', dir:'PWR', test:'Pin + bomba a masa con motor girando: +12V. Si 0V: relay no cierra o fusible quemado.' },
+  { id:'w36', from:['fuelPump','-'],     to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa bomba',                    signal:'0V',                dir:'GND', test:'Masa a chasis: <0.5Ω. Bomba sumerge en tanque.' },
+  { id:'w37', from:['fuelPumpRelay','85'], to:['groundBus','GND'],   color:'bk',  cat:'ground', function:'Masa bobina relay bomba',        signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+
+  // Injectors
+  { id:'w38', from:['fuseBox','F4'],     to:['injector1','+12V'],    color:'rd',  cat:'power',  function:'+12V a inyectores (vía fuse)',    signal:'+12V post-llave',  dir:'PWR', test:'+12V del inyector a masa: 12V con llave ON.' },
+  { id:'w39', from:['fuseBox','F4'],     to:['injector2','+12V'],    color:'rd',  cat:'power',  function:'+12V a inyectores (vía fuse)',    signal:'+12V post-llave',  dir:'PWR', test:'Idem w38.' },
+  { id:'w40', from:['ecu','6'],          to:['injector1','TRG'],     color:'bu-wh', cat:'ignition', function:'ECU dispara inyector 1',        signal:'Masa pulsada 2–10ms', dir:'OUT', test:'Resistencia bobina inyector: 11–16Ω. Conectar LED: debe parpadear al dar gas.' },
+  { id:'w41', from:['ecu','7'],          to:['injector2','TRG'],     color:'bu-gn', cat:'ignition', function:'ECU dispara inyector 2',        signal:'Masa pulsada 2–10ms', dir:'OUT', test:'Idem w40.' },
+
+  // Ignition coils
+  { id:'w42', from:['fuseBox','F5'],     to:['ignCoil1','+12V'],     color:'rd',  cat:'power',  function:'+12V a bobina 1',                signal:'+12V post-llave',  dir:'PWR', test:'+12V a masa en pin +12V de la bobina: 12V con llave ON.' },
+  { id:'w43', from:['fuseBox','F5'],     to:['ignCoil2','+12V'],     color:'rd',  cat:'power',  function:'+12V a bobina 2',                signal:'+12V post-llave',  dir:'PWR', test:'Idem w42.' },
+  { id:'w44', from:['ecu','8'],          to:['ignCoil1','TRG'],      color:'or',  cat:'ignition', function:'ECU dispara bobina 1',         signal:'Pulso bajo (-)',     dir:'OUT', test:'Pin TRG a masa con motor girando: pulso de masa. Resistencia primario bobina: 0.4–2Ω.' },
+  { id:'w45', from:['ecu','9'],          to:['ignCoil2','TRG'],      color:'or-bk', cat:'ignition', function:'ECU dispara bobina 2',         signal:'Pulso bajo (-)',     dir:'OUT', test:'Idem w44.' },
+  { id:'w46', from:['ignCoil1','GND'],   to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa primario bobina 1',         signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w47', from:['ignCoil2','GND'],   to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa primario bobina 2',         signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+
+  // Fan
+  { id:'w48', from:['fuseBox','F7'],     to:['fanRelay','30'],       color:'rd',  cat:'power',  function:'+12V a relay ventilador',         signal:'+12V post-llave',  dir:'PWR', test:'Pin 30 a masa con llave ON: +12V.' },
+  { id:'w49', from:['fanRelay','87'],    to:['fan','+'],             color:'gn',  cat:'power',  function:'Relay → Ventilador',             signal:'+12V',              dir:'PWR', test:'Pin + del ventilador a masa con temp > 95°C: +12V.' },
+  { id:'w50', from:['fan','-'],          to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa ventilador',                 signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w51', from:['fanRelay','85'],    to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa bobina relay ventilador',  signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w52', from:['tempSwitch','IN'],  to:['fuseBox','F7'],        color:'rd',  cat:'power',  function:'+12V a switch térmico',           signal:'+12V',              dir:'PWR', test:'Pin IN a masa: +12V con llave ON.' },
+  { id:'w53', from:['tempSwitch','OUT'], to:['fanRelay','87'],       color:'gn',  cat:'actuator', function:'Switch térmico → relay',         signal:'+12V con temp>95°C', dir:'OUT', test:'Pin OUT a masa con radiador caliente: +12V (cierra switch).' },
+
+  // Lights
+  { id:'w54', from:['fuseBox','F1'],     to:['headlight','LOW'],     color:'wh-bu', cat:'power', function:'Fusible → Luz baja',              signal:'+12V',              dir:'PWR', test:'Pin LOW a masa con luces en LOW: +12V.' },
+  { id:'w55', from:['fuseBox','F2'],     to:['headlight','HIGH'],    color:'wh',  cat:'power',  function:'Fusible → Luz alta',              signal:'+12V',              dir:'PWR', test:'Pin HIGH a masa con luces en HIGH: +12V.' },
+  { id:'w56', from:['headlight','GND'],  to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa faro',                     signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w57', from:['fuseBox','F1'],     to:['tailLight','POS'],     color:'br',  cat:'power',  function:'Fusible → Posición trasera',     signal:'+12V',              dir:'PWR', test:'Pin POS a masa con llave ON: +12V.' },
+  { id:'w58', from:['brakeSwitch','OUT'], to:['tailLight','BRK'],    color:'gn',  cat:'actuator', function:'Switch freno → luz freno',     signal:'+12V al frenar',     dir:'OUT', test:'Pin BRK a masa al frenar: +12V.' },
+  { id:'w59', from:['tailLight','GND'],  to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa luz trasera',               signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w60', from:['fuseBox','F6'],     to:['flasherRelay','X'],    color:'rd',  cat:'power',  function:'Fusible → Flasher',              signal:'+12V',              dir:'PWR', test:'Pin X a masa con llave ON: +12V.' },
+  { id:'w61', from:['flasherRelay','L'], to:['flasherF','+'],        color:'vt-bk', cat:'actuator', function:'Flasher → Intermitentes del.',  signal:'+12V pulsado',       dir:'OUT', test:'Pin + a masa con intermitente activo: 12V pulsado ~1.5Hz.' },
+  { id:'w62', from:['flasherRelay','L'], to:['flasherR','+'],        color:'vt-bk', cat:'actuator', function:'Flasher → Intermitentes tras.',  signal:'+12V pulsado',       dir:'OUT', test:'Idem w61.' },
+  { id:'w63', from:['flasherF','-'],     to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa intermitentes del.',        signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w64', from:['flasherR','-'],     to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa intermitentes tras.',        signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w65', from:['flasherRelay','49'], to:['groundBus','GND'],    color:'bk',  cat:'ground', function:'Masa flasher',                  signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w66', from:['fuseBox','F6'],     to:['horn','+'],            color:'gn',  cat:'power',  function:'Fusible → Bocina',                signal:'+12V al pulsar',     dir:'PWR', test:'Pin + a masa al pulsar bocina: +12V.' },
+  { id:'w67', from:['horn','-'],         to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa bocina',                    signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+
+  // Clutch / neutral / brake
+  { id:'w68', from:['clutchSwitch','OUT'], to:['ecu','27'],          color:'wh',  cat:'sensor', function:'Clutch a ECU',                  signal:'0V con clutch apretado', dir:'IN', test:'Pin 27 a masa: 12V suelto, 0V con clutch apretado.' },
+  { id:'w69', from:['neutralSwitch','OUT'], to:['ecu','28'],         color:'gn',  cat:'sensor', function:'Neutral a ECU',                 signal:'0V neutral / 12V en marcha', dir:'IN', test:'Pin 28 a masa: 0V en neutral, 12V en cualquier marcha.' },
+  { id:'w70', from:['brakeSwitch','OUT'], to:['tailLight','BRK'],    color:'ye-gn', cat:'actuator', function:'Switch freno → luz freno (directo)', signal:'+12V al frenar', dir:'OUT', test:'Verificar al frenar: +12V en cable de freno.' },
+
+  // Speedometer / instruments
+  { id:'w71', from:['fuseBox','F3'],     to:['speedometer','+12V'],  color:'rd',  cat:'power',  function:'+12V a velocímetro',              signal:'+12V',              dir:'PWR', test:'Pin +12V a masa: 12V con llave ON.' },
+  { id:'w72', from:['speedometer','GND'], to:['groundBus','GND'],    color:'bk',  cat:'ground', function:'Masa velocímetro',                signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w73', from:['ecu','19'],         to:['speedometer','CAN-H'], color:'bu',  cat:'communication', function:'CAN High ECU ↔ Instrumento', signal:'CAN 2.5V ±1V',     dir:'BI',  test:'Con osciloscopio: forma de onda cuadrada 250kbps. Con multímetro: ~2.5V promedio.' },
+  { id:'w74', from:['ecu','20'],         to:['speedometer','CAN-L'], color:'wh',  cat:'communication', function:'CAN Low ECU ↔ Instrumento',  signal:'CAN 2.5V ±1V',     dir:'BI',  test:'Idem w73. CAN-H y CAN-L son complementarios: si uno mide 0V, cable cortado.' },
+  { id:'w75', from:['speedSensor','OUT'], to:['speedometer','VSS'],  color:'rd-bk', cat:'sensor', function:'VSS a velocímetro',               signal:'Pulsos',             dir:'IN',  test:'Empujar la moto con la rueda levantada: deben leerse pulsos en la entrada del speedo.' },
+  { id:'w76', from:['speedSensor','+12V'], to:['speedometer','+12V'], color:'rd-bk', cat:'power', function:'Alimentación VSS desde speedo',     signal:'+12V',              dir:'PWR', test:'Pin +12V del sensor: +12V con llave ON.' },
+  { id:'w77', from:['speedSensor','GND'], to:['groundBus','GND'],    color:'bk',  cat:'ground', function:'Masa VSS',                       signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w78', from:['fuseBox','F3'],     to:['tachometer','+12V'],   color:'rd',  cat:'power',  function:'+12V a tacómetro',                 signal:'+12V',              dir:'PWR', test:'Pin +12V a masa: 12V con llave ON.' },
+  { id:'w79', from:['tachometer','GND'], to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa tacómetro',                  signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w80', from:['ecu','-aux'],       to:['tachometer','SIG'],    color:'bu',  cat:'sensor', function:'Pulso RPM a tacómetro (vía ECU)',  signal:'Pulsos 0–12V',       dir:'OUT', test:'Motor en marcha: pulsos. Si marca 0: cable cortado o tacómetro quemado.' },
+
+  // Fuel level
+  { id:'w81', from:['fuelLevel','SIG'],  to:['speedometer','FUEL'],  color:'ye-bu', cat:'sensor', function:'Sensor combustible a velocímetro', signal:'0.5–4.5V según nivel', dir:'IN', test:'Tanque lleno: ~4.5V. Vacío: ~0.5V.' },
+  { id:'w82', from:['fuelLevel','GND'],  to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa sensor combustible',          signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+  { id:'w83', from:['fuseBox','F8'],     to:['roadbook','+12V'],     color:'rd',  cat:'power',  function:'+12V accesorios',                  signal:'+12V',              dir:'PWR', test:'Pin +12V a masa: 12V con llave ON.' },
+  { id:'w84', from:['roadbook','GND'],   to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa accesorios',                  signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' },
+
+  // Oil temp
+  { id:'w85', from:['oilTemp','SIG'],    to:['speedometer','TEMP'],  color:'ye-vt', cat:'sensor', function:'Sensor temp aceite a velocímetro', signal:'0.5–4.5V',           dir:'IN',  test:'Motor frío: ~3.5V. Caliente: ~1.0V.' },
+  { id:'w86', from:['oilTemp','GND'],    to:['groundBus','GND'],     color:'bk',  cat:'ground', function:'Masa sensor aceite',               signal:'0V',                dir:'GND', test:'Masa a chasis: <0.3Ω.' }
+];
+
+/* --- SUBSYSTEMS (rutas para animar flujo) --- */
+const subsystems = {
+  all: { name:'Vista general', paths:[] },
+  charging: { name:'Carga / Generador',
+    paths:[['generator','AC1','regulator','IN1'],['regulator','+','battery','+'],['battery','-','groundBus','GND']] },
+  starter: { name:'Arranque',
+    paths:[['battery','+','startRelay','30'],['startRelay','87','starterMotor','B+'],['starterMotor','-','groundBus','GND'],
+           ['ignSwitch','ST','ecu','21'],['ecu','21','startRelay','86']] },
+  ignition: { name:'Encendido',
+    paths:[['fuseBox','F5','ignCoil1','+12V'],['fuseBox','F5','ignCoil2','+12V'],
+           ['ecu','8','ignCoil1','TRG'],['ecu','9','ignCoil2','TRG'],
+           ['ignCoil1','GND','groundBus','GND'],['pickup','SIG','ecu','10']] },
+  injection: { name:'Inyección / Bomba',
+    paths:[['fuseBox','F4','injector1','+12V'],['fuseBox','F4','injector2','+12V'],
+           ['ecu','6','injector1','TRG'],['ecu','7','injector2','TRG'],
+           ['fuseBox','F4','fuelPumpRelay','30'],['ecu','5','fuelPumpRelay','86'],
+           ['fuelPumpRelay','87','fuelPump','+'],['fuelPump','-','groundBus','GND']] },
+  sensors: { name:'Sensores',
+    paths:[['ecu','14','tps','+5V'],['tps','SIG','ecu','12'],
+           ['coolantTemp','SIG','ecu','15'],['pickup','SIG','ecu','10'],
+           ['lambda','SIG','ecu','18'],['oilPressure','SIG','ecu','17'],
+           ['rollover','SIG','ecu','26'],['clutchSwitch','OUT','ecu','27'],
+           ['neutralSwitch','OUT','ecu','28']] },
+  fans: { name:'Ventilador',
+    paths:[['fuseBox','F7','fanRelay','30'],['fanRelay','87','fan','+'],['fan','-','groundBus','GND'],
+           ['tempSwitch','OUT','fanRelay','87']] },
+  lights: { name:'Luces',
+    paths:[['fuseBox','F1','headlight','LOW'],['fuseBox','F2','headlight','HIGH'],
+           ['fuseBox','F1','tailLight','POS'],['brakeSwitch','OUT','tailLight','BRK']] },
+  instruments: { name:'Instrumentos',
+    paths:[['fuseBox','F3','speedometer','+12V'],['fuseBox','F3','tachometer','+12V'],
+           ['ecu','19','speedometer','CAN-H'],['ecu','20','speedometer','CAN-L'],
+           ['speedSensor','OUT','speedometer','VSS'],['fuelLevel','SIG','speedometer','FUEL']] },
+  signals: { name:'Bocina / Intermitentes',
+    paths:[['fuseBox','F6','flasherRelay','X'],['flasherRelay','L','flasherF','+'],
+           ['flasherRelay','L','flasherR','+'],['fuseBox','F6','horn','+']] }
+};
+
+/* ====================================================================
+   RENDERING & INTERACTIONS
+   ==================================================================== */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const componentsLayer = $('#componentsLayer');
+const wiresLayer = $('#wiresLayer');
+const tooltip = $('#tooltip');
+const canvas = $('#canvas');
+
+/* --- Calcular posición física de un pin --- */
+function pinPosition(compId, pinLabel) {
+  const comp = components[compId];
+  if (!comp) return null;
+  if (compId === 'groundBus') {
+    let h = 0; for (const ch of (pinLabel||'')) h = (h*31 + ch.charCodeAt(0)) >>> 0;
+    return { x: components.groundBus.x + 30 + (h % 1300), y: components.groundBus.y + 7 };
+  }
+  if (compId === 'battery') {
+    return { x: pinLabel === '+' ? comp.x + 25 : comp.x + 75, y: comp.y + 30 };
+  }
+  const idx = comp.pins.findIndex(p => p.n === pinLabel);
+  if (idx < 0) return null;
+  const pinCount = comp.pins.length;
+  const pinsPerSide = Math.ceil(pinCount / 4);
+  let placed = 0;
+  for (let i = 0; i < pinsPerSide && placed < pinCount; i++, placed++)
+    if (placed === idx) return { x: comp.x + (comp.w / (pinsPerSide + 1)) * (i + 1), y: comp.y - 8 };
+  for (let i = 0; i < pinsPerSide && placed < pinCount; i++, placed++)
+    if (placed === idx) return { x: comp.x + comp.w + 8, y: comp.y + (comp.h / (pinsPerSide + 1)) * (i + 1) };
+  for (let i = 0; i < pinsPerSide && placed < pinCount; i++, placed++)
+    if (placed === idx) return { x: comp.x + (comp.w / (pinsPerSide + 1)) * (i + 1), y: comp.y + comp.h + 8 };
+  for (let i = 0; i < pinsPerSide && placed < pinCount; i++, placed++)
+    if (placed === idx) return { x: comp.x - 8, y: comp.y + (comp.h / (pinsPerSide + 1)) * (i + 1) };
+  return null;
+}
+
+/* --- Renderizar componentes --- */
+function renderComponents() {
+  componentsLayer.innerHTML = '';
+  Object.values(components).forEach(comp => {
+    if (comp.id === 'groundBus') return;
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.classList.add('component-box');
+    g.dataset.id = comp.id;
+
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.classList.add('comp-bg');
+    rect.setAttribute('x', comp.x); rect.setAttribute('y', comp.y);
+    rect.setAttribute('width', comp.w); rect.setAttribute('height', comp.h);
+    rect.setAttribute('rx', 6);
+    g.appendChild(rect);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.classList.add('comp-label');
+    label.setAttribute('x', comp.x + comp.w/2); label.setAttribute('y', comp.y + 16);
+    label.setAttribute('text-anchor', 'middle');
+    label.textContent = comp.name;
+    g.appendChild(label);
+
+    if (comp.type) {
+      const sub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      sub.classList.add('comp-sub');
+      sub.setAttribute('x', comp.x + comp.w/2); sub.setAttribute('y', comp.y + 28);
+      sub.setAttribute('text-anchor', 'middle');
+      sub.textContent = comp.type.toUpperCase();
+      g.appendChild(sub);
+    }
+
+    if (comp.id === 'ecu') {
+      const ecuFrame = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      ecuFrame.classList.add('ecu-frame');
+      ecuFrame.setAttribute('x', comp.x - 8); ecuFrame.setAttribute('y', comp.y - 8);
+      ecuFrame.setAttribute('width', comp.w + 16); ecuFrame.setAttribute('height', comp.h + 16);
+      ecuFrame.setAttribute('rx', 8);
+      componentsLayer.insertBefore(ecuFrame, componentsLayer.firstChild);
+
+      const ecuTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      ecuTitle.classList.add('ecu-title');
+      ecuTitle.setAttribute('x', comp.x + comp.w/2); ecuTitle.setAttribute('y', comp.y - 14);
+      ecuTitle.setAttribute('text-anchor', 'middle');
+      ecuTitle.textContent = 'ECU';
+      componentsLayer.appendChild(ecuTitle);
+    }
+
+    const pinCount = comp.pins.length;
+    const pinsPerSide = Math.ceil(pinCount / 4);
+    let placed = 0;
+    const addPin = (px, py) => {
+      const pin = comp.pins[placed];
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.classList.add('pin-circle');
+      c.setAttribute('cx', px); c.setAttribute('cy', py); c.setAttribute('r', 5);
+      c.dataset.comp = comp.id; c.dataset.pin = pin.n;
+      c.style.fill = colorOf(pin.color);
+      c.addEventListener('click', e => { e.stopPropagation(); selectPin(comp.id, pin.n); });
+      c.addEventListener('mouseenter', e => showPinTooltip(comp, pin, e));
+      c.addEventListener('mouseleave', hideTooltip);
+      g.appendChild(c);
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.classList.add('pin-num'); t.setAttribute('x', px); t.setAttribute('y', py + 2.5);
+      t.textContent = pin.n;
+      g.appendChild(t);
+      placed++;
+    };
+    for (let i = 0; i < pinsPerSide && placed < pinCount; i++) addPin(comp.x + (comp.w / (pinsPerSide + 1)) * (i + 1), comp.y - 8);
+    for (let i = 0; i < pinsPerSide && placed < pinCount; i++) addPin(comp.x + comp.w + 8, comp.y + (comp.h / (pinsPerSide + 1)) * (i + 1));
+    for (let i = 0; i < pinsPerSide && placed < pinCount; i++) addPin(comp.x + (comp.w / (pinsPerSide + 1)) * (i + 1), comp.y + comp.h + 8);
+    for (let i = 0; i < pinsPerSide && placed < pinCount; i++) addPin(comp.x - 8, comp.y + (comp.h / (pinsPerSide + 1)) * (i + 1));
+
+    g.addEventListener('click', e => { e.stopPropagation(); selectComponent(comp.id); });
+    g.addEventListener('mouseenter', e => { if (diagMode) showComponentDiag(comp, e); });
+    g.addEventListener('mouseleave', hideTooltip);
+    componentsLayer.appendChild(g);
+  });
+
+  // Ground bus
+  const gb = components.groundBus;
+  const gbg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const gbRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  gbRect.setAttribute('x', gb.x); gbRect.setAttribute('y', gb.y);
+  gbRect.setAttribute('width', gb.w); gbRect.setAttribute('height', gb.h);
+  gbRect.setAttribute('fill', '#1a1a1a'); gbRect.setAttribute('stroke', '#3a3a3a');
+  gbg.appendChild(gbRect);
+  for (let i = 0; i < 14; i++) {
+    const lx = gb.x + (gb.w / 14) * i + 25;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', lx); line.setAttribute('y1', gb.y - 6);
+    line.setAttribute('x2', lx); line.setAttribute('y2', gb.y + gb.h + 6);
+    line.setAttribute('stroke', '#3a3a3a'); line.setAttribute('stroke-width', '1.5');
+    gbg.appendChild(line);
+  }
+  const gbLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  gbLabel.setAttribute('x', 700); gbLabel.setAttribute('y', gb.y + 11);
+  gbLabel.setAttribute('text-anchor', 'middle');
+  gbLabel.classList.add('comp-label');
+  gbLabel.textContent = '— MASA / GROUND BUS (chasis) —';
+  gbg.appendChild(gbLabel);
+  componentsLayer.appendChild(gbg);
+
+  // Battery symbol (celdas)
+  const batG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const batX = components.battery.x, batY = components.battery.y;
+  [[20, 3, 'B+', '#e53935', 'A'], [40, 2, '', null, ''], [55, 2, '', null, ''], [75, 3, 'B-', '#aaa', 'V']]
+    .forEach(([dx, sw, txt, color, _]) => {
+      if (txt) {
+        const tx = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        tx.setAttribute('x', batX + dx - 5); tx.setAttribute('y', batY + 12);
+        tx.setAttribute('fill', color); tx.setAttribute('font-size', '12'); tx.setAttribute('font-weight', '700');
+        tx.textContent = txt; batG.appendChild(tx);
+      }
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', batX + dx); line.setAttribute('y1', batY);
+      line.setAttribute('x2', batX + dx); line.setAttribute('y2', batY + 60);
+      line.classList.add('battery-cell'); line.setAttribute('stroke-width', sw);
+      batG.appendChild(line);
+    });
+  componentsLayer.appendChild(batG);
+}
+
+/* --- Renderizar wires --- */
+function renderWires() {
+  wiresLayer.innerHTML = '';
+  wires.forEach(w => {
+    const a = pinPosition(w.from[0], w.from[1]);
+    const b = pinPosition(w.to[0], w.to[1]);
+    if (!a || !b) return;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.classList.add('wire');
+    path.dataset.id = w.id;
+    path.dataset.cat = w.cat;
+    path.style.stroke = colorOf(w.color);
+    path.style.color = colorOf(w.color);
+
+    const dx = b.x - a.x, dy = b.y - a.y;
+    let d;
+    if (Math.abs(dx) > Math.abs(dy) * 1.2) {
+      const midX = a.x + dx * 0.5;
+      d = `M ${a.x} ${a.y} L ${midX} ${a.y} L ${midX} ${b.y} L ${b.x} ${b.y}`;
+    } else {
+      const midY = a.y + dy * 0.5;
+      d = `M ${a.x} ${a.y} L ${a.x} ${midY} L ${b.x} ${midY} L ${b.x} ${b.y}`;
+    }
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'none');
+    path.addEventListener('mouseenter', e => showWireTooltip(w, e));
+    path.addEventListener('mouseleave', hideTooltip);
+    path.addEventListener('click', e => { e.stopPropagation(); selectWire(w.id); });
+    wiresLayer.appendChild(path);
+  });
+  $('#wireCount').textContent = wires.length;
+}
+
+/* --- Selección --- */
+function selectComponent(id) {
+  $$('.component-box').forEach(g => g.classList.remove('selected'));
+  const g = document.querySelector(`.component-box[data-id="${id}"]`);
+  if (g) g.classList.add('selected');
+  renderInfoPanel(id, null);
+}
+
+function selectPin(compId, pinLabel) {
+  $$('.component-box').forEach(g => g.classList.remove('selected'));
+  const g = document.querySelector(`.component-box[data-id="${compId}"]`);
+  if (g) g.classList.add('selected');
+  // marcar pin activo
+  $$('.pin-circle').forEach(c => c.classList.remove('active'));
+  const pinEl = document.querySelector(`.pin-circle[data-comp="${compId}"][data-pin="${pinLabel}"]`);
+  if (pinEl) pinEl.classList.add('active');
+  renderInfoPanel(compId, pinLabel);
+}
+
+function selectWire(id) {
+  const w = wires.find(x => x.id === id);
+  if (!w) return;
+  renderWirePanel(w);
+}
+
+/* --- Filtros y subsistemas --- */
+function selectSubsystem(key) {
+  activeSubsystem = key;
+  $$('#subBtns button').forEach(b => b.classList.toggle('active', b.dataset.sub === key));
+  applySubsystem();
+}
+
+function selectFilter(cat) {
+  activeFilter = cat;
+  $$('#filterBtns button').forEach(b => b.classList.toggle('active', b.dataset.filter === cat));
+  applyFilter();
+}
+
+function applyFilter() {
+  $$('.wire').forEach(p => {
+    const cat = p.dataset.cat;
+    if (activeFilter === 'all' || cat === activeFilter) p.classList.remove('dim');
+    else p.classList.add('dim');
+  });
+}
+
+function applySubsystem() {
+  $$('.wire').forEach(p => p.classList.remove('flow', 'highlight'));
+  const sub = subsystems[activeSubsystem];
+  if (!sub || !sub.paths.length) return;
+  sub.paths.forEach(path => {
+    const [cA, pA, cB, pB] = path;
+    const wire = wires.find(w =>
+      (w.from[0] === cA && w.from[1] === pA && w.to[0] === cB && w.to[1] === pB) ||
+      (w.to[0] === cA && w.to[1] === pA && w.from[0] === cB && w.from[1] === pB)
+    );
+    if (wire) {
+      const pEl = document.querySelector(`.wire[data-id="${wire.id}"]`);
+      if (pEl) { pEl.classList.add('flow'); pEl.classList.add('highlight'); }
+    }
+  });
+}
+
+/* --- Modo diagnóstico --- */
+function toggleDiagMode() {
+  diagMode = !diagMode;
+  const btn = $('#modeBtn');
+  $('#modeLabel').textContent = diagMode ? 'Modo Diagnóstico' : 'Modo Normal';
+  btn.classList.toggle('active', diagMode);
+  if (!diagMode) {
+    $$('.component-box').forEach(g => g.classList.remove('selected'));
+    applySubsystem();
+  }
+}
+
+/* --- TOOLTIPS --- */
+function showTooltip(html, evt) {
+  tooltip.innerHTML = html;
+  tooltip.classList.add('visible');
+  const rect = canvas.getBoundingClientRect();
+  let x = evt.clientX - rect.left + canvas.scrollLeft + 12;
+  let y = evt.clientY - rect.top + canvas.scrollTop + 12;
+  const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+  if (x + tw > canvas.clientWidth) x = evt.clientX - rect.left + canvas.scrollLeft - tw - 12;
+  if (y + th > canvas.clientHeight) y = evt.clientY - rect.top + canvas.scrollTop - th - 12;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+function hideTooltip() { tooltip.classList.remove('visible'); }
+
+function dirClass(d) {
+  if (d === 'IN') return 'dir-input';
+  if (d === 'OUT') return 'dir-output';
+  if (d === 'GND') return 'dir-ground';
+  return 'dir-power';
+}
+function dirLabel(d) {
+  return ({ PWR:'+12V', IN:'INPUT (a ECU)', OUT:'OUTPUT (de ECU)', GND:'MASA', BI:'BIDIRECCIONAL' })[d] || d;
+}
+
+function showWireTooltip(w, evt) {
+  const html = `
+    <div class="tooltip-title">${w.function}</div>
+    <div class="tooltip-row"><span class="k">Cable</span><span class="v mono"><span class="color-chip" style="background:${colorOf(w.color)}"></span>${w.color} → ${COLOR_NAME[w.color] || w.color}</span></div>
+    <div class="tooltip-row"><span class="k">Origen</span><span class="v">${components[w.from[0]]?.name || w.from[0]} · pin ${w.from[1]}</span></div>
+    <div class="tooltip-row"><span class="k">Destino</span><span class="v">${components[w.to[0]]?.name || w.to[0]} · pin ${w.to[1]}</span></div>
+    <div class="tooltip-row"><span class="k">Dirección</span><span class="v ${dirClass(w.dir)}">${dirLabel(w.dir)}</span></div>
+    <div class="tooltip-row"><span class="k">Señal</span><span class="v">${w.signal}</span></div>
+    <div class="tooltip-row"><span class="k">Categoría</span><span class="v">${w.cat}</span></div>
+    ${diagMode ? `<div class="tooltip-row" style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border)"><span class="k">🔧 Test</span><span class="v">${w.test || 'Sin procedimiento'}</span></div>` : ''}
+    <div class="tooltip-row" style="margin-top:4px;font-size:10px;color:var(--text-3)"><span class="k">Click</span><span class="v">Para ver info completa en panel</span></div>
+  `;
+  showTooltip(html, evt);
+}
+
+function showPinTooltip(comp, pin, evt) {
+  const html = `
+    <div class="tooltip-title">${comp.name} — Pin ${pin.n}</div>
+    <div class="tooltip-row"><span class="k">Color cable</span><span class="v mono"><span class="color-chip" style="background:${colorOf(pin.color)}"></span>${pin.color}</span></div>
+    <div class="tooltip-row"><span class="k">Función</span><span class="v">${pin.function}</span></div>
+    <div class="tooltip-row"><span class="k">Dirección</span><span class="v ${dirClass(pin.dir)}">${dirLabel(pin.dir)}</span></div>
+    <div class="tooltip-row"><span class="k">Señal</span><span class="v">${pin.signal}</span></div>
+    <div class="tooltip-row" style="margin-top:4px;font-size:10px;color:var(--text-3)"><span class="k">Click</span><span class="v">Para diagnóstico</span></div>
+  `;
+  showTooltip(html, evt);
+}
+
+function showComponentDiag(comp, evt) {
+  const html = `
+    <div class="tooltip-title">${comp.name}</div>
+    <div class="tooltip-row"><span class="k">Tipo</span><span class="v">${comp.type}</span></div>
+    <div class="tooltip-row"><span class="k">Pines</span><span class="v">${comp.pins.length}</span></div>
+    <div class="tooltip-row" style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border)"><span class="k">🔧 Click</span><span class="v">Para ver tabla y tests</span></div>
+  `;
+  showTooltip(html, evt);
+}
+
+/* --- INFO PANEL --- */
+function renderInfoPanel(compId, focusPin) {
+  const comp = components[compId];
+  if (!comp) return;
+  $('#infoEmpty').style.display = 'none';
+  $('#infoContent').style.display = 'block';
+  $('#compName').textContent = comp.name;
+  $('#compType').textContent = `Tipo: ${comp.type} · ${comp.pins.length} pines`;
+  $('#compDesc').textContent = comp.desc || '';
+
+  const pd = $('#pinDiagram');
+  pd.innerHTML = '';
+  comp.pins.forEach(p => {
+    const slot = document.createElement('div');
+    slot.classList.add('pin-slot', 'has-data');
+    slot.dataset.pin = p.n;
+    slot.textContent = p.n;
+    slot.title = `${p.n}: ${p.function}`;
+    if (p.n === focusPin) slot.classList.add('active');
+    slot.addEventListener('click', () => selectPin(compId, p.n));
+    pd.appendChild(slot);
+  });
+  for (let i = comp.pins.length; i < 24; i++) {
+    const slot = document.createElement('div');
+    slot.classList.add('pin-slot');
+    pd.appendChild(slot);
+  }
+
+  const tbody = $('#pinTableBody');
+  tbody.innerHTML = '';
+  comp.pins.forEach(p => {
+    const tr = document.createElement('tr');
+    if (p.n === focusPin) tr.classList.add('active');
+    tr.innerHTML = `
+      <td class="pin-n">${p.n}</td>
+      <td class="mono"><span class="color-chip" style="background:${colorOf(p.color)}"></span>${p.color}</td>
+      <td><span class="dir-badge dir-${p.dir}">${p.dir}</span></td>
+      <td>${p.function}</td>
+      <td class="mono" style="font-size:10px;color:var(--text-2)">${p.signal}</td>
+    `;
+    tr.addEventListener('click', () => selectPin(compId, p.n));
+    tbody.appendChild(tr);
+  });
+
+  renderComponentDiag(comp, focusPin);
+}
+
+function renderWirePanel(w) {
+  $('#infoEmpty').style.display = 'none';
+  $('#infoContent').style.display = 'block';
+  $('#compName').textContent = w.function;
+  $('#compType').textContent = `Cable · ${w.cat} · ${dirLabel(w.dir)}`;
+  $('#compDesc').textContent = `Conduce ${w.signal} entre ${components[w.from[0]]?.name || w.from[0]} (pin ${w.from[1]}) y ${components[w.to[0]]?.name || w.to[0]} (pin ${w.to[1]}).`;
+
+  // mini pin diagram solo con los 2 extremos
+  const pd = $('#pinDiagram');
+  pd.innerHTML = '';
+  [w.from, w.to].forEach((end, i) => {
+    const slot = document.createElement('div');
+    slot.classList.add('pin-slot', 'has-data', 'active');
+    slot.textContent = end[1];
+    slot.title = `${components[end[0]]?.name || end[0]} pin ${end[1]}`;
+    slot.addEventListener('click', () => selectComponent(end[0]));
+    pd.appendChild(slot);
+  });
+  for (let i = 2; i < 24; i++) {
+    const slot = document.createElement('div');
+    slot.classList.add('pin-slot');
+    pd.appendChild(slot);
+  }
+
+  // tabla
+  const tbody = $('#pinTableBody');
+  tbody.innerHTML = '';
+  const rowA = `<tr><td colspan="5" style="background:var(--bg-2);font-weight:600;color:var(--text-2);font-size:9.5px;letter-spacing:0.5px;text-transform:uppercase">EXTREMO A — ORIGEN</td></tr>`;
+  const rowB = `<tr><td colspan="5" style="background:var(--bg-2);font-weight:600;color:var(--text-2);font-size:9.5px;letter-spacing:0.5px;text-transform:uppercase">EXTREMO B — DESTINO</td></tr>`;
+  tbody.innerHTML = rowA + `
+    <tr>
+      <td class="pin-n">${w.from[1]}</td>
+      <td class="mono"><span class="color-chip" style="background:${colorOf(w.color)}"></span>${w.color}</td>
+      <td><span class="dir-badge dir-${w.dir === 'OUT' ? 'OUT' : 'IN'}">${w.dir === 'OUT' ? 'OUT' : 'IN'}</span></td>
+      <td>${components[w.from[0]]?.name || w.from[0]}</td>
+      <td class="mono" style="font-size:10px;color:var(--text-2)">${w.signal.split(' ')[0]}</td>
+    </tr>
+  ` + rowB + `
+    <tr>
+      <td class="pin-n">${w.to[1]}</td>
+      <td class="mono"><span class="color-chip" style="background:${colorOf(w.color)}"></span>${w.color}</td>
+      <td><span class="dir-badge dir-${w.dir === 'OUT' ? 'IN' : 'OUT'}">${w.dir === 'OUT' ? 'IN' : 'OUT'}</span></td>
+      <td>${components[w.to[0]]?.name || w.to[0]}</td>
+      <td class="mono" style="font-size:10px;color:var(--text-2)">${w.signal.split(' ')[0]}</td>
+    </tr>
+  `;
+
+  // diag
+  const sec = $('#diagSection');
+  if (diagMode && w.test) {
+    sec.innerHTML = `<div class="diag-card"><h4>🔧 Test con multímetro</h4><div class="diag-step"><span class="label">Procedimiento</span>${w.test}</div></div>`;
+  } else {
+    sec.innerHTML = `<div class="diag-card" style="border-style:dashed"><p style="color:var(--text-2);text-align:center;margin:0">💡 Activá <b>Modo Diagnóstico</b> para ver el procedimiento de test.</p></div>`;
+  }
+}
+
+function renderComponentDiag(comp, focusPin) {
+  const sec = $('#diagSection');
+  if (!diagMode) {
+    sec.innerHTML = `<div class="diag-card" style="border-style:dashed"><p style="color:var(--text-2);text-align:center;margin:0">💡 Activá <b>Modo Diagnóstico</b> en el header para ver procedimientos con multímetro.</p></div>`;
+    return;
+  }
+  const tests = getDiagTests(comp.id, focusPin);
+  if (!tests.length) {
+    sec.innerHTML = `<div class="diag-card"><p style="color:var(--text-2)">Sin tests predefinidos para este componente. Consultar manual de servicio KTM.</p></div>`;
+    return;
+  }
+  const card = document.createElement('div');
+  card.classList.add('diag-card');
+  card.innerHTML = `<h4>🔧 Tests con multímetro — ${comp.name}</h4>`;
+  tests.forEach(t => {
+    const step = document.createElement('div');
+    step.classList.add('diag-step');
+    step.innerHTML = `<span class="label">${t.label}</span>${t.body}`;
+    card.appendChild(step);
+  });
+  sec.appendChild(card);
+}
+
+function getDiagTests(compId, focusPin) {
+  const tests = [];
+  if (compId === 'tps') {
+    tests.push({label:'Test 1 — Alimentación TPS', body:`Llave en ON. Multímetro en DCV. <b>Sonda + en pin +5V (ye)</b>, <b>sonda − en pin GND (gn-bk)</b>. <br><b>Valor normal:</b> <span class="value-ok">4.95–5.05V DC</span>.<br><b>Si 0V:</b> cable cortado o regulador interno en ECU dañado. <b>Si &lt;4.5V:</b> revisar masa TPS.`});
+    tests.push({label:'Test 2 — Señal en reposo', body:`Multímetro en DCV. <b>Sonda + en pin SIG (gn)</b>, <b>sonda − en pin GND (gn-bk)</b>. Acelerador CERRADO: <span class="value-ok">0.45–0.55V</span>. <b>Si 0V o 5V:</b> TPS o cable dañado.`});
+    tests.push({label:'Test 3 — Recorrido suave', body:`Misma conexión, abrir acelerador SUAVEMENTE. <b>El voltaje debe subir linealmente de 0.5V a 4.5V sin saltos.</b><br><b>Saltos &gt;0.3V:</b> pista del potenciómetro gastada → reemplazar TPS.`});
+    tests.push({label:'Test 4 — Resistencia', body:`Llave OFF. Multímetro en OHMS entre SIG y GND. <b>Cerrado:</b> ~1.2kΩ. <b>WOT:</b> ~4.5kΩ. Total entre extremos: ~5kΩ (potenciómetro de 5kΩ).`});
+  } else if (compId === 'coolantTemp') {
+    tests.push({label:'Test 1 — Resistencia NTC', body:`Sensor desconectado, multímetro en OHMS entre los 2 pines.<br>• <b>20°C (frío):</b> <span class="value-ok">~2.5kΩ</span><br>• <b>80°C (caliente):</b> <span class="value-ok">~300Ω</span><br>• <b>100°C:</b> ~190Ω<br><b>OL:</b> sensor quemado. <b>Si no cambia con T°:</b> sensor muerto.`});
+    tests.push({label:'Test 2 — Voltaje en marcha', body:`Sensor conectado, motor en marcha. DCV entre SIG y masa.<br>• <b>Frío:</b> ~3.5V<br>• <b>Caliente (90°C):</b> ~1.0V<br><b>5V fijo:</b> circuito abierto. <b>0V fijo:</b> sensor en corto.`});
+  } else if (compId === 'pickup') {
+    tests.push({label:'Test 1 — Resistencia bobina', body:`Conector desconectado, multímetro en OHMS entre SIG y GND.<br><b>Valor normal:</b> <span class="value-ok">200–500Ω</span> (consultar manual).<br><b>0Ω:</b> bobina en corto. <b>OL:</b> bobina abierta.`});
+    tests.push({label:'Test 2 — Señal AC', body:`Multímetro en ACV entre SIG y GND. <b>Desconectar inyectores/bobinas</b>, girar motor con botón de arranque.<br><b>Valor normal:</b> <span class="value-ok">0.5–5V AC</span> según RPM.<br><b>0V:</b> pickup muerto o separación excesiva al reluctor.`});
+    tests.push({label:'Test 3 — Gap al reluctor', body:`Medir con galga entre la punta del sensor y los dientes del reluctor.<br><b>Gap normal:</b> <span class="value-ok">0.5–0.8 mm</span>. Ajustar si está fuera de rango.`});
+  } else if (compId === 'lambda') {
+    tests.push({label:'Test 1 — Voltaje en ralentí', body:`Motor caliente (10+ min), sonda conectada. DCV, back-probe entre SIG y masa.<br><b>Valor normal:</b> <span class="value-ok">oscila 0.1–0.9V</span> 1–2 veces/seg.<br><b>Fijo 0.45V:</b> sonda fría. <b>0V:</b> cable cortado. <b>0.9V fijo:</b> mezcla rica.`});
+    tests.push({label:'Test 2 — Tiempo de respuesta', body:`Acelerar bruscamente a 3000 rpm. La sonda debe subir de ~0.1V a ~0.9V en <span class="value-ok">&lt;300ms</span>. <b>Si tarda más:</b> sonda envejecida → reemplazar.`});
+  } else if (compId === 'ignCoil1' || compId === 'ignCoil2') {
+    tests.push({label:'Test 1 — Resistencia primario', body:`Bobina desconectada. OHMS entre +12V y TRG. <b>Valor normal:</b> <span class="value-ok">0.4–2Ω</span>.<br><b>OL:</b> primario abierto. <b>0Ω:</b> en corto.`});
+    tests.push({label:'Test 2 — Resistencia secundario', body:`OHMS entre +12V/TRG y salida AT (a bujía). <b>Valor normal:</b> <span class="value-ok">5–15kΩ</span>.<br><b>OL:</b> quemado. <b>0Ω:</b> cortocircuito interno.`});
+    tests.push({label:'Test 3 — Chispa visual', body:`Desconectar bujía, apoyar cable AT a masa con separación 6-8mm. Hacer girar motor. <b>Debe saltar chispa azul fuerte y constante.</b> <b>Chispa naranja/débil:</b> bobina o cable AT viejos.`});
+  } else if (compId === 'injector1' || compId === 'injector2') {
+    tests.push({label:'Test 1 — Resistencia bobina', body:`Inyector desconectado. OHMS entre los 2 pines. <b>Valor normal:</b> <span class="value-ok">11–16Ω</span>.<br><b>OL o 0Ω:</b> inyector quemado. <b>Fuera de rango:</b> limpiar o reemplazar.`});
+    tests.push({label:'Test 2 — Pulso de masa', body:`Conectar LED con resistencia 1kΩ en serie entre el pin TRG del inyector y +12V. Girar motor. <b>El LED debe parpadear al pulso de inyección.</b><br><b>Si no parpadea:</b> cable TRG cortado o ECU no comanda.`});
+    tests.push({label:'Test 3 — Pulverizado', body:`Desconectar manguera de combustible, colocar el inyector sobre un vaso. Aplicar +12V brevemente al pin +12V y masa al TRG. <b>Debe pulverizar cono uniforme.</b> <b>Si gotea:</b> inyector sucio → ultrasonic clean o reemplazar.`});
+  } else if (compId === 'startRelay') {
+    tests.push({label:'Test 1 — Bobina', body:`Relay desconectado. OHMS entre 85 y 86. <b>Valor normal:</b> <span class="value-ok">50–120Ω</span>.<br><b>OL:</b> bobina abierta. <b>0Ω:</b> en corto.`});
+    tests.push({label:'Test 2 — Contacto NC/NA', body:`OHMS entre 30 y 87 sin energizar: <span class="value-ok">OL (contacto abierto)</span>. Aplicar +12V a 85-86: debe caer a <span class="value-ok">&lt;0.5Ω</span> (cierra).`});
+  } else if (compId === 'fan' || compId === 'horn') {
+    tests.push({label:'Test 1 — Alimentación directa', body:`Desconectar el componente. Aplicar +12V directo desde batería al pin + y masa al −. <b>Debe funcionar a pleno rendimiento.</b><br><b>Si no funciona:</b> componente quemado. <b>Si funciona:</b> problema en relay o cableado.`});
+  } else if (compId === 'fuelPump') {
+    tests.push({label:'Test 1 — Presión', body:`Conectar manómetro a la línea de combustible. Girar motor (no arrancar). <b>Presión normal:</b> <span class="value-ok">3.0–3.5 bar</span>.<br><b>Si &lt;2.5 bar:</b> filtro de combustible tapado o bomba débil.`});
+    tests.push({label:'Test 2 — Consumo bomba', body:`Conectar amperímetro en serie con el cable + de la bomba. <b>Consumo normal:</b> <span class="value-ok">3–5A</span>.<br><b>Si &gt;6A:</b> bomba trabada. <b>Si &lt;2A:</b> motor de bomba gastado.`});
+  } else if (compId === 'generator') {
+    tests.push({label:'Test 1 — Salida AC', body:`Motor a 3000 rpm. Multímetro en ACV entre cada fase y masa. <b>Valor normal:</b> <span class="value-ok">20–40V AC por fase</span>.<br><b>Asimétrico (diferencia &gt;5V entre fases):</b> estator con bobina quemada.`});
+    tests.push({label:'Test 2 — Resistencia estator', body:`Estator desconectado. OHMS entre cada par de fases: <span class="value-ok">0.3–1Ω</span>. Entre fase y masa: <span class="value-ok">OL (infinito)</span>.<br><b>0Ω fase-masa:</b> cortocircuito a masa. <b>OL entre fases:</b> bobina abierta.`});
+  } else if (compId === 'regulator') {
+    tests.push({label:'Test 1 — Voltaje de carga', body:`Motor a 3000 rpm, multímetro en DCV entre B+ y B−. <b>Valor normal:</b> <span class="value-ok">13.8–14.5V</span>.<br><b>Si &gt;15V:</b> regulador quemado, sobrecarga batería. <b>Si &lt;13.5V:</b> no carga, batería se agota.`});
+  } else if (compId === 'battery') {
+    tests.push({label:'Test 1 — Tensión en reposo', body:`Moto apagada &gt;1 hora. DCV entre B+ y B−. <b>Valor normal:</b> <span class="value-ok">12.4–12.7V</span>.<br><b>Si &lt;12.0V:</b> batería descargada o sulfatada.`});
+    tests.push({label:'Test 2 — Test de carga', body:`Moto apagada. Conectar resistencia de carga (tester) o faro durante 10s. La tensión no debe caer &lt;<span class="value-ok">10.5V</span>. <b>Si cae a 9V:</b> batería agotada → reemplazar.`});
+  } else if (compId === 'idleActuator') {
+    tests.push({label:'Test 1 — Resistencia bobinas', body:`Actuador desconectado. OHMS entre pines A-B, B-C, C-D y A-D. <b>Valor normal:</b> <span class="value-ok">50–200Ω</span> por bobina.<br><b>OL:</b> bobina quemada. <b>0Ω:</b> en corto.` });
+
+  // ============ YAMAHA YZF-R1 2021 ============
+  } else if (compId === 'crk') {
+    tests.push({label:'Test 1 — Resistencia bobina VRS', body:`Conector desconectado. OHMS entre SIG (Gy) y GND (B/L). <b>Valor normal:</b> <span class="value-ok">240–280Ω</span>.<br><b>OL:</b> bobina abierta. <b>0Ω:</b> cortocircuito.` });
+    tests.push({label:'Test 2 — Señal AC en ralentí', body:`Multímetro en ACV entre SIG y GND. Motor a ralentí (~1000 rpm). <b>Valor normal:</b> <span class="value-ok">~0.5–2V AC pico</span>.<br><b>0V:</b> sensor muerto o gap excesivo.` });
+    tests.push({label:'Test 3 — Señal AC a 5000 rpm', body:`Misma conexión, motor a 5000 rpm. <b>Valor normal:</b> <span class="value-ok">~5–8V AC pico</span>.<br><b>Asimétrico entre arranques:</b> reluctor con daño o montaje flojo.` });
+    tests.push({label:'Test 4 — Gap al reluctor', body:`Medir con galga entre la punta del sensor y los dientes del reluctor. <b>Gap normal:</b> <span class="value-ok">0.4–0.8 mm</span>. Ajustar si está fuera de rango.` });
+  } else if (compId === 'cam') {
+    tests.push({label:'Test 1 — Alimentación 5V', body:`Llave ON. DCV entre +5V (W/B) y GND (B/L). <b>Valor normal:</b> <span class="value-ok">4.8–5.2V</span>.<br><b>0V:</b> VCC1 cortado o problema en ECU.` });
+    tests.push({label:'Test 2 — Señal en marcha', body:`Con osciloscopio en SIG (L) respecto a GND. Motor en marcha. <b>Valor normal:</b> <span class="value-ok">señal 0–5V cuadrada</span>.<br><b>Fijo 0V o 5V:</b> sensor muerto. <b>Sin señal al girar motor:</b> revisar VCC1 y masa.` });
+    tests.push({label:'Test 3 — Test en estático', body:`Con sensor instalado, girar manualmente el cigüeñal. <b>Debe haber transición 0↔5V en la señal al pasar por la marca de fase.</b><br><b>Sin transición:</b> sensor Hall quemado o reluctor dañado.` });
+  } else if (compId === 'airTemp') {
+    tests.push({label:'Test 1 — Resistencia NTC', body:`Sensor desconectado. OHMS entre SIG (Br/W) y GND (B/L).<br>• <b>20°C (ambiente):</b> <span class="value-ok">~2.3 kΩ</span><br>• <b>60°C (motor caliente):</b> <span class="value-ok">~560 Ω</span><br><b>OL:</b> sensor quemado. <b>No cambia con T°:</b> sensor muerto.` });
+    tests.push({label:'Test 2 — Tensión en marcha', body:`Sensor conectado, motor en marcha. DCV entre SIG y masa.<br>• <b>Ambiente ~20°C:</b> ~3.5V<br>• <b>Calentamiento (con secador):</b> cae progresivamente<br><b>5V fijo:</b> circuito abierto. <b>0V fijo:</b> cortocircuito.` });
+  } else if (compId === 'ap') {
+    tests.push({label:'Test 1 — Tensión AP1 a nivel del mar', body:`Llave ON, motor apagado. DCV entre AP1 (L/Y) y masa. <b>Valor normal:</b> <span class="value-ok">~3.9–4.1V</span>.<br><b>Si 0V o 5V:</b> sensor o cable dañado.` });
+    tests.push({label:'Test 2 — Variación con altitud', body:`Si tenés referencia, en ciudad a mayor altitud (≥2000m): <span class="value-ok">~3.5V aprox</span>.<br>Para test preciso: cámara de presión barométrica controlada.` });
+    tests.push({label:'Test 3 — AP1 vs AP2', body:`AP1 y AP2 deben diferir levemente según ángulo de inclinación. Si son idénticos en posición vertical: revisar uno de los dos sensores.` });
+  } else if (compId === 'injectors') {
+    tests.push({label:'Test 1 — Resistencia bobina inyector', body:`Inyectores desconectados. OHMS entre los 2 pines de cada inyector (IJ11, IJ21, etc.). <b>Valor normal:</b> <span class="value-ok">10–15 Ω</span>.<br><b>OL o 0Ω:</b> inyector quemado. <b>Fuera de rango entre inyectores:</b> reemplazar el que difiere.` });
+    tests.push({label:'Test 2 — Alimentación +12V (R/L)', body:`Llave ON. DCV en cable R/L del inyector. <b>Valor normal:</b> <span class="value-ok">+12V</span>.<br><b>0V:</b> relay RELAY_ASSY no cierra o fusible quemado.` });
+    tests.push({label:'Test 3 — Pulso de control con LED', body:`Conectar LED con resistencia 1kΩ entre el pin de control del inyector (Sb/W, G/B, etc.) y masa. Dar gas con motor en marcha. <b>El LED debe parpadear al pulso de inyección.</b><br><b>No parpadea:</b> cable cortado o ECU no comanda.` });
+    tests.push({label:'Test 4 — Forma de onda con osciloscopio', body:`Sonda en pin de control. <b>Valor normal:</b> <span class="value-ok">ancho de pulso 2–8ms según RPM y carga</span>.<br><b>Ralenti:</b> ~2-3ms. <b>WOT:</b> ~6-8ms. <b>Sin señal:</b> problema ECU o sensor CRK.` });
+    tests.push({label:'Test 5 — Corriente pico', body:`Pinza amperimétrica en cable de control. <b>Valor normal:</b> <span class="value-ok">~1–2A al abrir</span>.<br><b>Si >3A:</b> bobina en corto. <b>Si <0.5A:</b> inyector sucio (resistencia mecánica).` });
+  } else if (compId === 'coils') {
+    tests.push({label:'Test 1 — Resistencia primario', body:`Bobina desconectada. OHMS entre +12V (R/W) y pin de control (Or/Gy/R/Or/G/Gy/G según cilindro). <b>Valor normal:</b> <span class="value-ok">0.5–1.5 Ω</span>.<br><b>OL:</b> primario abierto. <b>0Ω:</b> en corto.` });
+    tests.push({label:'Test 2 — Resistencia secundario', body:`OHMS entre el primario y la salida AT (a bujía). <b>Valor normal:</b> <span class="value-ok">8–15 kΩ</span>.<br><b>OL:</b> quemado. <b>0Ω:</b> cortocircuito interno.` });
+    tests.push({label:'Test 3 — Chispa visual', body:`Desconectar bujía, apoyar cable AT a masa con separación 6-8mm. Hacer girar motor. <b>Debe saltar chispa azul fuerte y constante.</b><br><b>Chispa naranja/débil:</b> bobina o bujía gastada. <b>Sin chispa:</b> revisar IG1-4 y CRK/CAM.` });
+    tests.push({label:'Test 4 — Forma de onda del disparador', body:`Osciloscopio en pin de control (IG1-4). <b>Valor normal:</b> <span class="value-ok">impulso negativo ~5ms</span> sincronizado con CRK.<br><b>Sin impulso:</b> cable TRG cortado o ECU no comanda.` });
+  } else if (compId === 'throttle') {
+    tests.push({label:'Test 1 — Resistencia motor H-bridge', body:`Servo desconectado. OHMS entre THM+ (Y/R) y THM- (Lz/R). <b>Valor normal:</b> <span class="value-ok">3–8 Ω</span>.<br><b>OL:</b> motor abierto. <b>0Ω:</b> en corto (ECU en peligro).` });
+    tests.push({label:'Test 2 — PWM en marcha', body:`Osciloscopio en THM+ y THM- respecto a masa. Motor en marcha, mariposa fija. <b>Valor normal:</b> <span class="value-ok">PWM 0–12V variable</span> según posición.<br><b>Fijo 0V o 12V:</b> H-bridge de ECU dañado. <b>PWM errático:</b> problema TPS o señal GP.` });
+    tests.push({label:'Test 3 — Sin cortocircuito a masa', body:`OHMS entre THM+ y masa, y entre THM- y masa. <b>Valor normal:</b> <span class="value-ok">> 100 kΩ</span>.<br><b><1kΩ:</b> cortocircuito, no energizar la ECU.` });
+  } else if (compId === 'viMotor') {
+    tests.push({label:'Test 1 — Resistencia motor', body:`Motor desconectado. OHMS entre VIM+ (Y/L) y VIM- (Sb). <b>Valor normal:</b> <span class="value-ok">10–20 Ω</span>.<br><b>OL:</b> motor abierto.` });
+    tests.push({label:'Test 2 — Activación por RPM', body:`Osciloscopio en VIM+/VIM-. <b>Activo (válvula cerrada) &lt; ~6000 rpm</b>. <b>Desactivo (válvula abierta) &gt; ~6000 rpm</b>.<br><b>Si nunca activa:</b> problema de señal ECU o relay de la válvula. <b>Si siempre activa:</b> válvula trabada en cerrado.` });
+  } else if (compId === 'obd') {
+    tests.push({label:'Test 1 — Resistencia del bus CAN', body:`Llave OFF, bus desenergizado. OHMS entre CAN_H (L/W) y CAN_L (L/B). <b>Valor normal:</b> <span class="value-ok">~60 Ω</span> (dos terminadores 120Ω en paralelo).<br><b>120Ω:</b> un solo terminador conectado. <b>OL:</b> bus sin terminadores. <b><30Ω:</b> cortocircuito en cableado.` });
+    tests.push({label:'Test 2 — Tensión CAN en reposo', body:`Llave ON, motor apagado. DCV entre CAN_H y masa: <span class="value-ok">~2.5V</span>. Entre CAN_L y masa: <span class="value-ok">~2.5V</span>.<br><b>Si CAN_H=0V o CAN_L=0V:</b> cable cortado o cortocircuitado.` });
+    tests.push({label:'Test 3 — Diferencial en comunicación', body:`Con osciloscopio, medir CAN_H y CAN_L simultáneamente. <b>En tráfico activo:</b> <span class="value-ok">CAN_H ~2.5–3.5V, CAN_L ~1.5–2.5V, diferencial ±1V</span>.<br><b>Sin diferencial:</b> problema de terminación o cortocircuito en H o L.` });
+  } else if (compId === 'acm') {
+    tests.push({label:'Test 1 — Salida AC por fase', body:`Motor a 3000 rpm. Multímetro en ACV entre cada fase (W) y masa. <b>Valor normal por fase:</b> <span class="value-ok">20–60V AC</span> (aumenta con RPM).<br><b>Asimétrico (diferencia &gt;5V entre fases):</b> bobinado del estator dañado.` });
+    tests.push({label:'Test 2 — Resistencia del estator', body:`Estator desconectado. OHMS entre cada par de fases (W1-W2, W2-W3, W1-W3). <b>Valor normal:</b> <span class="value-ok">0.3–1 Ω</span>.<br><b>OL entre fases:</b> bobina abierta.` });
+    tests.push({label:'Test 3 — Aislamiento fase-masa', body:`OHMS entre cualquier fase y masa del chasis. <b>Valor normal:</b> <span class="value-ok">OL (infinito, >1MΩ)</span>.<br><b><100kΩ:</b> cortocircuito a masa, estator quemado. <b>0Ω:</b> falla grave, no usar.` });
+  } else if (compId === 'relayAssy') {
+    tests.push({label:'Test 1 — Bobina del relay', body:`Relay desconectado. OHMS entre R/W (coil +) y Br/L (coil -). <b>Valor normal:</b> <span class="value-ok">50–120 Ω</span>.<br><b>OL:</b> bobina abierta. <b>0Ω:</b> en corto.` });
+    tests.push({label:'Test 2 — Contactos principales NC/NA', body:`OHMS entre R/L (entrada) y B/W (salida a ECU) sin energizar. <b>Sin llave:</b> <span class="value-ok">OL (abierto)</span>. Aplicar +12V a R/W/Br/L: <b>debe caer a</b> <span class="value-ok">&lt;0.5 Ω</span> (cierra).` });
+    tests.push({label:'Test 3 — Salida a inyectores', body:`Igual al test 2 pero medir entre R/L y L/W (salida inyectores/bobinas). Mismo criterio de continuidad.` });
+    tests.push({label:'Test 4 — Clic audible', body:`Conectar y dar llave ON. <b>Debe escucharse un "clic" claro</b> cuando el relay cierra.<br><b>Sin clic:</b> bobina cortada o falta señal de control.` });
+  } else if (compId === 'startStopSw') {
+    tests.push({label:'Test 1 — Señal RUN (W/B)', body:`Llave en ON, switch en posición RUN. DCV entre W/B y masa. <b>Valor normal:</b> <span class="value-ok">+12V</span>.<br><b>0V:</b> fusible quemado, MAIN_SW abierto, o switch defectuoso.` });
+    tests.push({label:'Test 2 — Señal START (W/G)', body:`Llave ON, presionar START. DCV en W/G respecto a masa. <b>Valor normal:</b> <span class="value-ok">+12V momentáneo</span> (mientras se pulsa).<br><b>0V al pulsar:</b> switch abierto o cable cortado. <b>+12V permanente:</b> switch trabado.` });
+    tests.push({label:'Test 3 — Señal STOP (W)', body:`Con motor en marcha, activar STOP. <b>El motor debe cortar inmediatamente</b> y la señal W caer a 0V.<br><b>No corta:</b> switch STOP abierto, no está haciendo masa.` });
+  } else if (compId === 'handleR') {
+    tests.push({label:'Test 1 — Señal freno delantero (B/Y)', body:`DCV entre B/Y y masa. <b>Sin frenar:</b> <span class="value-ok">0V</span>. <b>Al frenar:</b> <span class="value-ok">+12V</span>.<br><b>Sin variación:</b> switch FR_STOP_SW abierto o cable cortado.` });
+    tests.push({label:'Test 2 — Resistencia del switch', body:`Switch desconectado. OHMS entre los pines del FR_STOP_SW. <b>Abierto:</b> <span class="value-ok">&gt; 1 MΩ</span>. <b>Cerrado (al frenar):</b> <span class="value-ok">&lt; 1 Ω</span>.` });
+    tests.push({label:'Test 3 — Modo (L/G)', body:`Osciloscopio en L/G. Al pulsar MODE_SW, deben verse pulsos. <b>Sin pulsos:</b> switch o circuito dañado.` });
+  } else if (compId === 'meter') {
+    tests.push({label:'Test 1 — Alimentación +12V', body:`Llave ON. DCV entre +12V (R) y masa. <b>Valor normal:</b> <span class="value-ok">+12V</span>.<br><b>0V:</b> fusible F3 quemado o cable cortado.` });
+    tests.push({label:'Test 2 — Masa del METER', body:`OHMS entre pin GND (B) y chasis. <b>Valor normal:</b> <span class="value-ok">&lt; 0.3 Ω</span>.<br><b>&gt;1Ω:</b> masa floja, el display puede parpadear.` });
+    tests.push({label:'Test 3 — Bus CAN', body:`DCV entre CAN-H (L/W) y masa, y entre CAN-L (L/B) y masa. Ambos <span class="value-ok">~2.5V en reposo</span>.<br><b>0V en uno:</b> cable CAN cortado. <b>Sin tráfico:</b> problema de comunicación con ECU.` });
+    tests.push({label:'Test 4 — Display enciende', body:`Conectar +12V y masa, esperar 3s. <b>Display debe hacer barrido de bienvenida y mostrar odómetro/hora.</b><br><b>No enciende:</b> problema de alimentación, masa, o METER quemado.` });
+  }
+  return tests;
+}
+
+/* ====================================================================
+   SEARCH (búsqueda en componentes, pines y cables)
+   ==================================================================== */
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+function highlightInText(text, query) {
+  if (!query) return escapeHtml(text);
+  const re = new RegExp('(' + escapeRegex(query) + ')', 'gi');
+  return escapeHtml(text).replace(new RegExp(escapeRegex(escapeHtml(query)), 'gi'), '<mark>$1</mark>');
+}
+
+let searchMatches = [];
+let searchHighlighted = new Set();
+
+function runSearch(query) {
+  query = (query || '').trim();
+  const results = [];
+  searchMatches = [];
+  // limpiar highlights previos
+  $$('.highlight-match').forEach(el => el.classList.remove('highlight-match'));
+
+  if (!query) {
+    $('#searchResults').innerHTML = '';
+    $('#searchResultsList').classList.remove('visible');
+    return;
+  }
+
+  const q = query.toLowerCase();
+  // Buscar en componentes
+  Object.values(components).forEach(c => {
+    if (c.id === 'groundBus') return;
+    const matches = [c.name, c.type, c.desc, c.id].some(s => s && s.toLowerCase().includes(q));
+    if (matches) {
+      results.push({ kind: 'comp', id: c.id, label: c.name, sub: c.type });
+      searchMatches.push({ type: 'comp', id: c.id });
+    }
+    // Buscar en pines
+    (c.pins || []).forEach(p => {
+      const pinMatches = [p.function, p.signal, p.n, p.color].some(s => s && s.toLowerCase().includes(q));
+      if (pinMatches) {
+        results.push({ kind: 'pin', id: c.id, pin: p.n, label: `${c.name} · pin ${p.n}`, sub: p.function });
+        searchMatches.push({ type: 'pin', id: c.id, pin: p.n });
+      }
+    });
+  });
+  // Buscar en cables
+  wires.forEach(w => {
+    const text = `${w.color} ${w.cat} ${w.function} ${w.signal} ${w.test || ''}`.toLowerCase();
+    if (text.includes(q)) {
+      const fromC = components[w.from[0]]?.name || w.from[0];
+      const toC = components[w.to[0]]?.name || w.to[0];
+      results.push({ kind: 'wire', id: w.id, label: `${fromC} → ${toC}`, sub: w.function, color: w.color });
+      searchMatches.push({ type: 'wire', id: w.id });
+    }
+  });
+
+  // Render results
+  $('#searchResults').innerHTML = `<span class="count">${results.length}</span> resultado${results.length !== 1 ? 's' : ''}`;
+  const list = $('#searchResultsList');
+  if (results.length === 0) {
+    list.classList.add('visible');
+    list.innerHTML = `<div style="padding:10px;color:var(--text-2);font-size:11px;text-align:center">Sin coincidencias</div>`;
+    return;
+  }
+  // Cap a 30 resultados para no explotar el DOM
+  const top = results.slice(0, 30);
+  list.innerHTML = top.map(r => {
+    const kindLabel = r.kind === 'comp' ? 'COMP' : r.kind === 'pin' ? 'PIN' : 'WIRE';
+    let labelHtml, subHtml = '';
+    if (r.kind === 'comp') {
+      labelHtml = highlightInText(r.label, query);
+      subHtml = highlightInText(r.sub || '', query);
+    } else if (r.kind === 'pin') {
+      labelHtml = highlightInText(r.label, query);
+      subHtml = highlightInText(r.sub || '', query);
+    } else {
+      labelHtml = highlightInText(r.label, query);
+      subHtml = `<span class="color-chip" style="background:${colorOf(r.color)}"></span>${highlightInText(r.sub || '', query)}`;
+    }
+    return `<div class="search-result" data-kind="${r.kind}" data-id="${r.id}"${r.pin ? ` data-pin="${r.pin}"` : ''}>
+      <span class="kind kind-${r.kind}">${kindLabel}</span>
+      <span class="label">${labelHtml}</span>
+    </div>`;
+  }).join('');
+  list.classList.add('visible');
+
+  // Click handlers
+  $$('.search-result').forEach(el => {
+    el.addEventListener('click', () => {
+      const kind = el.dataset.kind, id = el.dataset.id, pin = el.dataset.pin;
+      if (kind === 'comp') selectComponent(id);
+      else if (kind === 'pin') selectPin(id, pin);
+      else if (kind === 'wire') {
+        // Resaltar el wire y centrarlo
+        selectWire(id);
+      }
+    });
+  });
+
+  // Highlight matches en el SVG
+  searchHighlighted = new Set();
+  searchMatches.forEach(m => {
+    if (m.type === 'comp') {
+      const g = document.querySelector(`.component-box[data-id="${m.id}"]`);
+      if (g) { g.classList.add('highlight-match'); searchHighlighted.add(g); }
+    } else if (m.type === 'pin') {
+      const c = document.querySelector(`.pin-circle[data-comp="${m.id}"][data-pin="${m.pin}"]`);
+      if (c) { c.classList.add('highlight-match'); searchHighlighted.add(c); }
+    } else if (m.type === 'wire') {
+      const p = document.querySelector(`.wire[data-id="${m.id}"]`);
+      if (p) { p.classList.add('highlight-match'); searchHighlighted.add(p); }
+    }
+  });
+}
+
+function clearSearch() {
+  $('#searchInput').value = '';
+  $('#searchBox').classList.remove('has-value');
+  runSearch('');
+}
+
+/* ====================================================================
+   LIBRARY (biblioteca de diagramas con localStorage)
+   ==================================================================== */
+const LIBRARY_KEY = 'ecu-library-v1';
+const ACTIVE_KEY = 'ecu-active-id';
+let currentDiagramId = 'ktm950';
+let library = {};
+
+function loadLibrary() {
+  try {
+    const raw = localStorage.getItem(LIBRARY_KEY);
+    if (raw) library = JSON.parse(raw);
+  } catch { library = {}; }
+  // Asegurar que los built-in estén
+  if (!library.ktm950) {
+    library.ktm950 = {
+      name: 'KTM 950 Adventure',
+      sub: '2003 · 86 cables · 41 componentes',
+      builtin: true,
+      data: { components, wires, subsystems, meta: { title:'KTM 950 Adventure', model:'KTM 950 Adventure', year:'2003' } }
+    };
+  }
+  if (!library.yamR1_21) {
+    library.yamR1_21 = {
+      name: 'Yamaha YZF-R1',
+      sub: '2021 · ' + Object.keys(yamR1Data.components).length + ' comp. · ' + yamR1Data.wires.length + ' cables · DBW + 8 inyectores',
+      builtin: true,
+      data: yamR1Data
+    };
+  }
+  saveLibrary();
+}
+
+function saveLibrary() {
+  try { localStorage.setItem(LIBRARY_KEY, JSON.stringify(library)); } catch {}
+}
+
+function renderLibrary() {
+  const list = $('#libList');
+  const ids = Object.keys(library);
+  if (!ids.length) {
+    list.innerHTML = `<div style="color:var(--text-2);font-size:11px;padding:6px">Sin diagramas guardados.</div>`;
+    return;
+  }
+  // built-in primero, después custom
+  ids.sort((a, b) => {
+    const ai = library[a].builtin ? 0 : 1;
+    const bi = library[b].builtin ? 0 : 1;
+    if (ai !== bi) return ai - bi;
+    return library[a].name.localeCompare(library[b].name);
+  });
+  list.innerHTML = ids.map(id => {
+    const d = library[id];
+    const active = id === currentDiagramId;
+    return `<div class="lib-item ${active ? 'active' : ''}" data-id="${id}">
+      <span class="badge">${d.builtin ? '★' : 'USER'}</span>
+      <div style="flex:1;min-width:0">
+        <div class="name">${escapeHtml(d.name)}</div>
+        <div class="sub">${escapeHtml(d.sub || '')}</div>
+      </div>
+      <div class="actions">
+        ${active && !d.builtin ? `<button class="save" data-save="${id}" title="Actualizar con cambios">💾</button>` : ''}
+        ${!d.builtin ? `<button data-del="${id}" title="Borrar">×</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  // Listeners
+  $$('.lib-item').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target.dataset.del || e.target.dataset.save) return;
+      loadDiagram(el.dataset.id);
+    });
+  });
+  $$('.lib-item [data-del]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (confirm('¿Borrar "' + library[btn.dataset.del].name + '"?')) {
+        delete library[btn.dataset.del];
+        saveLibrary();
+        renderLibrary();
+      }
+    });
+  });
+  $$('.lib-item [data-save]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = btn.dataset.save;
+      library[id].data = { components, wires, subsystems, meta: { title: library[id].name } };
+      saveLibrary();
+      alert('"' + library[id].name + '" actualizado.');
+    });
+  });
+}
+
+function loadDiagram(id) {
+  const d = library[id];
+  if (!d) return;
+  if (!d.builtin && id === currentDiagramId) {
+    // user clicked the active one — refresh
+  }
+  const data = d.data;
+  // Reemplazar data global
+  Object.keys(components).forEach(k => delete components[k]);
+  Object.assign(components, data.components);
+  wires.length = 0;
+  wires.push(...data.wires);
+  Object.keys(subsystems).forEach(k => delete subsystems[k]);
+  Object.assign(subsystems, data.subsystems);
+
+  // Re-render
+  componentsLayer.innerHTML = '';
+  wiresLayer.innerHTML = '';
+  renderComponents();
+  renderWires();
+  applyFilter();
+  selectSubsystem('all');
+  clearSearch();
+  // Reset power state al cambiar de diagrama
+  if (typeof shutdown === 'function') shutdown();
+
+  currentDiagramId = id;
+  try { localStorage.setItem(ACTIVE_KEY, id); } catch {}
+
+  // Header — ECU-GLOBAL es fijo, el subtítulo cambia con el diagrama
+  const m = data.meta || {};
+  const compCount = Array.isArray(data.components) ? data.components.length : Object.keys(data.components).length;
+  $('#brandSubtitle').textContent = `${m.model || d.name}${m.year ? ' · ' + m.year : ''} · ${compCount} comp. · ${data.wires.length} cables`;
+  document.title = `ECU-GLOBAL · ${m.model || d.name}${m.year ? ' ' + m.year : ''}`;
+
+  renderLibrary();
+}
+
+function saveCurrentDiagram() {
+  const name = ($('#libNameInput').value || '').trim();
+  if (!name) { alert('Poné un nombre para el diagrama'); return; }
+  const id = 'user_' + Date.now();
+  library[id] = {
+    name: name,
+    sub: `${Object.keys(components).length} comp. · ${wires.length} cables · ${new Date().toLocaleDateString()}`,
+    builtin: false,
+    data: { components, wires, subsystems, meta: { title: name } }
+  };
+  saveLibrary();
+  $('#libNameInput').value = '';
+  loadDiagram(id);
+}
+
+/* ====================================================================
+   POWER STATE — simular encendido/apagado/arranque
+   ==================================================================== */
+let powerOn = false;
+let cranking = false;
+let engineRunning = false;
+
+function setSystemStatus(label, mode) {
+  const el = $('#sysStatus');
+  el.textContent = label;
+  el.classList.remove('on', 'cranking', 'running');
+  if (mode) el.classList.add(mode);
+}
+
+function clearPowerEffects() {
+  // Quitar todos los highlights de power
+  $$('.wire.flow, .wire.energized, .wire.flow-crank').forEach(w => {
+    w.classList.remove('flow', 'energized', 'flow-crank');
+  });
+  $$('.component-box.powered, .component-box.charging, .component-box.running, .component-box.cranking')
+    .forEach(b => b.classList.remove('powered', 'charging', 'running', 'cranking'));
+}
+
+function powerOnState() {
+  // Animar cables de +12V y masa con flujo continuo
+  wires.forEach(w => {
+    if (w.cat !== 'power' && w.cat !== 'ground') return;
+    const el = document.querySelector(`.wire[data-id="${w.id}"]`);
+    if (!el) return;
+    el.classList.add('flow', 'energized');
+  });
+  // Componentes con energía
+  ['battery','mainFuse','ignSwitch','fuseBox','regulator','ecu'].forEach(id => {
+    const g = document.querySelector(`.component-box[data-id="${id}"]`);
+    if (g) g.classList.add('powered');
+  });
+  // Instrumentos y luces prendidas
+  ['meter','headlight','tailLight'].forEach(id => {
+    const g = document.querySelector(`.component-box[data-id="${id}"]`);
+    if (g) g.classList.add('powered');
+  });
+}
+
+function crankingState() {
+  // Quitar flow normal, agregar flow rápido en circuito de arranque
+  wires.forEach(w => {
+    const el = document.querySelector(`.wire[data-id="${w.id}"]`);
+    if (!el) return;
+    el.classList.remove('flow', 'energized');
+    // Circuito de arranque: B+ → StartRelay 30/87 → Starter → GND
+    const isStartCircuit = (
+      (w.from[0] === 'battery' && w.to[0] === 'startRelay') ||
+      (w.from[0] === 'startRelay' && w.to[0] === 'starterMotor') ||
+      (w.from[0] === 'starterMotor' && w.to[0] === 'groundBus') ||
+      (w.from[0] === 'ignSwitch' && w.to[0] === 'ecu') ||
+      (w.from[0] === 'ecu' && w.to[0] === 'startRelay')
+    );
+    if (isStartCircuit) {
+      el.classList.add('flow-crank', 'energized');
+    } else if (w.cat === 'power' || w.cat === 'ground') {
+      // mantener energía general
+      el.classList.add('flow', 'energized');
+    }
+  });
+  // Resaltar componentes del arranque
+  ['battery','mainFuse','ignSwitch','ecu','startRelay','starterMotor'].forEach(id => {
+    const g = document.querySelector(`.component-box[data-id="${id}"]`);
+    if (g) g.classList.add('cranking');
+  });
+  // los demás quedan como powered (sin cranking)
+  ['mainFuse','fuseBox','regulator'].forEach(id => {
+    const g = document.querySelector(`.component-box[data-id="${id}"]`);
+    if (g && !g.classList.contains('cranking')) g.classList.add('powered');
+  });
+}
+
+function engineRunningState() {
+  // Mantener cables power/ground energizados
+  wires.forEach(w => {
+    if (w.cat !== 'power' && w.cat !== 'ground') return;
+    const el = document.querySelector(`.wire[data-id="${w.id}"]`);
+    if (el) el.classList.add('flow', 'energized');
+  });
+  // Marcar regulator → battery como charging
+  const chargeWire = wires.find(w => w.from[0] === 'regulator' && w.to[0] === 'battery');
+  if (chargeWire) {
+    const el = document.querySelector(`.wire[data-id="${chargeWire.id}"]`);
+    if (el) el.classList.add('energized');
+  }
+  // Componentes en estado "running"
+  ['battery','mainFuse','ignSwitch','fuseBox','regulator','ecu','meter'].forEach(id => {
+    const g = document.querySelector(`.component-box[data-id="${id}"]`);
+    if (g) g.classList.add('running');
+  });
+  // Inyectores y bobinas con pulso (pintamos energized momentáneo)
+  ['injectors','coils','throttle'].forEach(id => {
+    const g = document.querySelector(`.component-box[data-id="${id}"]`);
+    if (g) g.classList.add('running');
+  });
+  // Alternador cargando (color warn/amarillo)
+  ['regulator'].forEach(id => {
+    const g = document.querySelector(`.component-box[data-id="${id}"]`);
+    if (g) g.classList.add('charging');
+  });
+  // BOMBA: fuelPump / fuelPumpRelay si existen
+  ['fuelPump','fuelPumpRelay'].forEach(id => {
+    const g = document.querySelector(`.component-box[data-id="${id}"]`);
+    if (g) g.classList.add('running');
+  });
+  // ACM/alternator
+  ['acm'].forEach(id => {
+    const g = document.querySelector(`.component-box[data-id="${id}"]`);
+    if (g) g.classList.add('running');
+  });
+}
+
+function togglePower() {
+  if (engineRunning || cranking) { shutdown(); return; }
+  powerOn = !powerOn;
+  if (powerOn) {
+    powerOnState();
+    setSystemStatus('⚡ ENCENDIDO', 'on');
+    $('#powerBtn').innerHTML = '🔌 Apagar';
+    $('#powerBtn').classList.add('on');
+    $('#startBtn').disabled = false;
+  } else {
+    clearPowerEffects();
+    setSystemStatus('⚡ SISTEMA OFF');
+    $('#powerBtn').innerHTML = '🔌 Encender';
+    $('#powerBtn').classList.remove('on', 'cranking');
+    $('#startBtn').disabled = true;
+  }
+}
+
+function simulateCrank() {
+  if (!powerOn) return;
+  cranking = true;
+  setSystemStatus('⚡ ARRANQUE', 'cranking');
+  $('#powerBtn').classList.remove('on');
+  $('#powerBtn').classList.add('cranking');
+  $('#powerBtn').innerHTML = '⚙ Arrancando…';
+  $('#startBtn').disabled = true;
+  crankingState();
+
+  // Después de 1.5s simular motor en marcha
+  setTimeout(() => {
+    cranking = false;
+    engineRunning = true;
+    clearPowerEffects();
+    engineRunningState();
+    setSystemStatus('⚡ EN MARCHA', 'running');
+    $('#powerBtn').classList.remove('cranking');
+    $('#powerBtn').classList.add('on');
+    $('#powerBtn').innerHTML = '🔌 Apagar';
+    $('#startBtn').disabled = true;
+  }, 1500);
+}
+
+function shutdown() {
+  powerOn = false;
+  engineRunning = false;
+  cranking = false;
+  clearPowerEffects();
+  setSystemStatus('⚡ SISTEMA OFF');
+  $('#powerBtn').innerHTML = '🔌 Encender';
+  $('#powerBtn').classList.remove('on', 'cranking');
+  $('#startBtn').disabled = true;
+}
+
+/* --- Inicialización --- */
+function init() {
+  renderComponents();
+  renderWires();
+  applyFilter();
+
+  $$('#subBtns button').forEach(b => b.addEventListener('click', () => selectSubsystem(b.dataset.sub)));
+  $$('#filterBtns button').forEach(b => b.addEventListener('click', () => selectFilter(b.dataset.filter)));
+  $('#modeBtn').addEventListener('click', toggleDiagMode);
+
+  // Click en canvas vacío = limpiar selección
+  canvas.addEventListener('click', e => {
+    if (e.target.id === 'canvas' || e.target.tagName === 'svg' || e.target.tagName === 'rect' && e.target.getAttribute('fill') === 'url(#grid)') {
+      $$('.component-box').forEach(g => g.classList.remove('selected'));
+      $$('.pin-circle').forEach(c => c.classList.remove('active'));
+      $('#infoEmpty').style.display = 'block';
+      $('#infoContent').style.display = 'none';
+    }
+  });
+
+  // Atajos de teclado
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'Escape') {
+      selectSubsystem('all');
+    } else if (e.key === 'd' || e.key === 'D') {
+      toggleDiagMode();
+    } else if (e.key === '/' || (e.ctrlKey && e.key === 'f')) {
+      e.preventDefault();
+      $('#searchInput').focus();
+    }
+  });
+
+  // --- Búsqueda ---
+  const searchInput = $('#searchInput');
+  let searchDebounce;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchDebounce);
+    const v = searchInput.value;
+    $('#searchBox').classList.toggle('has-value', !!v);
+    searchDebounce = setTimeout(() => runSearch(v), 150);
+  });
+  searchInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const first = document.querySelector('.search-result');
+      if (first) first.click();
+    }
+  });
+  $('#clearSearch').addEventListener('click', clearSearch);
+
+  // --- Biblioteca ---
+  loadLibrary();
+  const savedActive = (() => { try { return localStorage.getItem(ACTIVE_KEY); } catch { return null; } })();
+  if (savedActive && library[savedActive] && savedActive !== 'ktm950') {
+    loadDiagram(savedActive);
+  } else {
+    currentDiagramId = 'ktm950';
+    try { localStorage.setItem(ACTIVE_KEY, 'ktm950'); } catch {}
+    renderLibrary();
+  }
+  $('#libSaveBtn').addEventListener('click', saveCurrentDiagram);
+  $('#libNameInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveCurrentDiagram();
+  });
+
+  // FAB de aviso legal (esquina inferior derecha)
+  const fab = document.createElement('button');
+  fab.className = 'legal-fab';
+  fab.innerHTML = '⚖ Aviso legal';
+  fab.onclick = () => $('#legal-overlay').classList.add('show');
+  document.body.appendChild(fab);
+
+  // Power state buttons
+  $('#powerBtn').addEventListener('click', togglePower);
+  $('#startBtn').addEventListener('click', simulateCrank);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+/* ====================================================================
+   YAMAHA YZF-R1 2021 — DATOS PRE-CARGADOS
+   ==================================================================== */
+const yamR1Data = (() => {
+  const components = {
+    battery: { id:'battery', name:'Batería 12V YTZ10S', type:'power', x:1100, y:140, w:130, h:60,
+      desc:'Batería 12V sellada. + alimenta MAIN_FUSE. − a masa del chasis.',
+      pins:[
+        { n:'+',  color:'R', dir:'PWR', function:'+12V batería (permanente)', signal:'12.6V reposo / 13.8–14.5V en marcha' },
+        { n:'-',  color:'B', dir:'GND', function:'Masa chasis',                 signal:'0V' }
+    ]},
+    mainFuse: { id:'mainFuse', name:'MAIN FUSE 50A', type:'protection', x:1100, y:240, w:130, h:50,
+      desc:'Fusible principal 50A entre batería y llave. Si salta repetidamente: cortocircuito en cable R o R/W.',
+      pins:[
+        { n:'IN',  color:'R', dir:'PWR', function:'Entrada desde batería',  signal:'+12V' },
+        { n:'OUT', color:'R', dir:'PWR', function:'Salida hacia MAIN_SW',   signal:'+12V post-fusible' }
+    ]},
+    ignSwitch: { id:'ignSwitch', name:'MAIN_SW – Llave encendido', type:'switch', x:880, y:140, w:130, h:55,
+      desc:'Llave OFF/ON. Conecta +12V al RELAY_ASSY. Sin esta señal el relay no cierra y la ECU no se energiza.',
+      pins:[
+        { n:'BAT', color:'R/W', dir:'PWR', function:'Entrada +12V desde MAIN_FUSE', signal:'+12V permanente' },
+        { n:'ON',  color:'Br/L', dir:'PWR', function:'Salida a bobina RELAY_ASSY',   signal:'+12V en ON, 0V en OFF' }
+    ]},
+    relayAssy: { id:'relayAssy', name:'RELAY_ASSY – Relé principal', type:'relay', x:880, y:240, w:130, h:65,
+      desc:'Relé principal que alimenta la ECU y los inyectores/bobinas cuando se activa la llave. 4 pines.',
+      pins:[
+        { n:'R/W', color:'R/W', dir:'PWR', function:'Alimentación bobina (desde MAIN_SW)', signal:'+12V en ON' },
+        { n:'R/L', color:'R/L', dir:'PWR', function:'Alimentación contactos (desde bat.)',  signal:'+12V permanente' },
+        { n:'B/W', color:'B/W', dir:'OUT', function:'+12V salida a ECU (VB/BAT)',            signal:'+12V en ON' },
+        { n:'L/W', color:'L/W', dir:'OUT', function:'+12V a inyectores y bobinas',            signal:'+12V en ON' }
+    ]},
+    startStopSw: { id:'startStopSw', name:'EG_START & STOP_SW', type:'switch', x:880, y:360, w:130, h:65,
+      desc:'Botón de arranque (START) y corte motor (STOP/RUN) en el manubrio derecho.',
+      pins:[
+        { n:'R/W', color:'R/W', dir:'PWR', function:'Alimentación +12V',        signal:'+12V' },
+        { n:'W/G', color:'W/G', dir:'OUT', function:'Señal START al ECU',        signal:'+12V al pulsar START' },
+        { n:'W/B', color:'W/B', dir:'OUT', function:'Señal RUN al ECU',          signal:'+12V en RUN' },
+        { n:'W',   color:'W',   dir:'OUT', function:'Señal STOP / kill switch', signal:'0V al activar STOP' }
+    ]},
+    handleR: { id:'handleR', name:'SW_HANDLE_R – Manubrio der.', type:'switch', x:880, y:480, w:130, h:55,
+      desc:'Conjunto de switches del manillar derecho: FR_STOP_SW (freno delantero), MODE_SW, controles de display.',
+      pins:[
+        { n:'B/W', color:'B/W', dir:'PWR', function:'Alimentación switches',     signal:'+12V' },
+        { n:'B/Y', color:'B/Y', dir:'OUT', function:'Señal freno delantero',      signal:'+12V al frenar' },
+        { n:'L/G', color:'L/G', dir:'OUT', function:'Señal MODE_SW',              signal:'variable (pulsos)' },
+        { n:'B/L', color:'B/L', dir:'GND', function:'Masa switches',              signal:'0V' }
+    ]},
+    acm: { id:'acm', name:'ACM – Alternador (estator)', type:'generator', x:1100, y:360, w:130, h:55,
+      desc:'Generador trifásico de imán permanente acoplado al cigüeñal. Produce AC que el REC_REG rectifica.',
+      pins:[
+        { n:'AC1', color:'W', dir:'OUT', function:'Salida AC fase 1', signal:'~30–50V AC' },
+        { n:'AC2', color:'W', dir:'OUT', function:'Salida AC fase 2', signal:'~30–50V AC' },
+        { n:'AC3', color:'W', dir:'OUT', function:'Salida AC fase 3', signal:'~30–50V AC' }
+    ]},
+    regulator: { id:'regulator', name:'REC_REG – Rectificador/Regulador', type:'regulator', x:1100, y:460, w:130, h:55,
+      desc:'Rectifica la salida trifásica del ACM y regula a 14.0–14.5V DC para cargar la batería.',
+      pins:[
+        { n:'IN1', color:'W', dir:'IN',  function:'AC fase 1 entrada',     signal:'~40V AC' },
+        { n:'IN2', color:'W', dir:'IN',  function:'AC fase 2 entrada',     signal:'~40V AC' },
+        { n:'IN3', color:'W', dir:'IN',  function:'AC fase 3 entrada',     signal:'~40V AC' },
+        { n:'+',   color:'R', dir:'OUT', function:'+12V regulado a batería', signal:'13.8–14.5V' },
+        { n:'-',   color:'B', dir:'GND', function:'Masa chasis',             signal:'0V' }
+    ]},
+    ecu: { id:'ecu', name:'ECU – YEC (Yamaha Engine Control)', type:'control', x:480, y:560, w:300, h:240,
+      desc:'Unidad de control YZF-R1 2021. Gestiona encendido secuencial, inyección dual (8 inyectores), throttle-by-wire, IMU, modos de conducción. 42 pines mapeados.',
+      pins:[
+        { n:'VB',     color:'R/G',  dir:'PWR', function:'+12V referencia batería',  signal:'+12V' },
+        { n:'BAT',    color:'R/G',  dir:'PWR', function:'Alimentación directa bat.',signal:'+12V' },
+        { n:'VCC1',   color:'L/W',  dir:'OUT', function:'5V ref sensor CAM',         signal:'5.0V' },
+        { n:'VCC3',   color:'L/W',  dir:'OUT', function:'5V ref TPS/AP',             signal:'5.0V' },
+        { n:'VCC4',   color:'L/W',  dir:'OUT', function:'5V ref GP/TPS',             signal:'5.0V' },
+        { n:'VCC6',   color:'L/W',  dir:'OUT', function:'5V ref presión',             signal:'5.0V' },
+        { n:'SGND',   color:'B/L',  dir:'GND', function:'Masas señal (×6)',          signal:'0V' },
+        { n:'CRK',    color:'Gy',   dir:'IN',  function:'Sensor cigüeñal',            signal:'AC senoidal' },
+        { n:'CAM',    color:'W/B',  dir:'IN',  function:'Sensor árbol de levas',     signal:'0–5V cuadrada' },
+        { n:'WT',     color:'G/W',  dir:'IN',  function:'Sensor temp refrigerante',   signal:'0–5V NTC' },
+        { n:'AT',     color:'Br/W', dir:'IN',  function:'Sensor temp aire admisión',  signal:'0–5V NTC' },
+        { n:'GPA',    color:'L/R',  dir:'IN',  function:'TPS (drive-by-wire)',        signal:'0.5–4.5V' },
+        { n:'AP1',    color:'L/Y',  dir:'IN',  function:'Sensor presión 1',            signal:'0–5V' },
+        { n:'AP2',    color:'B/Y',  dir:'IN',  function:'Sensor presión 2',            signal:'0–5V' },
+        { n:'IJ11',   color:'Sb/W', dir:'OUT', function:'Inyector cil.1 primario',     signal:'pulsado 12V' },
+        { n:'IJ21',   color:'G/B',  dir:'OUT', function:'Inyector cil.2 primario',     signal:'pulsado 12V' },
+        { n:'IJ31',   color:'L/B',  dir:'OUT', function:'Inyector cil.3 primario',     signal:'pulsado 12V' },
+        { n:'IJ41',   color:'Or/B', dir:'OUT', function:'Inyector cil.4 primario',     signal:'pulsado 12V' },
+        { n:'IJ12',   color:'W/L',  dir:'OUT', function:'Inyector cil.1 secundario',   signal:'pulsado 12V' },
+        { n:'IG1',    color:'Or',   dir:'OUT', function:'Bobina encendido cil.1',      signal:'pulso bajo (-)' },
+        { n:'IG2',    color:'Gy/R', dir:'OUT', function:'Bobina encendido cil.2',      signal:'pulso bajo (-)' },
+        { n:'IG3',    color:'Or/G', dir:'OUT', function:'Bobina encendido cil.3',      signal:'pulso bajo (-)' },
+        { n:'IG4',    color:'Gy/G', dir:'OUT', function:'Bobina encendido cil.4',      signal:'pulso bajo (-)' },
+        { n:'THM+',   color:'Y/R',  dir:'OUT', function:'Servo mariposa +',            signal:'PWM 0–12V' },
+        { n:'THM-',   color:'Lz/R', dir:'OUT', function:'Servo mariposa -',            signal:'PWM 0–12V' },
+        { n:'VIM+',   color:'Y/L',  dir:'OUT', function:'Motor intake valve +',        signal:'PWM' },
+        { n:'VIM-',   color:'Sb',   dir:'OUT', function:'Motor intake valve -',        signal:'PWM' },
+        { n:'SS',     color:'W/G',  dir:'IN',  function:'Start signal desde switch',  signal:'+12V en START' },
+        { n:'NL',     color:'B',    dir:'IN',  function:'Switch neutral',              signal:'0V en neutral' },
+        { n:'RX/TX',  color:'L/B',  dir:'BI',  function:'CAN bus a METER/OBD',        signal:'2.5V diferencial' }
+    ]},
+    crk: { id:'crk', name:'CRK – Sensor cigüeñal', type:'sensor', x:80, y:480, w:130, h:55,
+      desc:'Sensor inductivo VRS en el cigüeñal. Genera AC proporcional a RPM. Clave para sincronización de encendido.',
+      pins:[
+        { n:'SIG', color:'Gy',  dir:'OUT', function:'Señal AC al ECU (CRK)',  signal:'AC senoidal' },
+        { n:'GND', color:'B/L', dir:'GND', function:'Masa señal (SGND1)',     signal:'0V' }
+    ]},
+    cam: { id:'cam', name:'CAM – Sensor árbol de levas', type:'sensor', x:80, y:560, w:130, h:55,
+      desc:'Sensor Hall. Señal digital 0–5V que indica fase para sincronizar inyección secuencial.',
+      pins:[
+        { n:'+5V', color:'W/B', dir:'IN',  function:'Alimentación 5V (VCC1)', signal:'5.0V' },
+        { n:'GND', color:'B/L', dir:'GND', function:'Masa (SGND1)',           signal:'0V' },
+        { n:'SIG', color:'L',   dir:'OUT', function:'Señal CAM al ECU',       signal:'0–5V cuadrada' }
+    ]},
+    coolantTemp: { id:'coolantTemp', name:'WT – Sensor temp. refrigerante', type:'sensor', x:80, y:640, w:130, h:55,
+      desc:"Termistor NTC. Resistencia cae al subir T°. La ECU ajusta mezcla, avance y activa el ventilador.",
+      pins:[
+        { n:'SIG', color:'G/W', dir:'OUT', function:'Resistencia NTC al ECU', signal:'~3.5V frío / ~0.8V 80°C' },
+        { n:'GND', color:'B/L', dir:'GND', function:'Masa señal (SGND3)',     signal:'0V' }
+    ]},
+    airTemp: { id:'airTemp', name:'AT – Sensor temp. aire admisión', type:'sensor', x:80, y:720, w:130, h:55,
+      desc:'NTC. La ECU corrige la densidad del aire según temperatura de admisión.',
+      pins:[
+        { n:'SIG', color:'Br/W', dir:'OUT', function:'NTC a ECU',            signal:'~3.5V ambiente' },
+        { n:'GND', color:'B/L',  dir:'GND', function:'Masa (SGND3)',         signal:'0V' }
+    ]},
+    tps: { id:'tps', name:'GP/TPS – Sensor posición acelerador', type:'sensor', x:240, y:720, w:130, h:55,
+      desc:'Potenciómetro en la mariposa secundaria. Señal GPA al ECU para drive-by-wire. Rango 0.5–4.5V.',
+      pins:[
+        { n:'VCC4', color:'W/G', dir:'IN',  function:'Alimentación 5V (VCC4)', signal:'5.0V' },
+        { n:'SGND4', color:'G',  dir:'GND', function:'Masa señal (SGND4)',     signal:'0V' },
+        { n:'GPA',  color:'L/R', dir:'OUT', function:'Señal GPA al ECU',       signal:'0.5–4.5V' }
+    ]},
+    ap: { id:'ap', name:'AP1/AP2 – Sensores presión atmosférica', type:'sensor', x:240, y:640, w:130, h:55,
+      desc:'Dos sensores de presión barométrica para IMU/altitud. La ECU ajusta inyección según altitud.',
+      pins:[
+        { n:'AP1', color:'L/Y', dir:'IN',  function:'Señal presión 1', signal:'0–5V' },
+        { n:'AP2', color:'B/Y', dir:'IN',  function:'Señal presión 2', signal:'0–5V' },
+        { n:'GND', color:'B',   dir:'GND', function:'Masa',            signal:'0V' }
+    ]},
+    injectors: { id:'injectors', name:'Inyectores IJ11–IJ42', type:'actuator', x:880, y:580, w:160, h:70,
+      desc:'8 inyectores en total: 4 primarios (cuerpo de throttle superior) + 4 secundarios (puerto de admisión). Inyección dual por cilindro.',
+      pins:[
+        { n:'IJ11', color:'Sb/W',  dir:'IN', function:'Control cil.1 primario',  signal:'pulsado 12V' },
+        { n:'IJ21', color:'G/B',   dir:'IN', function:'Control cil.2 primario',  signal:'pulsado 12V' },
+        { n:'IJ31', color:'L/B',   dir:'IN', function:'Control cil.3 primario',  signal:'pulsado 12V' },
+        { n:'IJ41', color:'Or/B',  dir:'IN', function:'Control cil.4 primario',  signal:'pulsado 12V' },
+        { n:'IJ12', color:'W/L',   dir:'IN', function:'Control cil.1 secundario',signal:'pulsado 12V' },
+        { n:'+12V', color:'R/L',   dir:'PWR', function:'+12V desde RELAY',       signal:'+12V' }
+    ]},
+    coils: { id:'coils', name:'Bobinas IG1–IG4 (COP)', type:'actuator', x:880, y:680, w:160, h:60,
+      desc:'4 bobinas individuales Coil-On-Plug. Control de chispa por señal negativa de la ECU.',
+      pins:[
+        { n:'IG1', color:'Or',   dir:'IN', function:'Disparo ECU bobina cil.1', signal:'pulso bajo' },
+        { n:'IG2', color:'Gy/R', dir:'IN', function:'Disparo ECU bobina cil.2', signal:'pulso bajo' },
+        { n:'IG3', color:'Or/G', dir:'IN', function:'Disparo ECU bobina cil.3', signal:'pulso bajo' },
+        { n:'IG4', color:'Gy/G', dir:'IN', function:'Disparo ECU bobina cil.4', signal:'pulso bajo' },
+        { n:'+12V', color:'R/W', dir:'PWR', function:'Alimentación primario',  signal:'+12V' }
+    ]},
+    throttle: { id:'throttle', name:'THM – Servo mariposa (DBW)', type:'actuator', x:1100, y:680, w:130, h:55,
+      desc:'Motor DC con H-bridge controlado por ECU (Drive By Wire). Abre/cierra la mariposa electrónicamente. YZF-R1 tiene sistema YCC-T de Yamaha.',
+      pins:[
+        { n:'THM+', color:'Y/R',  dir:'IN', function:'Motor + (H-bridge ECU)', signal:'PWM 0–12V' },
+        { n:'THM-', color:'Lz/R', dir:'IN', function:'Motor - (H-bridge ECU)', signal:'PWM 0–12V' }
+    ]},
+    viMotor: { id:'viMotor', name:'VI_MOTOR – Motor intake valve', type:'actuator', x:1100, y:580, w:130, h:55,
+      desc:'Controla la válvula de admisión variable. Activa a bajas RPM para mejorar torque bajo. Se desactiva a alto régimen.',
+      pins:[
+        { n:'VIM+', color:'Y/L', dir:'IN', function:'Motor intake valve +', signal:'PWM' },
+        { n:'VIM-', color:'Sb',  dir:'IN', function:'Motor intake valve -', signal:'PWM' }
+    ]},
+    obd: { id:'obd', name:'OBD / CAN Bus', type:'instrument', x:1100, y:780, w:130, h:55,
+      desc:'Puerto OBD-II + bus CAN para diagnóstico y comunicación con METER/IMU/CCU.',
+      pins:[
+        { n:'RX',    color:'Y', dir:'IN',  function:'CAN RX al ECU',       signal:'2.5V diferencial' },
+        { n:'TX',    color:'G', dir:'OUT', function:'CAN TX del ECU',       signal:'2.5V diferencial' },
+        { n:'CAN_H', color:'L/W', dir:'BI', function:'CAN High',            signal:'2.5–3.5V' },
+        { n:'CAN_L', color:'L/B', dir:'BI', function:'CAN Low',             signal:'1.5–2.5V' }
+    ]},
+    meter: { id:'meter', name:'METER – Instrumentos', type:'instrument', x:880, y:780, w:160, h:60,
+      desc:'Tablero multifunción: velocidad, RPM, nivel combustible, temperatura, modo de conducción, shift light, IMU.',
+      pins:[
+        { n:'+12V', color:'R',  dir:'PWR', function:'+12V llave ON',        signal:'+12V' },
+        { n:'GND',  color:'B',  dir:'GND', function:'Masa',                  signal:'0V' },
+        { n:'CAN-H', color:'L/W', dir:'BI', function:'CAN High desde ECU',   signal:'2.5V' },
+        { n:'CAN-L', color:'L/B', dir:'BI', function:'CAN Low desde ECU',    signal:'2.5V' },
+        { n:'CCU1', color:'Br/Y', dir:'BI', function:'Comunicación CCU',     signal:'digital' }
+    ]},
+    groundBus: { id:'groundBus', name:'Bus de masa (chasis)', type:'ground', x:40, y:920, w:1320, h:14,
+      desc:'Bus común de masa. Todos los retornos (-) terminan aquí.',
+      pins:[{ n:'GND', color:'B', dir:'GND', function:'Masa chasis', signal:'0V' }]
+    }
+  };
+
+  const wires = [
+    // Power / carga
+    { id:'w1',  from:['battery','+'],      to:['mainFuse','IN'],       color:'R',  cat:'power', function:'Batería → MAIN_FUSE',         signal:'+12V', dir:'PWR',  test:'Mide entre B+ y B-: 12.6V (off), 13.8–14.5V (marcha).' },
+    { id:'w2',  from:['mainFuse','OUT'],   to:['ignSwitch','BAT'],     color:'R/W', cat:'power', function:'Fusible → Llave encendido',    signal:'+12V', dir:'PWR',  test:'Llave ON: +12V en cable R/W respecto a masa.' },
+    { id:'w3',  from:['ignSwitch','ON'],   to:['relayAssy','R/W'],     color:'Br/L', cat:'power', function:'Llave ON → bobina relay',     signal:'+12V ON', dir:'PWR', test:'Llave en ON: +12V en Br/L.' },
+    { id:'w4',  from:['battery','+'],      to:['relayAssy','R/L'],     color:'R/L', cat:'power', function:'+12V directo a relay',         signal:'+12V',   dir:'PWR',  test:'R/L a masa: siempre +12V. Es la entrada de potencia del relay.' },
+    { id:'w5',  from:['relayAssy','B/W'],  to:['ecu','VB'],            color:'B/W', cat:'power', function:'Relay → ECU VB (referencia)', signal:'+12V ON', dir:'PWR', test:'Llave ON: +12V en B/W. <11.5V = problema de relay o cable.' },
+    { id:'w6',  from:['relayAssy','B/W'],  to:['ecu','BAT'],           color:'B/W', cat:'power', function:'Relay → ECU BAT (memoria)',   signal:'+12V',    dir:'PWR', test:'B/W a masa: 12V con llave ON.' },
+    { id:'w7',  from:['relayAssy','L/W'],  to:['injectors','+12V'],    color:'L/W', cat:'power', function:'Relay → +12V inyectores',      signal:'+12V ON', dir:'PWR', test:'L/W a masa: 12V con llave ON.' },
+    { id:'w8',  from:['relayAssy','L/W'],  to:['coils','+12V'],        color:'L/W', cat:'power', function:'Relay → +12V bobinas',          signal:'+12V ON', dir:'PWR', test:'L/W en pines +12V de bobinas: 12V con llave ON.' },
+    { id:'w9',  from:['battery','-'],      to:['groundBus','GND'],     color:'B',   cat:'ground',function:'Masa batería',                 signal:'0V',     dir:'GND', test:'B- a chasis: <0.5Ω. Si >1Ω: limpiar bornes y masa del chasis.' },
+    { id:'w10', from:['regulator','-'],    to:['groundBus','GND'],     color:'B',   cat:'ground',function:'Masa REC_REG',                  signal:'0V',     dir:'GND', test:'B a chasis: <0.3Ω.' },
+    { id:'w11', from:['regulator','+'],    to:['battery','+'],         color:'R',   cat:'power', function:'Carga (REC_REG → batería)',    signal:'13.8–14.5V', dir:'PWR', test:'Motor >3000 rpm: 13.8–14.5V. >15V = regulador quemado.' },
+
+    // Generador
+    { id:'w12', from:['acm','AC1'],        to:['regulator','IN1'],     color:'W',   cat:'power', function:'Fase 1 ACM → REC_REG',         signal:'~40V AC', dir:'BI',  test:'Cada fase a masa, motor girando: AC 20–60V pico. Asimétrico = estator dañado.' },
+    { id:'w13', from:['acm','AC2'],        to:['regulator','IN2'],     color:'W',   cat:'power', function:'Fase 2 ACM → REC_REG',         signal:'~40V AC', dir:'BI',  test:'Idem w12.' },
+    { id:'w14', from:['acm','AC3'],        to:['regulator','IN3'],     color:'W',   cat:'power', function:'Fase 3 ACM → REC_REG',         signal:'~40V AC', dir:'BI',  test:'Idem w12. Una fase a 0V = bobinado abierto.' },
+
+    // ECU masa
+    { id:'w15', from:['ecu','SGND'],       to:['groundBus','GND'],     color:'B/L', cat:'ground',function:'Masas señal ECU (×6)',         signal:'0V',     dir:'GND', test:'SGND a chasis: <0.2Ω. Si >0.5Ω: lectura errática de sensores.' },
+
+    // Sensores
+    { id:'w16', from:['crk','SIG'],        to:['ecu','CRK'],           color:'Gy',  cat:'sensor', function:'CRK señal a ECU',               signal:'AC senoidal', dir:'IN',  test:'CRK a masa, motor girando: AC 0.5V (ralentí) a 50V+. 0V = sensor muerto.' },
+    { id:'w17', from:['crk','GND'],        to:['groundBus','GND'],     color:'B/L', cat:'ground',function:'Masa CRK',                     signal:'0V',     dir:'GND', test:'B/L a chasis: <0.3Ω.' },
+    { id:'w18', from:['ecu','VCC1'],       to:['cam','+5V'],           color:'L/W', cat:'sensor', function:'5V ref a CAM',                  signal:'5.0V',   dir:'OUT', test:'VCC1 a SGND1: 4.95–5.05V.' },
+    { id:'w19', from:['cam','SIG'],        to:['ecu','CAM'],           color:'L',   cat:'sensor', function:'CAM señal digital a ECU',       signal:'0–5V cuadrada', dir:'IN', test:'Motor en marcha: señal 0–5V cuadrada. Fija en 0V/5V: CAM muerto.' },
+    { id:'w20', from:['cam','GND'],        to:['groundBus','GND'],     color:'B/L', cat:'ground',function:'Masa CAM',                     signal:'0V',     dir:'GND', test:'B/L a chasis: <0.3Ω.' },
+    { id:'w21', from:['coolantTemp','SIG'], to:['ecu','WT'],           color:'G/W', cat:'sensor', function:'WT (NTC) a ECU',                signal:'~3.5V frío / ~0.8V caliente', dir:'IN', test:'Frío: ~3.5V. 80°C: ~0.8V. 5V fijo = circuito abierto.' },
+    { id:'w22', from:['coolantTemp','GND'], to:['groundBus','GND'],    color:'B/L', cat:'ground',function:'Masa WT',                       signal:'0V',     dir:'GND', test:'B/L a chasis: <0.3Ω.' },
+    { id:'w23', from:['airTemp','SIG'],    to:['ecu','AT'],            color:'Br/W', cat:'sensor',function:'AT (NTC) a ECU',                signal:'~3.5V ambiente', dir:'IN', test:'NTC: 20°C ~3.5V, 60°C ~1.5V. 5V fijo = abierto.' },
+    { id:'w24', from:['airTemp','GND'],    to:['groundBus','GND'],     color:'B/L', cat:'ground',function:'Masa AT',                       signal:'0V',     dir:'GND', test:'B/L a chasis: <0.3Ω.' },
+    { id:'w25', from:['ecu','VCC4'],       to:['tps','VCC4'],          color:'W/G', cat:'sensor',function:'5V ref TPS',                    signal:'5.0V',   dir:'OUT', test:'VCC4 a SGND4: 4.95–5.05V.' },
+    { id:'w26', from:['tps','GPA'],         to:['ecu','GPA'],           color:'L/R', cat:'sensor',function:'GPA (TPS) a ECU',               signal:'0.5–4.5V', dir:'IN', test:'Cerrado: 0.5–1.0V. WOT: 4.0–4.5V. Lineal sin saltos.' },
+    { id:'w27', from:['tps','SGND4'],      to:['groundBus','GND'],     color:'G',   cat:'ground',function:'Masa TPS',                      signal:'0V',     dir:'GND', test:'G a chasis: <0.3Ω.' },
+    { id:'w28', from:['ap','AP1'],         to:['ecu','AP1'],           color:'L/Y', cat:'sensor',function:'AP1 a ECU',                     signal:'0–5V',   dir:'IN',  test:'Nivel mar: ~4.0V. 2000m: ~3.5V.' },
+    { id:'w29', from:['ap','AP2'],         to:['ecu','AP2'],           color:'B/Y', cat:'sensor',function:'AP2 a ECU',                     signal:'0–5V',   dir:'IN',  test:'Similar a AP1. Diferencial da ángulo de inclinación.' },
+
+    // Inyectores
+    { id:'w30', from:['ecu','IJ11'],       to:['injectors','IJ11'],    color:'Sb/W', cat:'ignition',function:'Disparo inyector 1 primario', signal:'pulsado 12V', dir:'OUT', test:'Resistencia bobina: 10–15Ω. LED en serie: debe parpadear al dar gas.' },
+    { id:'w31', from:['ecu','IJ21'],       to:['injectors','IJ21'],    color:'G/B',  cat:'ignition',function:'Disparo inyector 2 primario', signal:'pulsado 12V', dir:'OUT', test:'Idem w30.' },
+    { id:'w32', from:['ecu','IJ31'],       to:['injectors','IJ31'],    color:'L/B',  cat:'ignition',function:'Disparo inyector 3 primario', signal:'pulsado 12V', dir:'OUT', test:'Idem w30.' },
+    { id:'w33', from:['ecu','IJ41'],       to:['injectors','IJ41'],    color:'Or/B', cat:'ignition',function:'Disparo inyector 4 primario', signal:'pulsado 12V', dir:'OUT', test:'Idem w30.' },
+    { id:'w34', from:['ecu','IJ12'],       to:['injectors','IJ12'],    color:'W/L',  cat:'ignition',function:'Disparo inyector 1 secundario',signal:'pulsado 12V', dir:'OUT', test:'Idem w30. El secundario abre a alto régimen.' },
+
+    // Bobinas
+    { id:'w35', from:['ecu','IG1'],        to:['coils','IG1'],         color:'Or',   cat:'ignition',function:'Disparo bobina cil.1',         signal:'pulso bajo', dir:'OUT', test:'Resistencia primario: 0.5–1.5Ω. Sin chispa: revisar CRK y CAM.' },
+    { id:'w36', from:['ecu','IG2'],        to:['coils','IG2'],         color:'Gy/R', cat:'ignition',function:'Disparo bobina cil.2',         signal:'pulso bajo', dir:'OUT', test:'Idem w35.' },
+    { id:'w37', from:['ecu','IG3'],        to:['coils','IG3'],         color:'Or/G', cat:'ignition',function:'Disparo bobina cil.3',         signal:'pulso bajo', dir:'OUT', test:'Idem w35.' },
+    { id:'w38', from:['ecu','IG4'],        to:['coils','IG4'],         color:'Gy/G', cat:'ignition',function:'Disparo bobina cil.4',         signal:'pulso bajo', dir:'OUT', test:'Idem w35.' },
+
+    // Throttle
+    { id:'w39', from:['ecu','THM+'],       to:['throttle','THM+'],     color:'Y/R',  cat:'actuator',function:'Servo mariposa +',              signal:'PWM 0–12V', dir:'OUT', test:'Resistencia motor THM+ a THM-: 3–8Ω. PWM varía según posición.' },
+    { id:'w40', from:['ecu','THM-'],       to:['throttle','THM-'],     color:'Lz/R', cat:'actuator',function:'Servo mariposa -',              signal:'PWM 0–12V', dir:'OUT', test:'Idem w39.' },
+
+    // Intake valve
+    { id:'w41', from:['ecu','VIM+'],       to:['viMotor','VIM+'],      color:'Y/L',  cat:'actuator',function:'Intake valve motor +',          signal:'PWM',       dir:'OUT', test:'Resistencia motor: 10–20Ω. Activa <6000 rpm.' },
+    { id:'w42', from:['ecu','VIM-'],       to:['viMotor','VIM-'],      color:'Sb',   cat:'actuator',function:'Intake valve motor -',          signal:'PWM',       dir:'OUT', test:'Idem w41.' },
+
+    // Switches
+    { id:'w43', from:['startStopSw','W/G'], to:['ecu','SS'],           color:'W/G',  cat:'sensor',function:'START signal a ECU',             signal:'+12V al pulsar', dir:'IN', test:'Pulsar START: W/G debe subir a +12V momentáneamente.' },
+    { id:'w44', from:['handleR','B/Y'],    to:['ecu','-aux-brake'],    color:'B/Y',  cat:'sensor',function:'Freno delantero a ECU (opcional)',signal:'+12V al frenar', dir:'IN', test:'Frenar: B/Y a +12V. Puede desactivar control de tracción en algunos modelos.' },
+    { id:'w45', from:['handleR','B/L'],    to:['groundBus','GND'],     color:'B/L',  cat:'ground',function:'Masa switches manillar',         signal:'0V',        dir:'GND', test:'B/L a chasis: <0.3Ω.' },
+
+    // CAN bus
+    { id:'w46', from:['ecu','RX/TX'],      to:['meter','CAN-L'],       color:'L/B',  cat:'communication',function:'CAN Low ECU ↔ METER',         signal:'2.5V diferencial', dir:'BI',  test:'CAN_L a masa: ~2.5V. Con tráfico activo: oscila 1.5–2.5V.' },
+    { id:'w47', from:['ecu','RX/TX'],      to:['obd','CAN-L'],         color:'L/B',  cat:'communication',function:'CAN Low ECU ↔ OBD',           signal:'2.5V',     dir:'BI',  test:'Idem w46.' },
+    { id:'w48', from:['obd','CAN_H'],      to:['meter','CAN-H'],       color:'L/W',  cat:'communication',function:'CAN High bus',                 signal:'2.5–3.5V', dir:'BI',  test:'CAN_H a masa: ~2.5V. Con tráfico: 2.5–3.5V. CAN-H y CAN-L complementarios.' },
+
+    // Meter alimentación
+    { id:'w49', from:['relayAssy','L/W'],  to:['meter','+12V'],        color:'R',    cat:'power',function:'+12V llave a METER',             signal:'+12V ON',   dir:'PWR', test:'Meter +12V a masa: 12V con llave ON.' },
+    { id:'w50', from:['meter','GND'],      to:['groundBus','GND'],     color:'B',    cat:'ground',function:'Masa METER',                     signal:'0V',        dir:'GND', test:'B a chasis: <0.3Ω.' }
+  ];
+
+  const subsystems = {
+    all: { name:'Vista general', paths:[] },
+    charging: { name:'Carga / Generador',
+      paths:[['acm','AC1','regulator','IN1'],['regulator','+','battery','+'],['battery','-','groundBus','GND']] },
+    ignition: { name:'Encendido',
+      paths:[['relayAssy','L/W','coils','+12V'],['relayAssy','L/W','injectors','+12V'],
+             ['ecu','IG1','coils','IG1'],['ecu','IG2','coils','IG2'],['ecu','IG3','coils','IG3'],['ecu','IG4','coils','IG4'],
+             ['crk','SIG','ecu','CRK'],['cam','SIG','ecu','CAM']] },
+    injection: { name:'Inyección (8 inyectores)',
+      paths:[['relayAssy','L/W','injectors','+12V'],
+             ['ecu','IJ11','injectors','IJ11'],['ecu','IJ21','injectors','IJ21'],
+             ['ecu','IJ31','injectors','IJ31'],['ecu','IJ41','injectors','IJ41'],['ecu','IJ12','injectors','IJ12']] },
+    sensors: { name:'Sensores',
+      paths:[['ecu','VCC1','cam','+5V'],['ecu','VCC4','tps','VCC4'],
+             ['crk','SIG','ecu','CRK'],['cam','SIG','ecu','CAM'],
+             ['coolantTemp','SIG','ecu','WT'],['airTemp','SIG','ecu','AT'],
+             ['tps','GPA','ecu','GPA'],['ap','AP1','ecu','AP1']] },
+    throttle: { name:'Throttle-by-wire',
+      paths:[['ecu','THM+','throttle','THM+'],['ecu','THM-','throttle','THM-'],
+             ['tps','GPA','ecu','GPA'],['ecu','VIM+','viMotor','VIM+'],['ecu','VIM-','viMotor','VIM-']] },
+    instruments: { name:'Instrumentos / CAN',
+      paths:[['relayAssy','L/W','meter','+12V'],['ecu','RX/TX','meter','CAN-L'],
+             ['obd','CAN_H','meter','CAN-H']] }
+  };
+
+  return {
+    components, wires, subsystems,
+    meta: { title:'Yamaha YZF-R1 2021', model:'YZF-R1', year:'2021' }
+  };
+})();
+</script>
+</body>
+</html>
