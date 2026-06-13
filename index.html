@@ -353,8 +353,11 @@
   </aside>
 
   <main class="main">
-    <div class="topbar">
+      <div class="topbar">
       <div class="crumbs"><b id="crumbTitle">Resumen</b> · <span id="crumbSub">Panel general</span></div>
+      <button class="icon-btn" onclick="App.openGlobalSearch()" title="Búsqueda global (Ctrl+K)" style="margin-left:18px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
       <div class="top-actions">
         <div class="user" id="userBtn">
           <div class="avatar" id="userAvatar">?</div>
@@ -410,7 +413,10 @@
       <section class="view" data-view="pedidos">
         <div class="page-head">
           <div><div class="page-title">Pedidos</div><div class="page-sub">Gestión de pedidos de clientes</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="App.openPedido()">+ Nuevo pedido</button></div>
+          <div class="page-actions">
+            <button class="btn" onclick="App.exportarModulo('pedidos')">↓ CSV</button>
+            <button class="btn btn-primary" onclick="App.openPedido()">+ Nuevo pedido</button>
+          </div>
         </div>
         <div class="panel">
           <div class="panel-head">
@@ -435,7 +441,10 @@
       <section class="view" data-view="ventas">
         <div class="page-head">
           <div><div class="page-title">Ventas</div><div class="page-sub">Comprobantes emitidos</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="App.openVenta()">+ Nueva venta</button></div>
+          <div class="page-actions">
+            <button class="btn" onclick="App.exportarModulo('ventas')">↓ CSV</button>
+            <button class="btn btn-primary" onclick="App.openVenta()">+ Nueva venta</button>
+          </div>
         </div>
         <div class="kpis">
           <div class="kpi"><div class="label">Total mes</div><div class="value" id="ventKpiMes">$0</div></div>
@@ -453,7 +462,10 @@
       <section class="view" data-view="compras">
         <div class="page-head">
           <div><div class="page-title">Compras (OC)</div><div class="page-sub">Órdenes a proveedores</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="App.openCompra()">+ Nueva OC</button></div>
+          <div class="page-actions">
+            <button class="btn" onclick="App.exportarModulo('compras')">↓ CSV</button>
+            <button class="btn btn-primary" onclick="App.openCompra()">+ Nueva OC</button>
+          </div>
         </div>
         <div class="panel">
           <div class="panel-head"><div class="panel-title">Listado</div></div>
@@ -480,7 +492,10 @@
       <section class="view" data-view="recepcion">
         <div class="page-head">
           <div><div class="page-title">Recepción</div><div class="page-sub">Validación de mercadería contra OC</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="App.openRecepcion()">+ Registrar recepción</button></div>
+          <div class="page-actions">
+            <button class="btn" onclick="App.exportarModulo('recepciones')">↓ CSV</button>
+            <button class="btn btn-primary" onclick="App.openRecepcion()">+ Registrar recepción</button>
+          </div>
         </div>
         <div class="panel">
           <div class="panel-head"><div class="panel-title">Recepciones</div></div>
@@ -492,7 +507,10 @@
       <section class="view" data-view="stock">
         <div class="page-head">
           <div><div class="page-title">Stock</div><div class="page-sub">Inventario por SKU</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="App.openProducto()">+ Producto</button></div>
+          <div class="page-actions">
+            <button class="btn" onclick="App.exportarModulo('stock')">↓ CSV</button>
+            <button class="btn btn-primary" onclick="App.openProducto()">+ Producto</button>
+          </div>
         </div>
         <div class="panel">
           <div class="panel-head"><div class="panel-title">Inventario</div><div class="panel-sub" id="stockResumen">—</div></div>
@@ -504,7 +522,10 @@
       <section class="view" data-view="proyectos">
         <div class="page-head">
           <div><div class="page-title">Proyectos IT</div><div class="page-sub">Cartera de proyectos</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="App.openProyecto()">+ Proyecto</button></div>
+          <div class="page-actions">
+            <button class="btn" onclick="App.exportarModulo('proyectos')">↓ CSV</button>
+            <button class="btn btn-primary" onclick="App.openProyecto()">+ Proyecto</button>
+          </div>
         </div>
         <div class="panel">
           <div class="panel-head"><div class="panel-title">Listado</div></div>
@@ -520,6 +541,7 @@
             <div class="page-sub">Materiales + equipos + mano de obra · USD/ARS · PDF imprimible</div>
           </div>
           <div class="page-actions">
+            <button class="btn" onclick="App.exportarModulo('cotizaciones')">↓ CSV</button>
             <button class="btn btn-primary" onclick="App.openCotizacion()">+ Nueva cotización</button>
           </div>
         </div>
@@ -548,7 +570,10 @@
       <section class="view" data-view="tareas">
         <div class="page-head">
           <div><div class="page-title">Tareas</div><div class="page-sub">Mis tareas y del equipo</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="App.openTarea()">+ Tarea</button></div>
+          <div class="page-actions">
+            <button class="btn" onclick="App.exportarModulo('tareas')">↓ CSV</button>
+            <button class="btn btn-primary" onclick="App.openTarea()">+ Tarea</button>
+          </div>
         </div>
         <div class="panel">
           <div class="panel-head"><div class="panel-title">Listado</div></div>
@@ -870,6 +895,121 @@ const App = {
         ref_codigo: ref
       });
     }catch(e){ console.warn('log fail',e); }
+  },
+
+  /* ----- EXPORTADORES CSV ----- */
+  downloadCSV(filename, rows){
+    const csv = '\uFEFF' + rows.map(r=> r.map(v=>{
+      const s = v===null||v===undefined ? '' : String(v);
+      return '"' + s.replace(/"/g,'""') + '"';
+    }).join(',')).join('\n');
+    const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    this.toast('Exportado: '+filename,'ok');
+  },
+
+  exportarModulo(modulo){
+    const f = (rows)=> this.downloadCSV(`${modulo}_${new Date().toISOString().slice(0,10)}.csv`, rows);
+    if(modulo==='pedidos'){
+      const rows = [['Folio','Cliente','Items','Total','Estado','Creado','Actualizado']];
+      cache.pedidos.forEach(p=>{
+        const items = cache.ped_items ? null : null; // (no tenemos pedido_items en cache, simplifico)
+        rows.push([p.folio, p.cliente_nombre, p.pedido_items?.length||0, p.total, p.estado, this.fmtDate(p.created_at), this.fmtDate(p.updated_at)]);
+      });
+      f(rows);
+    } else if(modulo==='compras'){
+      const rows = [['OC','Proveedor','Items','Total','Estado','ETA','Creado']];
+      cache.compras.forEach(c=>{
+        const prov = c.proveedores?.razon||'';
+        rows.push([c.folio, prov, c.compra_items?.length||0, c.total, c.estado, c.eta?this.fmtDate(c.eta):'', this.fmtDate(c.created_at)]);
+      });
+      f(rows);
+    } else if(modulo==='ventas'){
+      const rows = [['Comprobante','Cliente','CUIT','Subtotal','IVA','Total','Pago','Fecha']];
+      cache.ventas.forEach(v=>{
+        rows.push([v.comprobante, v.cliente_nombre, v.cuit||'', v.subtotal, v.iva, v.total, v.forma_pago, this.fmtDate(v.fecha,true)]);
+      });
+      f(rows);
+    } else if(modulo==='stock'){
+      const rows = [['SKU','Producto','Categoria','Stock','Minimo','Precio venta','Costo']];
+      cache.productos.forEach(p=>{
+        rows.push([p.sku, p.nombre, p.categoria||'', p.stock, p.stock_min, p.precio_venta||0, p.costo||0]);
+      });
+      f(rows);
+    } else if(modulo==='recepciones'){
+      const rows = [['Recibo','OC','Proveedor','Conformidad','Fecha','Usuario']];
+      cache.recepciones.forEach(r=>{
+        rows.push([r.folio, r.compras?.folio||'', r.compras?.proveedores?.razon||'', r.conformidad, this.fmtDate(r.fecha,true), r.receptor_id||'']);
+      });
+      f(rows);
+    } else if(modulo==='tareas'){
+      const rows = [['Tarea','Proyecto','Asignado','Estado','Prioridad','Limite','Horas est','Horas reales']];
+      cache.tareas.forEach(t=>{
+        rows.push([t.titulo, t.proyectos?.codigo||'', t.profiles?.full_name||'', t.estado, t.prioridad, t.fecha_limite?this.fmtDate(t.fecha_limite):'', t.horas_estimadas||0, t.horas_reales||0]);
+      });
+      f(rows);
+    } else if(modulo==='cotizaciones'){
+      const rows = [['Cotizacion','Proyecto','Version','Estado','Moneda','TC','Items','Subtotal','Descuento','IVA','Total','Fecha']];
+      cache.cotizaciones.forEach(c=>{
+        const items = cache.cot_items.filter(i=>i.cotizacion_id===c.id);
+        const subtotal = items.reduce((s,i)=>s+(i.subtotal||0),0);
+        const desc = subtotal*(c.descuento_pct||0)/100;
+        const total = subtotal-desc+(subtotal-desc)*0.21;
+        rows.push([c.titulo, c.proyectos?.codigo||'', c.version, c.estado, c.moneda, c.tipo_cambio||1, items.length, subtotal, desc, total-desc, total, this.fmtDate(c.fecha)]);
+      });
+      f(rows);
+    } else if(modulo==='log'){
+      const rows = [['Fecha','Usuario','Tipo','Accion','Detalle']];
+      cache.log.forEach(l=> rows.push([this.fmtDate(l.fecha,true), l.usuario_email||'', l.tipo, l.accion, l.detalle||'']));
+      f(rows);
+    } else if(modulo==='proyectos'){
+      const rows = [['Codigo','Nombre','Cliente','Estado','Prioridad','Avance','Inicio','Fin est','Presupuesto','Horas est']];
+      cache.proyectos.forEach(p=>{
+        rows.push([p.codigo, p.nombre, p.cliente_nombre||'', p.estado, p.prioridad, p.avance||0, p.fecha_inicio||'', p.fecha_fin_estimada||'', p.presupuesto||0, p.horas_estimadas||0]);
+      });
+      f(rows);
+    }
+  },
+
+  /* ----- BUSQUEDA GLOBAL MEJORADA (Ctrl+K) ----- */
+  openGlobalSearch(){
+    this.openModal('Búsqueda global', `
+      <div class="field">
+        <input id="gs_input" placeholder="Escribí folio, cliente, producto, código de proyecto..." autofocus style="font-size:15px;padding:12px 14px"/>
+        <div class="hint">Busca en pedidos, ventas, compras, productos, proyectos, tareas, clientes, proveedores</div>
+      </div>
+      <div id="gs_results" style="margin-top:12px;max-height:400px;overflow:auto"></div>
+    `, [{label:'Cerrar', cls:'btn', fn:()=> this.closeModal()}]);
+    setTimeout(()=> document.getElementById('gs_input')?.focus(), 100);
+    document.getElementById('gs_input').addEventListener('input', e=> this.runGlobalSearch(e.target.value));
+  },
+
+  runGlobalSearch(q){
+    const cont = document.getElementById('gs_results');
+    if(!q || q.length<2){ cont.innerHTML = '<div class="empty">Escribí al menos 2 caracteres</div>'; return; }
+    const ql = q.toLowerCase();
+    const results = [];
+    cache.pedidos.forEach(p=>{ if((p.folio+' '+p.cliente_nombre).toLowerCase().includes(ql)) results.push({tipo:'Pedido', codigo:p.folio, texto:p.cliente_nombre, sub:`$${this.fmt(p.total)} · ${p.estado}`, view:'pedidos', id:p.id}); });
+    cache.compras.forEach(c=>{ if((c.folio+(c.proveedores?.razon||'')).toLowerCase().includes(ql)) results.push({tipo:'OC', codigo:c.folio, texto:c.proveedores?.razon||'', sub:`$${this.fmt(c.total)} · ${c.estado}`, view:'compras', id:c.id}); });
+    cache.ventas.forEach(v=>{ if((v.comprobante+' '+v.cliente_nombre).toLowerCase().includes(ql)) results.push({tipo:'Venta', codigo:v.comprobante, texto:v.cliente_nombre, sub:`$${this.fmt(v.total)}`, view:'ventas', id:v.id}); });
+    cache.productos.forEach(p=>{ if((p.sku+' '+p.nombre).toLowerCase().includes(ql)) results.push({tipo:'Producto', codigo:p.sku, texto:p.nombre, sub:`Stock: ${p.stock}`, view:'stock', id:p.id}); });
+    cache.proyectos.forEach(p=>{ if((p.codigo+' '+p.nombre).toLowerCase().includes(ql)) results.push({tipo:'Proyecto', codigo:p.codigo, texto:p.nombre, sub:p.cliente_nombre||'', view:'proyectos', id:p.id}); });
+    cache.tareas.forEach(t=>{ if(t.titulo.toLowerCase().includes(ql)) results.push({tipo:'Tarea', codigo:t.proyectos?.codigo||'', texto:t.titulo, sub:`${t.estado} · ${t.profiles?.full_name||''}`, view:'tareas', id:t.id}); });
+    cache.clientes.forEach(c=>{ if((c.razon+' '+(c.cuit||'')).toLowerCase().includes(ql)) results.push({tipo:'Cliente', codigo:c.cuit||'', texto:c.razon, sub:c.email||'', view:'clientes', id:c.id}); });
+    cache.proveedores.forEach(p=>{ if((p.razon+' '+(p.cuit||'')).toLowerCase().includes(ql)) results.push({tipo:'Proveedor', codigo:p.cuit||'', texto:p.razon, sub:p.email||'', view:'proveedores', id:p.id}); });
+    cache.cotizaciones.forEach(c=>{ if((c.titulo+' '+(c.proyectos?.codigo||'')).toLowerCase().includes(ql)) results.push({tipo:'Cotización', codigo:c.proyectos?.codigo||'', texto:c.titulo, sub:`v${c.version} · ${c.estado}`, view:'cotizaciones', id:c.id}); });
+    if(!results.length){ cont.innerHTML = '<div class="empty">Sin resultados para "'+q+'"</div>'; return; }
+    cont.innerHTML = '<div class="panel" style="background:#0e1119">' + results.slice(0,20).map(r=>`
+      <div style="padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;align-items:center" onmouseover="this.style.background='#161b27'" onmouseout="this.style.background='transparent'" onclick="App.closeModal();setTimeout(()=>App.go('${r.view}'),100)">
+        <div>
+          <div style="display:flex;gap:6px;align-items:center"><span class="chip">${r.tipo}</span><b>${r.codigo}</b></div>
+          <div style="margin-top:2px;color:var(--muted);font-size:12px">${r.texto}</div>
+        </div>
+        <div class="t-meta">${r.sub}</div>
+      </div>`).join('') + '</div>';
   },
 
   pillEstado(e){
@@ -3036,6 +3176,16 @@ const App = {
       </div>`).join('') + '</div>';
   }
 };
+
+document.addEventListener('keydown', (e)=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){
+    e.preventDefault();
+    if(App && App.openGlobalSearch) App.openGlobalSearch();
+  }
+  if(e.key==='Escape'){
+    if(App && App.closeModal) App.closeModal();
+  }
+});
 
 document.addEventListener('DOMContentLoaded', ()=> App.init());
 </script>
