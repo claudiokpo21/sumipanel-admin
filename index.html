@@ -352,6 +352,7 @@
     <div class="nav-section" data-section="config">
       <div class="nav-title">Config</div>
       <div class="nav-item" data-view="proveedores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M14 20a4 4 0 0 1 8 0"/></svg>Proveedores</div>
+      <div class="nav-item" data-view="reportes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Reportes</div>
       <div class="nav-item" data-view="usuarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>Usuarios</div>
     </div>
   </aside>
@@ -666,6 +667,63 @@
         </div>
       </section>
 
+      <!-- REPORTES -->
+      <section class="view" data-view="reportes">
+        <div class="page-head">
+          <div><div class="page-title">Reportes ejecutivos</div><div class="page-sub">Generá PDFs listos para presentar</div></div>
+        </div>
+        <div class="grid-3">
+          <div class="panel" style="cursor:pointer" onclick="App.reporteVentas()">
+            <div class="panel-body" style="text-align:center;padding:30px 20px">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#22d3a4" stroke-width="1.5"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+              <div class="panel-title" style="margin-top:12px">Reporte de Ventas</div>
+              <div class="t-meta" style="margin-top:6px">Totales del periodo, top clientes, comparativa mensual</div>
+              <button class="btn btn-primary" style="margin-top:14px">Generar PDF</button>
+            </div>
+          </div>
+          <div class="panel" style="cursor:pointer" onclick="App.reporteOC()">
+            <div class="panel-body" style="text-align:center;padding:30px 20px">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#7c5cff" stroke-width="1.5"><path d="M6 2l3 6h6l3-6"/><path d="M3 8h18l-2 12H5L3 8z"/></svg>
+              <div class="panel-title" style="margin-top:12px">Reporte de OC</div>
+              <div class="t-meta" style="margin-top:6px">OC pendientes, atrasadas, por proveedor</div>
+              <button class="btn btn-primary" style="margin-top:14px">Generar PDF</button>
+            </div>
+          </div>
+          <div class="panel" style="cursor:pointer" onclick="App.reporteStock()">
+            <div class="panel-body" style="text-align:center;padding:30px 20px">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#f5a524" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              <div class="panel-title" style="margin-top:12px">Reporte de Stock</div>
+              <div class="t-meta" style="margin-top:6px">Productos críticos, sin stock, valorizado</div>
+              <button class="btn btn-primary" style="margin-top:14px">Generar PDF</button>
+            </div>
+          </div>
+          <div class="panel" style="cursor:pointer" onclick="App.reporteProyectos()">
+            <div class="panel-body" style="text-align:center;padding:30px 20px">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#38bdf8" stroke-width="1.5"><path d="M3 7h18v13H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <div class="panel-title" style="margin-top:12px">Reporte de Proyectos</div>
+              <div class="t-meta" style="margin-top:6px">Avance, horas, presupuesto, rentabilidad</div>
+              <button class="btn btn-primary" style="margin-top:14px">Generar PDF</button>
+            </div>
+          </div>
+          <div class="panel" style="cursor:pointer" onclick="App.reporteCotizaciones()">
+            <div class="panel-body" style="text-align:center;padding:30px 20px">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#22d3a4" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <div class="panel-title" style="margin-top:12px">Pipeline de Cotizaciones</div>
+              <div class="t-meta" style="margin-top:6px">Conversión, monto cotizado vs aprobado</div>
+              <button class="btn btn-primary" style="margin-top:14px">Generar PDF</button>
+            </div>
+          </div>
+          <div class="panel" style="cursor:pointer" onclick="App.reporteActividad()">
+            <div class="panel-body" style="text-align:center;padding:30px 20px">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#8a93a8" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              <div class="panel-title" style="margin-top:12px">Actividad del equipo</div>
+              <div class="t-meta" style="margin-top:6px">Quién hizo qué, productividad por usuario</div>
+              <button class="btn btn-primary" style="margin-top:14px">Generar PDF</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- USUARIOS -->
       <section class="view" data-view="usuarios">
         <div class="page-head">
@@ -722,8 +780,8 @@ const ROLE_LABELS = {
 };
 
 const ROLE_ACCESS = {
-  admin:       ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','usuarios'],
-  gerencia:    ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores'],
+  admin:       ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','usuarios','reportes'],
+  gerencia:    ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','reportes'],
   compras:     ['dashboard','compras','seguimiento','recepcion','stock','proyectos','tareas','trazabilidad','proveedores'],
   deposito:    ['dashboard','compras','seguimiento','recepcion','stock','tareas','trazabilidad'],
   ventas:      ['dashboard','pedidos','ventas','stock','proyectos','cotizaciones','tareas','trazabilidad'],
@@ -869,7 +927,8 @@ const App = {
       trazabilidad:['Trazabilidad','Recorrido completo'],
       log:['Log / Bitácora','Auditoría'],
       proveedores:['Proveedores','Cartera'],
-      usuarios:['Usuarios','Cuentas y permisos']
+      usuarios:['Usuarios','Cuentas y permisos'],
+      reportes:['Reportes','PDF ejecutivos']
     };
     const t = titles[view] || ['—','—'];
     document.getElementById('crumbTitle').textContent = t[0];
@@ -995,6 +1054,254 @@ const App = {
       });
       f(rows);
     }
+  },
+
+  /* ====================================================
+     REPORTES PDF
+  ==================================================== */
+  printReporte(titulo, contenidoHTML){
+    const printArea = document.getElementById('printArea');
+    printArea.innerHTML = `
+      <div class="no-print" style="position:absolute;top:10px;right:10px;display:flex;gap:6px">
+        <button onclick="window.print()" style="background:#1a1a1a;color:#fff;border:0;padding:8px 14px;border-radius:6px;cursor:pointer">🖨️ Imprimir / Guardar PDF</button>
+        <button onclick="document.getElementById('printArea').classList.remove('show')" style="background:#dc2626;color:#fff;border:0;padding:8px 14px;border-radius:6px;cursor:pointer">✕ Cerrar</button>
+      </div>
+      <h1>SUMIPANEL · ${titulo}</h1>
+      <h2>Generado el ${new Date().toLocaleString('es-AR')}</h2>
+      ${contenidoHTML}
+      <div class="pa-foot">SUMIPANEL Admin · Reporte generado automáticamente</div>
+    `;
+    printArea.classList.add('show');
+    setTimeout(()=> window.print(), 400);
+  },
+
+  reporteVentas(){
+    const hoy = new Date();
+    const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    const ventasMes = cache.ventas.filter(v=> new Date(v.fecha)>=inicioMes);
+    const totalMes = ventasMes.reduce((s,v)=>s+(v.total||0),0);
+    const ivaMes = ventasMes.reduce((s,v)=>s+(v.iva||0),0);
+    // top clientes
+    const porCliente = {};
+    ventasMes.forEach(v=>{ porCliente[v.cliente_nombre] = (porCliente[v.cliente_nombre]||0) + (v.total||0); });
+    const topClientes = Object.entries(porCliente).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    // comparativa ultimos 6 meses
+    const meses = [];
+    for(let i=5; i>=0; i--){
+      const d = new Date();
+      d.setMonth(d.getMonth()-i);
+      const key = d.toISOString().slice(0,7);
+      const label = d.toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+      const total = cache.ventas.filter(v=> v.fecha && v.fecha.startsWith(key)).reduce((s,v)=>s+(v.total||0),0);
+      meses.push({label, total});
+    }
+    this.printReporte('Reporte de Ventas', `
+      <div class="pa-info">
+        <div><b>Periodo</b>${inicioMes.toLocaleDateString('es-AR')} → ${hoy.toLocaleDateString('es-AR')}</div>
+        <div><b>Comprobantes emitidos</b>${ventasMes.length}</div>
+        <div><b>Total facturado</b>$${this.fmt(totalMes)}</div>
+        <div><b>IVA total</b>$${this.fmt(ivaMes)}</div>
+      </div>
+      <h2 style="margin-top:20px">Comparativa últimos 6 meses</h2>
+      <table>
+        <thead><tr><th>Mes</th><th style="text-align:right">Total</th></tr></thead>
+        <tbody>${meses.map(m=>`<tr><td>${m.label}</td><td style="text-align:right" class="mono">$${this.fmt(m.total)}</td></tr>`).join('')}</tbody>
+      </table>
+      <h2 style="margin-top:20px">Top clientes del mes</h2>
+      <table>
+        <thead><tr><th>Cliente</th><th style="text-align:right">Total comprado</th><th style="text-align:right">% del total</th></tr></thead>
+        <tbody>${topClientes.map(([cli,t])=>`<tr><td>${cli}</td><td style="text-align:right" class="mono">$${this.fmt(t)}</td><td style="text-align:right">${totalMes?((t/totalMes)*100).toFixed(1):0}%</td></tr>`).join('') || '<tr><td colspan="3" style="text-align:center">Sin datos</td></tr>'}</tbody>
+      </table>
+    `);
+    this.logEvent('reporte','Reporte de ventas generado',`Total del mes: $${this.fmt(totalMes)}`);
+  },
+
+  reporteOC(){
+    const hoy = new Date();
+    const estados = ['solicitada','aprobada','enviada','transito','aduana','recibida','cerrada','rechazada','cancelada'];
+    const porEstado = {};
+    estados.forEach(e=> porEstado[e] = cache.compras.filter(c=>c.estado===e));
+    const totalPendiente = porEstado.solicitada.concat(porEstado.aprobada,porEstado.enviada,porEstado.transito,porEstado.aduana,porEstado.recibida).reduce((s,c)=>s+(c.total||0),0);
+    const atrasadas = cache.compras.filter(c=>{
+      const eta = c.eta ? new Date(c.eta) : null;
+      return eta && eta < hoy && c.estado!=='cerrada' && c.estado!=='cancelada';
+    });
+    // por proveedor
+    const porProv = {};
+    cache.compras.forEach(c=>{
+      const p = c.proveedores?.razon || '—';
+      porProv[p] = (porProv[p]||0) + (c.total||0);
+    });
+    const topProv = Object.entries(porProv).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    this.printReporte('Reporte de Órdenes de Compra', `
+      <div class="pa-info">
+        <div><b>Total OC activas</b>${cache.compras.filter(c=>c.estado!=='cerrada'&&c.estado!=='cancelada').length}</div>
+        <div><b>Monto pendiente</b>$${this.fmt(totalPendiente)}</div>
+        <div><b>OC atrasadas</b><span style="color:#dc2626">${atrasadas.length}</span></div>
+        <div><b>OC cerradas</b>${porEstado.cerrada.length}</div>
+      </div>
+      <h2 style="margin-top:20px">OC por estado</h2>
+      <table>
+        <thead><tr><th>Estado</th><th style="text-align:right">Cantidad</th><th style="text-align:right">Monto total</th></tr></thead>
+        <tbody>${estados.map(e=>{
+          const items = porEstado[e];
+          return `<tr><td>${e.toUpperCase()}</td><td style="text-align:right">${items.length}</td><td style="text-align:right" class="mono">$${this.fmt(items.reduce((s,c)=>s+(c.total||0),0))}</td></tr>`;
+        }).join('')}</tbody>
+      </table>
+      ${atrasadas.length ? `
+        <h2 style="margin-top:20px;color:#dc2626">⚠ OC atrasadas</h2>
+        <table>
+          <thead><tr><th>OC</th><th>Proveedor</th><th>ETA</th><th style="text-align:right">Atraso</th><th style="text-align:right">Monto</th></tr></thead>
+          <tbody>${atrasadas.map(c=>{
+            const dias = Math.floor((hoy - new Date(c.eta))/86400000);
+            return `<tr><td>${c.folio}</td><td>${c.proveedores?.razon||''}</td><td>${this.fmtDate(c.eta)}</td><td style="text-align:right;color:#dc2626"><b>${dias} días</b></td><td style="text-align:right" class="mono">$${this.fmt(c.total)}</td></tr>`;
+          }).join('')}</tbody>
+        </table>` : ''}
+      <h2 style="margin-top:20px">Top proveedores por monto</h2>
+      <table>
+        <thead><tr><th>Proveedor</th><th style="text-align:right">Total comprado</th></tr></thead>
+        <tbody>${topProv.map(([p,t])=>`<tr><td>${p}</td><td style="text-align:right" class="mono">$${this.fmt(t)}</td></tr>`).join('') || '<tr><td colspan="2" style="text-align:center">Sin datos</td></tr>'}</tbody>
+      </table>
+    `);
+    this.logEvent('reporte','Reporte de OC generado',`${atrasadas.length} atrasadas · $${this.fmt(totalPendiente)} pendiente`);
+  },
+
+  reporteStock(){
+    const criticos = cache.productos.filter(p=> p.stock < p.stock_min);
+    const sinStock = cache.productos.filter(p=> p.stock === 0);
+    const valorizado = cache.productos.reduce((s,p)=> s + (p.stock||0) * (p.costo||0), 0);
+    const porCat = {};
+    cache.productos.forEach(p=>{
+      const c = p.categoria || 'Otros';
+      if(!porCat[c]) porCat[c] = {items:0, unidades:0, valor:0};
+      porCat[c].items++;
+      porCat[c].unidades += p.stock||0;
+      porCat[c].valor += (p.stock||0)*(p.costo||0);
+    });
+    this.printReporte('Reporte de Stock', `
+      <div class="pa-info">
+        <div><b>Total productos</b>${cache.productos.length}</div>
+        <div><b>Stock crítico</b><span style="color:#f5a524">${criticos.length}</span></div>
+        <div><b>Sin stock</b><span style="color:#dc2626">${sinStock.length}</span></div>
+        <div><b>Valorización total</b>$${this.fmt(valorizado)}</div>
+      </div>
+      ${sinStock.length ? `
+        <h2 style="margin-top:20px;color:#dc2626">🔴 Sin stock (${sinStock.length})</h2>
+        <table>
+          <thead><tr><th>SKU</th><th>Producto</th><th>Stock</th><th>Mínimo</th></tr></thead>
+          <tbody>${sinStock.map(p=>`<tr><td class="mono">${p.sku}</td><td>${p.nombre}</td><td style="text-align:right">${p.stock}</td><td style="text-align:right">${p.stock_min}</td></tr>`).join('')}</tbody>
+        </table>` : ''}
+      <h2 style="margin-top:20px;color:#f5a524">⚠ Stock crítico (${criticos.length})</h2>
+      <table>
+        <thead><tr><th>SKU</th><th>Producto</th><th>Stock</th><th>Mínimo</th><th>Diferencia</th></tr></thead>
+        <tbody>${criticos.map(p=>`<tr><td class="mono">${p.sku}</td><td>${p.nombre}</td><td style="text-align:right">${p.stock}</td><td style="text-align:right">${p.stock_min}</td><td style="text-align:right;color:#f5a524"><b>-${p.stock_min - p.stock}</b></td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center">Sin productos críticos</td></tr>'}</tbody>
+      </table>
+      <h2 style="margin-top:20px">Por categoría</h2>
+      <table>
+        <thead><tr><th>Categoría</th><th style="text-align:right">Items</th><th style="text-align:right">Unidades</th><th style="text-align:right">Valor</th></tr></thead>
+        <tbody>${Object.entries(porCat).map(([c,d])=>`<tr><td>${c}</td><td style="text-align:right">${d.items}</td><td style="text-align:right">${d.unidades}</td><td style="text-align:right" class="mono">$${this.fmt(d.valor)}</td></tr>`).join('') || '<tr><td colspan="4" style="text-align:center">Sin productos</td></tr>'}</tbody>
+      </table>
+    `);
+    this.logEvent('reporte','Reporte de stock generado',`${criticos.length} críticos, ${sinStock.length} sin stock`);
+  },
+
+  reporteProyectos(){
+    const proyectos = cache.proyectos;
+    const enCurso = proyectos.filter(p=>p.estado==='en_curso');
+    const finalizados = proyectos.filter(p=>p.estado==='finalizado');
+    const totalPresupuesto = proyectos.reduce((s,p)=>s+(p.presupuesto||0),0);
+    const totalHorasEst = proyectos.reduce((s,p)=>s+(p.horas_estimadas||0),0);
+    const totalHorasReal = proyectos.reduce((s,p)=>s+(p.horas_reales||0),0);
+    this.printReporte('Reporte de Proyectos', `
+      <div class="pa-info">
+        <div><b>Proyectos totales</b>${proyectos.length}</div>
+        <div><b>En curso</b>${enCurso.length}</div>
+        <div><b>Finalizados</b>${finalizados.length}</div>
+        <div><b>Presupuesto total</b>$${this.fmt(totalPresupuesto)}</div>
+        <div><b>Horas est / reales</b>${this.fmt(totalHorasEst)} / ${this.fmt(totalHorasReal)}</div>
+        <div><b>Eficiencia</b>${totalHorasEst?(totalHorasReal/totalHorasEst*100).toFixed(0):0}%</div>
+      </div>
+      <h2 style="margin-top:20px">Detalle por proyecto</h2>
+      <table>
+        <thead><tr><th>Código</th><th>Proyecto</th><th>Cliente</th><th>Estado</th><th style="text-align:right">Avance</th><th style="text-align:right">Hs est</th><th style="text-align:right">Hs real</th><th style="text-align:right">Presup.</th></tr></thead>
+        <tbody>${proyectos.map(p=>{
+          const av = this.calcAvanceProyecto(p.id);
+          return `<tr><td>${p.codigo}</td><td>${p.nombre}</td><td>${p.cliente_nombre||''}</td><td>${p.estado}</td><td style="text-align:right">${av.auto}%</td><td style="text-align:right">${p.horas_estimadas||0}</td><td style="text-align:right">${p.horas_reales||0}</td><td style="text-align:right" class="mono">$${this.fmt(p.presupuesto||0)}</td></tr>`;
+        }).join('') || '<tr><td colspan="8" style="text-align:center">Sin proyectos</td></tr>'}</tbody>
+      </table>
+    `);
+    this.logEvent('reporte','Reporte de proyectos generado',`${proyectos.length} proyectos, ${enCurso.length} en curso`);
+  },
+
+  reporteCotizaciones(){
+    const cots = cache.cotizaciones;
+    const porEstado = {borrador:0, enviada:0, aprobada:0, rechazada:0, vencida:0};
+    let totalUSD = 0, totalARS = 0;
+    cots.forEach(c=>{
+      porEstado[c.estado] = (porEstado[c.estado]||0) + 1;
+      const items = cache.cot_items.filter(i=>i.cotizacion_id===c.id);
+      const sub = items.reduce((s,i)=>s+(i.subtotal||0),0);
+      const tot = sub - sub*(c.descuento_pct||0)/100;
+      if(c.moneda==='USD') totalUSD += tot;
+      else totalARS += tot;
+    });
+    const conversion = cots.find(c=>c.moneda==='ARS')?.tipo_cambio || 1;
+    this.printReporte('Reporte de Cotizaciones', `
+      <div class="pa-info">
+        <div><b>Total cotizaciones</b>${cots.length}</div>
+        <div><b>En borrador</b>${porEstado.borrador||0}</div>
+        <div><b>Enviadas</b>${porEstado.enviada||0}</div>
+        <div><b>Aprobadas</b><span style="color:#22c55e">${porEstado.aprobada||0}</span></div>
+        <div><b>Tasa de aprobación</b>${cots.length?((porEstado.aprobada||0)/cots.length*100).toFixed(0):0}%</div>
+        <div><b>Monto cotizado USD</b>$${this.fmt(totalUSD)}</div>
+        <div><b>Monto cotizado ARS</b>$${this.fmt(totalARS)}</div>
+        <div><b>Equivalente total USD</b>$${this.fmt(totalUSD + totalARS/conversion)}</div>
+      </div>
+      <h2 style="margin-top:20px">Listado</h2>
+      <table>
+        <thead><tr><th>Cotización</th><th>Proyecto</th><th>Versión</th><th>Estado</th><th>Moneda</th><th>Total</th><th>Fecha</th></tr></thead>
+        <tbody>${cots.map(c=>{
+          const items = cache.cot_items.filter(i=>i.cotizacion_id===c.id);
+          const sub = items.reduce((s,i)=>s+(i.subtotal||0),0);
+          const tot = sub - sub*(c.descuento_pct||0)/100;
+          return `<tr><td>${c.titulo}</td><td>${c.proyectos?.codigo||''}</td><td>v${c.version}</td><td>${c.estado}</td><td>${c.moneda}</td><td style="text-align:right" class="mono">$${this.fmt(tot)}</td><td>${this.fmtDate(c.fecha)}</td></tr>`;
+        }).join('') || '<tr><td colspan="7" style="text-align:center">Sin cotizaciones</td></tr>'}</tbody>
+      </table>
+    `);
+    this.logEvent('reporte','Reporte de cotizaciones generado',`${cots.length} cotizaciones`);
+  },
+
+  reporteActividad(){
+    const porUsuario = {};
+    const porTipo = {};
+    cache.log.forEach(l=>{
+      const u = l.usuario_email||'(sin user)';
+      porUsuario[u] = (porUsuario[u]||0) + 1;
+      porTipo[l.tipo] = (porTipo[l.tipo]||0) + 1;
+    });
+    const topUsuarios = Object.entries(porUsuario).sort((a,b)=>b[1]-a[1]).slice(0,15);
+    this.printReporte('Reporte de Actividad del Equipo', `
+      <div class="pa-info">
+        <div><b>Total eventos</b>${cache.log.length}</div>
+        <div><b>Usuarios activos</b>${Object.keys(porUsuario).length}</div>
+      </div>
+      <h2 style="margin-top:20px">Actividad por usuario</h2>
+      <table>
+        <thead><tr><th>Usuario</th><th style="text-align:right">Eventos</th></tr></thead>
+        <tbody>${topUsuarios.map(([u,c])=>`<tr><td>${u}</td><td style="text-align:right"><b>${c}</b></td></tr>`).join('') || '<tr><td colspan="2" style="text-align:center">Sin datos</td></tr>'}</tbody>
+      </table>
+      <h2 style="margin-top:20px">Eventos por tipo</h2>
+      <table>
+        <thead><tr><th>Tipo</th><th style="text-align:right">Cantidad</th></tr></thead>
+        <tbody>${Object.entries(porTipo).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`<tr><td>${t}</td><td style="text-align:right">${c}</td></tr>`).join('') || '<tr><td colspan="2" style="text-align:center">Sin datos</td></tr>'}</tbody>
+      </table>
+      <h2 style="margin-top:20px">Últimos 30 eventos</h2>
+      <table>
+        <thead><tr><th>Fecha</th><th>Usuario</th><th>Tipo</th><th>Acción</th></tr></thead>
+        <tbody>${cache.log.slice(0,30).map(l=>`<tr><td class="mono">${this.fmtDate(l.fecha,true)}</td><td>${l.usuario_email||'—'}</td><td>${l.tipo}</td><td>${l.accion}</td></tr>`).join('')}</tbody>
+      </table>
+    `);
+    this.logEvent('reporte','Reporte de actividad generado',`${cache.log.length} eventos analizados`);
   },
 
   /* ----- BUSQUEDA GLOBAL MEJORADA (Ctrl+K) ----- */
