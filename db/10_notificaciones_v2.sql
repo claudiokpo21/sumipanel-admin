@@ -163,11 +163,11 @@ immutable
 as $$
   select '<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;max-width:600px;margin:0 auto;background:#0b0d12;color:#e6e9f2">
   <div style="background:linear-gradient(135deg,#3b82f6,#7c5cff);padding:24px;text-align:center">
-    <h1 style="color:#fff;margin:0;font-size:22px">📋 ' || case when p_tipo=''asignada'' then 'Nueva tarea' else 'Tarea ' || p_tipo end || '</h1>
+    <h1 style="color:#fff;margin:0;font-size:22px">📋 ' || case when p_tipo = chr(39)||'asignada'||chr(39) then 'Nueva tarea' else 'Tarea ' || p_tipo end || '</h1>
   </div>
   <div style="padding:24px;background:#141822">
     <p>Hola <b>' || p_user_name || '</b>,</p>
-    <p>' || case when p_tipo=''asignada'' then 'Se te asignó una nueva tarea:' else 'Tenés una tarea ' || p_tipo || ':' end || '</p>
+    <p>' || case when p_tipo = chr(39)||'asignada'||chr(39) then 'Se te asignó una nueva tarea:' else 'Tenés una tarea ' || p_tipo || ':' end || '</p>
     <div style="background:#0e1119;padding:16px;border-radius:6px;margin:16px 0">
       <div style="font-size:18px;font-weight:600">' || p_titulo || '</div>
       <div style="margin-top:8px;color:#8a93a8">📅 Fecha límite: <b>' || p_fecha_limite || '</b></div>

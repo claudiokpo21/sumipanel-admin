@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Clear · Portal del Cliente</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23c2410c'/><text x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='700' fill='%23fef3c7' text-anchor='middle'>C</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf7f2;
+    --bg-2:#f3ede1;
+    --paper:#ffffff;
+    --ink:#1c1410;
+    --ink-2:#4a3a30;
+    --muted:#7a6a5c;
+    --line:#e8dfd0;
+    --line-2:#d8cdb8;
+    --terracota:#c2410c;
+    --terracota-2:#ea580c;
+    --terracota-soft:#fed7aa;
+    --mostaza:#ca8a04;
+    --mostaza-soft:#fef3c7;
+    --sage:#84cc16;
+    --sage-soft:#ecfccb;
+    --ink-red:#b91c1c;
+    --ink-red-soft:#fee2e2;
+    --ink-blue:#1d4ed8;
+    --ink-blue-soft:#dbeafe;
+    --radius:6px;
+    --radius-lg:14px;
+    --shadow:0 1px 0 rgba(0,0,0,.02), 0 8px 24px rgba(120,80,40,.08);
+    --shadow-lg:0 4px 6px rgba(120,80,40,.04), 0 20px 40px rgba(120,80,40,.12);
+    --serif:'Fraunces',Georgia,serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;color:var(--ink);letter-spacing:-.5px;line-height:1.2;margin:0}
+  h1{font-size:36px}
+  h2{font-size:24px}
+  h3{font-size:18px}
+  a{color:var(--terracota);text-decoration:none}
+  a:hover{text-decoration:underline}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  input,select,textarea{font:inherit;color:inherit}
+  ::selection{background:var(--terracota-soft);color:var(--ink)}
+
+  /* Layout */
+  .topbar{background:var(--paper);border-bottom:1px solid var(--line);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);background:rgba(255,255,255,.85)}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand-mark{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--terracota),var(--terracota-2));display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:20px;color:#fef3c7}
+  .brand-name{font-family:var(--serif);font-weight:600;font-size:20px;letter-spacing:-.5px}
+  .brand-sub{font-size:11px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-top:1px}
+  .topbar-right{font-size:13px;color:var(--muted)}
+  .topbar-right b{color:var(--ink);font-weight:600}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:48px 32px 80px}
+
+  /* Hero */
+  .hero{margin-bottom:48px}
+  .hero .kicker{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--terracota);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .hero .kicker::before{content:'';width:24px;height:1px;background:var(--terracota)}
+  .hero h1{font-size:48px;margin-bottom:12px}
+  .hero p{font-size:17px;color:var(--ink-2);max-width:600px;margin:0}
+  .hero .cliente{font-family:var(--serif);font-style:italic;color:var(--terracota);margin-top:8px}
+
+  /* Section */
+  .section{margin-top:48px}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .section-head h2{font-size:28px}
+  .section-head .count{font-size:13px;color:var(--muted);font-family:var(--sans);font-weight:500}
+
+  /* Cards */
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);padding:28px;box-shadow:var(--shadow);margin-bottom:16px;transition:.2s}
+  .card:hover{box-shadow:var(--shadow-lg);border-color:var(--line-2)}
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:16px;flex-wrap:wrap}
+  .card-title{font-family:var(--serif);font-size:22px;font-weight:600;margin:0}
+  .card-sub{color:var(--muted);font-size:13px;margin-top:4px}
+  .card-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .meta-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--bg-2);border-radius:999px;font-size:12px;color:var(--ink-2);font-weight:500}
+
+  /* Status badges */
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.3px}
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .badge.borrador{background:var(--bg-2);color:var(--ink-2)}
+  .badge.enviada{background:var(--ink-blue-soft);color:var(--ink-blue)}
+  .badge.aprobada{background:var(--sage-soft);color:#3f6212}
+  .badge.rechazada{background:var(--ink-red-soft);color:var(--ink-red)}
+  .badge.vencida{background:var(--mostaza-soft);color:var(--mostaza)}
+  .badge.planificacion{background:var(--bg-2);color:var(--ink-2)}
+  .badge.en_curso{background:var(--sage-soft);color:#3f6212}
+  .badge.pausado{background:var(--mostaza-soft);color:var(--mostaza)}
+  .badge.finalizado{background:var(--ink-blue-soft);color:var(--ink-blue)}
+
+  /* Avance */
+  .avance-wrap{margin-top:20px}
+  .avance-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .avance-num{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--terracota);letter-spacing:-1px}
+  .avance-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:500}
+  .avance-bar{height:8px;background:var(--bg-2);border-radius:4px;overflow:hidden;position:relative}
+  .avance-fill{height:100%;background:linear-gradient(90deg,var(--terracota),var(--terracota-2));border-radius:4px;transition:width .6s ease}
+
+  /* Tareas */
+  .task{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .task:last-child{border-bottom:0}
+  .task-check{width:22px;height:22px;border:2px solid var(--line-2);border-radius:50%;flex:0 0 22px;display:grid;place-items:center}
+  .task-check.done{background:var(--sage);border-color:var(--sage);color:#fff;font-size:14px}
+  .task-info{flex:1;min-width:0}
+  .task-title{font-size:14px;font-weight:500;color:var(--ink)}
+  .task-title.done{text-decoration:line-through;color:var(--muted)}
+  .task-meta{font-size:12px;color:var(--muted);margin-top:2px}
+
+  /* Items table */
+  .items{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px}
+  .items th,.items td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+  .items th{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .items td.right{text-align:right}
+  .items tr.material{background:rgba(234,88,12,.04)}
+  .items tr.equipo{background:rgba(202,138,4,.06)}
+  .items tr.mano_obra{background:rgba(185,28,28,.05)}
+  .items tr.servicio{background:rgba(132,204,22,.06)}
+  .item-tipo{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+  .item-tipo.material{background:rgba(234,88,12,.15);color:#9a3412}
+  .item-tipo.equipo{background:rgba(202,138,4,.15);color:#854d0e}
+  .item-tipo.mano_obra{background:rgba(185,28,28,.15);color:#991b1b}
+  .item-tipo.servicio{background:rgba(132,204,22,.15);color:#3f6212}
+
+  .totales{margin-top:20px;padding:20px;background:var(--bg-2);border-radius:var(--radius);max-width:360px;margin-left:auto}
+  .total-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+  .total-row.major{border-top:1px solid var(--line-2);padding-top:12px;margin-top:8px;font-size:18px;font-weight:700}
+  .total-row.major .label{font-family:var(--serif);color:var(--ink)}
+  .total-row.major .val{color:var(--terracota)}
+
+  /* Acciones */
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;transition:.15s;border:1px solid transparent}
+  .btn-primary{background:var(--ink);color:var(--paper)}
+  .btn-primary:hover{background:#000}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed}
+  .btn-terracota{background:var(--terracota);color:#fef3c7}
+  .btn-terracota:hover{background:var(--terracota-2)}
+  .btn-outline{background:transparent;border:1.5px solid var(--line-2);color:var(--ink-2)}
+  .btn-outline:hover{border-color:var(--ink);color:var(--ink)}
+  .btn-ghost{background:transparent;color:var(--ink-2);padding:8px 14px;font-weight:500}
+  .btn-ghost:hover{color:var(--ink);background:var(--bg-2)}
+  .btn-success{background:var(--sage);color:#fff}
+  .btn-success:hover{background:#65a30d}
+  .btn-danger-outline{background:transparent;border:1.5px solid var(--ink-red-soft);color:var(--ink-red)}
+  .btn-danger-outline:hover{background:var(--ink-red-soft)}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;background:rgba(28,20,16,.4);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:100;padding:24px}
+  .modal.open{display:flex}
+  .modal-card{background:var(--paper);border-radius:var(--radius-lg);width:100%;max-width:520px;padding:32px;box-shadow:var(--shadow-lg);max-height:90vh;overflow:auto}
+  .modal-title{font-family:var(--serif);font-size:24px;margin-bottom:8px}
+  .modal-sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .field label{font-size:12px;font-weight:600;color:var(--ink-2);letter-spacing:.3px}
+  .field input,.field textarea{background:var(--bg);border:1.5px solid var(--line);border-radius:var(--radius);padding:10px 12px;outline:none;font-size:14px;font-family:var(--sans)}
+  .field input:focus,.field textarea:focus{border-color:var(--terracota);background:var(--paper)}
+  .field textarea{min-height:80px;resize:vertical}
+
+  /* Toast */
+  .toast-wrap{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;z-index:200}
+  .toast{background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:var(--radius);font-size:14px;box-shadow:var(--shadow-lg);animation:slideIn .25s ease;max-width:340px}
+  .toast.success{background:var(--sage)}
+  .toast.error{background:var(--ink-red)}
+  @keyframes slideIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* Empty / Loading */
+  .empty{padding:60px 32px;text-align:center;color:var(--muted);background:var(--paper);border:1px dashed var(--line-2);border-radius:var(--radius-lg)}
+  .empty h3{color:var(--ink-2);margin-bottom:6px}
+
+  .loading{padding:80px 32px;text-align:center}
+  .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--bg-2);border-top-color:var(--terracota);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .invalid{padding:80px 32px;text-align:center;max-width:480px;margin:80px auto}
+  .invalid h1{color:var(--ink-red);font-size:28px;margin-bottom:12px}
+  .invalid p{color:var(--muted)}
+
+  .footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:12px}
+  .footer a{color:var(--muted);text-decoration:underline}
+
+  /* Comentarios */
+  .comentario{padding:14px 16px;background:var(--bg);border-radius:var(--radius);margin-bottom:8px;border-left:3px solid var(--terracota-soft)}
+  .comentario .autor{font-weight:600;font-size:13px;margin-bottom:2px}
+  .comentario .fecha{font-size:11px;color:var(--muted);margin-bottom:6px}
+  .comentario .texto{font-size:14px;color:var(--ink-2)}
+
+  /* Print */
+  @media print{
+    .no-print{display:none !important}
+    body{background:white}
+    .card{box-shadow:none;border:1px solid #ccc}
+  }
+
+  @media (max-width:720px){
+    .wrap{padding:24px 16px 60px}
+    .hero h1{font-size:32px}
+    h1{font-size:28px}
+    h2{font-size:22px}
+    .card{padding:20px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar no-print">
+  <div class="brand">
+    <div class="brand-mark">C</div>
+    <div>
+      <div class="brand-name">Clear</div>
+      <div class="brand-sub">Portal del Cliente</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span id="userTag">—</span>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div style="margin-top:16px;color:var(--muted)">Cargando tu información…</div>
+  </div>
+  <div id="content" style="display:none"></div>
+</main>
+
+<div class="modal" id="modal">
+  <div class="modal-card" id="modalBody"></div>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+const SUPABASE_URL = 'https://smknglmaaihucuwbpewa.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_YiYWYPVDeoamy_LnFfs3xw_mtQTqJHP';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let TOKEN = new URLSearchParams(location.search).get('t') || '';
+let DATA = null;
+
+const fmt = n => (n||0).toLocaleString('es-AR',{maximumFractionDigits:0});
+const fmtDate = (iso, withTime=false) => {
+  if(!iso) return '—';
+  const d = new Date(iso);
+  if(withTime) return d.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  return d.toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
+};
+const estadoLabel = e => ({
+  borrador:'En preparación', enviada:'Esperando tu revisión', aprobada:'✓ Aprobada',
+  rechazada:'Rechazada', vencida:'Vencida', planificacion:'En planificación',
+  en_curso:'En curso', pausado:'Pausado', finalizado:'✓ Finalizado',
+  pendiente:'Pendiente', completado:'✓ Completada', cancelado:'Cancelado'
+})[e] || e;
+const estadoBadge = e => `<span class="badge ${e}"><span class="dot"></span>${estadoLabel(e)}</span>`;
+
+function toast(msg, kind='success'){
+  const t = document.createElement('div');
+  t.className = 'toast ' + kind;
+  t.textContent = msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(()=> t.remove(), 4000);
+}
+
+function openModal(html){
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+}
+document.getElementById('modal').addEventListener('click', e=>{
+  if(e.target.id==='modal') closeModal();
+});
+
+async function init(){
+  if(!TOKEN){
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('content').innerHTML = `
+      <div class="invalid">
+        <h1>Link inválido</h1>
+        <p>No se proporcionó un token de acceso. Por favor usá el link que te enviamos por email.</p>
+      </div>`;
+    return;
+  }
+  const { data, error } = await db.rpc('portal_get_data', { p_token: TOKEN });
+  if(error || !data || data.error){
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('content').innerHTML = `
+      <div class="invalid">
+        <h1>Link inválido o expirado</h1>
+        <p>El link que usaste ya no es válido. Por favor contactá a tu proveedor para solicitar uno nuevo.</p>
+      </div>`;
+    return;
+  }
+  DATA = data;
+  render();
+  document.getElementById('userTag').innerHTML = `<b>${data.cliente.razon}</b> · ${data.portal.email}`;
+}
+
+function render(){
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+  const c = DATA.cliente;
+  const proyectos = DATA.proyectos;
+  const cotizaciones = DATA.cotizaciones;
+
+  let html = `
+    <div class="hero">
+      <div class="kicker">Bienvenido</div>
+      <h1>Hola, ${c.razon}</h1>
+      <p>Acá podés seguir el avance de tus proyectos, revisar cotizaciones y mantenerte al día con tu proveedor.</p>
+    </div>`;
+
+  // === PROYECTOS ===
+  html += `<div class="section">
+    <div class="section-head">
+      <h2>Tus proyectos</h2>
+      <span class="count">${proyectos.length} ${proyectos.length===1?'proyecto':'proyectos'}</span>
+    </div>`;
+  if(!proyectos.length){
+    html += '<div class="empty"><h3>Sin proyectos activos</h3><p>Cuando tu proveedor inicie un proyecto, lo vas a ver acá.</p></div>';
+  } else {
+    proyectos.forEach(p => {
+      const av = p.avance || 0;
+      const tareas = (p.tareas || []);
+      const completadas = tareas.filter(t=> t.estado==='completada' || t.estado==='completado').length;
+      html += `
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-sub" style="font-family:var(--sans);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--terracota);font-weight:600">${p.codigo||''}</div>
+              <h3 class="card-title" style="margin-top:4px">${p.nombre}</h3>
+              <div class="card-meta">
+                <span class="meta-pill">📅 ${fmtDate(p.fecha_inicio)}</span>
+                ${p.fecha_fin_estimada ? `<span class="meta-pill">🎯 Entrega estimada: ${fmtDate(p.fecha_fin_estimada)}</span>` : ''}
+                ${tareas.length ? `<span class="meta-pill">${completadas}/${tareas.length} tareas completadas</span>` : ''}
+              </div>
+            </div>
+            <div>${estadoBadge(p.estado)}</div>
+          </div>
+          ${p.descripcion ? `<p style="color:var(--ink-2);font-size:14px;line-height:1.6">${p.descripcion}</p>` : ''}
+          <div class="avance-wrap">
+            <div class="avance-head">
+              <div><span class="avance-label">Avance del proyecto</span></div>
+              <div class="avance-num">${av}%</div>
+            </div>
+            <div class="avance-bar"><div class="avance-fill" style="width:${av}%"></div></div>
+          </div>
+          ${tareas.length ? `
+            <div style="margin-top:24px">
+              <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">Tareas recientes</div>
+              ${tareas.slice(0,5).map(t=> `
+                <div class="task">
+                  <div class="task-check ${(t.estado==='completada'||t.estado==='completado')?'done':''}">${(t.estado==='completada'||t.estado==='completado')?'✓':''}</div>
+                  <div class="task-info">
+                    <div class="task-title ${(t.estado==='completada'||t.estado==='completado')?'done':''}">${t.titulo}</div>
+                    <div class="task-meta">${t.fecha_limite?'Fecha límite: '+fmtDate(t.fecha_limite):''}</div>
+                  </div>
+                </div>
+              `).join('')}
+              ${tareas.length>5 ? `<div style="text-align:center;margin-top:12px;font-size:13px;color:var(--muted)">y ${tareas.length-5} más…</div>` : ''}
+            </div>
+          ` : ''}
+        </div>`;
+    });
+  }
+  html += '</div>';
+
+  // === COTIZACIONES ===
+  html += `<div class="section">
+    <div class="section-head">
+      <h2>Cotizaciones</h2>
+      <span class="count">${cotizaciones.length} ${cotizaciones.length===1?'cotización':'cotizaciones'}</span>
+    </div>`;
+  if(!cotizaciones.length){
+    html += '<div class="empty"><h3>Sin cotizaciones</h3><p>Cuando tu proveedor te envíe una cotización, la vas a ver acá.</p></div>';
+  } else {
+    cotizaciones.forEach(cot => {
+      const items = cot.items || [];
+      const subtotal = items.reduce((s,i)=>s+(i.subtotal||0),0);
+      const desc = subtotal * (cot.descuento_pct||0)/100;
+      const iva = (subtotal-desc) * 0.21;
+      const total = subtotal - desc + iva;
+      const tc = cot.tipo_cambio||1;
+      const totalMostrar = cot.moneda==='USD' ? total : total*tc;
+      const simbolo = cot.moneda==='USD' ? 'USD $' : 'ARS $';
+      const simboloEquiv = cot.moneda==='USD' ? 'ARS' : 'USD';
+
+      const isFinal = cot.estado==='aprobada' || cot.estado==='rechazada';
+      html += `
+        <div class="card" id="cot-${cot.id}">
+          <div class="card-head">
+            <div>
+              <div class="card-sub" style="font-family:var(--sans);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--terracota);font-weight:600">v${cot.version} · ${cot.proyecto_codigo||''}</div>
+              <h3 class="card-title" style="margin-top:4px">${cot.titulo}</h3>
+              <div class="card-meta">
+                <span class="meta-pill">📅 ${fmtDate(cot.fecha)}</span>
+                <span class="meta-pill">⏰ Validez: ${cot.vigencia_dias||15} días</span>
+                <span class="meta-pill">💱 ${cot.moneda}${cot.moneda==='ARS'?' (TC: '+fmt(tc)+')':''}</span>
+              </div>
+            </div>
+            <div>${estadoBadge(cot.estado)}</div>
+          </div>
+
+          ${cot.notas ? `<p style="color:var(--ink-2);font-size:14px;line-height:1.6;background:var(--bg);padding:12px 16px;border-radius:var(--radius);border-left:3px solid var(--terracota-soft)">${cot.notas.replace(/\n/g,'<br>')}</p>` : ''}
+
+          <table class="items">
+            <thead><tr><th style="width:60px">Tipo</th><th style="width:60px">Cant</th><th>Descripción</th><th class="right" style="width:100px">P.U.</th><th class="right" style="width:110px">Subtotal</th></tr></thead>
+            <tbody>
+              ${items.map(i => `
+                <tr class="${i.tipo}">
+                  <td><span class="item-tipo ${i.tipo}">${({material:'Material',equipo:'Equipo',mano_obra:'Mano de obra',servicio:'Servicio'})[i.tipo]||i.tipo}</span></td>
+                  <td class="mono">${i.cantidad}</td>
+                  <td>${i.descripcion}</td>
+                  <td class="right mono">${simbolo} ${fmt(i.precio_unitario)}</td>
+                  <td class="right mono"><b>${simbolo} ${fmt(i.subtotal)}</b></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <div class="totales">
+            <div class="total-row"><span>Subtotal</span><span class="mono">${simbolo} ${fmt(subtotal)}</span></div>
+            ${desc>0 ? `<div class="total-row"><span>Descuento</span><span class="mono">-${simbolo} ${fmt(desc)}</span></div>` : ''}
+            <div class="total-row"><span>IVA 21%</span><span class="mono">${simbolo} ${fmt(iva)}</span></div>
+            <div class="total-row major">
+              <span class="label">Total</span>
+              <span class="val mono">${simbolo} ${fmt(totalMostrar)}</span>
+            </div>
+            ${cot.moneda==='USD' ? `<div class="total-row" style="color:var(--muted);font-size:12px;padding-top:6px"><span>Equivale a ${simboloEquiv}</span><span class="mono">${fmt(totalMostrar*tc)}</span></div>` : `<div class="total-row" style="color:var(--muted);font-size:12px;padding-top:6px"><span>Equivale a ${simboloEquiv}</span><span class="mono">${fmt(totalMostrar/tc)}</span></div>`}
+          </div>
+
+          ${isFinal ? `
+            <div style="margin-top:20px;padding:14px 18px;background:${cot.estado==='aprobada'?'var(--sage-soft)':'var(--ink-red-soft)'};border-radius:var(--radius);color:${cot.estado==='aprobada'?'#3f6212':'var(--ink-red)'};font-size:14px">
+              <b>${cot.estado==='aprobada'?'✓ Cotización aprobada':'Cotización rechazada'}</b> — Gracias por tu respuesta.
+            </div>
+          ` : `
+            <div class="actions no-print">
+              <button class="btn btn-success" onclick="aprobarCotizacion(${cot.id}, 'aprobada')">✓ Aprobar</button>
+              <button class="btn btn-danger-outline" onclick="aprobarCotizacion(${cot.id}, 'rechazada')">Rechazar</button>
+              <button class="btn btn-ghost" onclick="comentarCotizacion(${cot.id})">💬 Hacer una pregunta</button>
+            </div>
+          `}
+        </div>`;
+    });
+  }
+  html += '</div>';
+
+  // Footer
+  html += `<div class="footer">
+    Portal Clear · Construido con cuidado por tu proveedor<br>
+    ¿Tenés alguna duda? Contactanos directamente.
+  </div>`;
+
+  document.getElementById('content').innerHTML = html;
+}
+
+async function aprobarCotizacion(cotId, decision){
+  if(!confirm(decision==='aprobada'?'¿Confirmás la aprobación de esta cotización?':'¿Confirmás el rechazo de esta cotización?')) return;
+  openModal(`
+    <h2 class="modal-title">${decision==='aprobada'?'Aprobar cotización':'Rechazar cotización'}</h2>
+    <p class="modal-sub">¿Querés dejar un comentario? (opcional)</p>
+    <div class="field"><label>Tu nombre</label><input id="dec_nombre" value="${DATA.cliente.razon}"/></div>
+    <div class="field"><label>Comentario</label><textarea id="dec_comentario" placeholder="Alguna aclaración..."></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn ${decision==='aprobada'?'btn-success':'btn-danger-outline'}" onclick="confirmarDecision(${cotId}, '${decision}')">${decision==='aprobada'?'Confirmar aprobación':'Confirmar rechazo'}</button>
+    </div>
+  `);
+}
+
+async function confirmarDecision(cotId, decision){
+  const nombre = document.getElementById('dec_nombre').value.trim() || DATA.cliente.razon;
+  const comentario = document.getElementById('dec_comentario').value.trim();
+  const { data, error } = await db.rpc('portal_aprobar_cotizacion', {
+    p_token: TOKEN, p_cotizacion_id: cotId, p_decision: decision,
+    p_comentario: comentario, p_firmado_por: nombre
+  });
+  if(error){ toast('Error: '+error.message, 'error'); return; }
+  closeModal();
+  toast(decision==='aprobada'?'✓ Cotización aprobada. ¡Gracias!':'Cotización rechazada');
+  // recargar
+  setTimeout(()=> init(), 800);
+}
+
+async function comentarCotizacion(cotId){
+  openModal(`
+    <h2 class="modal-title">Hacer una pregunta</h2>
+    <p class="modal-sub">Dejanos tu consulta y te respondemos a la brevedad.</p>
+    <div class="field"><label>Tu nombre</label><input id="dec_nombre" value="${DATA.cliente.razon}"/></div>
+    <div class="field"><label>Email</label><input id="dec_email" value="${DATA.portal.email}"/></div>
+    <div class="field"><label>Mensaje</label><textarea id="dec_comentario" placeholder="Hola! Quería consultar..."></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-terracota" onclick="enviarComentario(${cotId})">Enviar mensaje</button>
+    </div>
+  `);
+}
+
+async function enviarComentario(cotId){
+  const nombre = document.getElementById('dec_nombre').value.trim();
+  const email = document.getElementById('dec_email').value.trim();
+  const texto = document.getElementById('dec_comentario').value.trim();
+  if(!texto){ toast('Por favor escribí tu mensaje','error'); return; }
+  const { error } = await db.from('portal_comentarios').insert({
+    portal_id: DATA.portal.id, cotizacion_id: cotId,
+    autor_nombre: nombre, autor_email: email, texto
+  });
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  closeModal();
+  toast('✓ Mensaje enviado. Te respondemos pronto.');
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

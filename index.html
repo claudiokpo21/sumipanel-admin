@@ -358,6 +358,7 @@
       <div class="nav-item" data-view="proveedores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M14 20a4 4 0 0 1 8 0"/></svg>Proveedores</div>
       <div class="nav-item" data-view="reportes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Reportes</div>
       <div class="nav-item" data-view="usuarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>Usuarios</div>
+      <div class="nav-item" data-view="portal-links"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Portal Cliente</div>
     </div>
   </aside>
 
@@ -736,6 +737,23 @@
         </div>
       </section>
 
+      <!-- PORTAL DEL CLIENTE (LINKS) -->
+      <section class="view" data-view="portal-links">
+        <div class="page-head">
+          <div>
+            <div class="page-title">Portal del Cliente (Clear)</div>
+            <div class="page-sub">Links generados para que los clientes vean sus cotizaciones y proyectos</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Links activos</div><div class="panel-sub">Se generan desde el módulo Cotizaciones → "Compartir con cliente"</div></div>
+          <div class="table-wrap"><table class="table" id="tblPortal">
+            <thead><tr><th>Cliente</th><th>Proyecto</th><th>Token</th><th>Estado</th><th>Último acceso</th><th>Expira</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </div>
+      </section>
+
       <!-- USUARIOS -->
       <section class="view" data-view="usuarios">
         <div class="page-head">
@@ -792,11 +810,11 @@ const ROLE_LABELS = {
 };
 
 const ROLE_ACCESS = {
-  admin:       ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','usuarios','reportes'],
-  gerencia:    ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','reportes'],
+  admin:       ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','usuarios','reportes','portal-links'],
+  gerencia:    ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','reportes','portal-links'],
   compras:     ['dashboard','compras','seguimiento','recepcion','stock','proyectos','tareas','trazabilidad','proveedores'],
   deposito:    ['dashboard','compras','seguimiento','recepcion','stock','tareas','trazabilidad'],
-  ventas:      ['dashboard','pedidos','ventas','stock','proyectos','cotizaciones','tareas','trazabilidad'],
+  ventas:      ['dashboard','pedidos','ventas','stock','proyectos','cotizaciones','tareas','trazabilidad','portal-links'],
   proyectos:   ['dashboard','proyectos','cotizaciones','alcances','tareas','trazabilidad','log'],
   tecnico:     ['dashboard','tareas','trazabilidad']
 };
@@ -940,6 +958,7 @@ const App = {
       log:['Log / Bitácora','Auditoría'],
       proveedores:['Proveedores','Cartera'],
       usuarios:['Usuarios','Cuentas y permisos'],
+      'portal-links':['Portal Cliente','Links compartidos'],
       reportes:['Reportes','PDF ejecutivos']
     };
     const t = titles[view] || ['—','—'];
@@ -1544,6 +1563,7 @@ const App = {
     this.renderLog();
     this.renderProveedores();
     this.renderUsuarios();
+    if(this.view==='portal-links') this.renderPortalLinks();
     this.checkNotifications();
   },
 
@@ -2318,6 +2338,7 @@ const App = {
         <div class="row-actions">
           <button class="btn" onclick="App.openCotizacionEditor(${cot.id})">📝 Abrir editor</button>
           <button class="btn" onclick="App.cotImprimirPDF(${cot.id})">🖨️ PDF</button>
+          <button class="btn btn-primary" onclick="App.portalGenerarLink(${cot.id})">🔗 Compartir con cliente</button>
         </div>
       </div>
       <div class="table-wrap" style="max-height:200px"><table class="table">
@@ -3623,6 +3644,75 @@ const App = {
     if(error){ this.toast('Error: '+error.message,'err'); return; }
     this.toast('Preferencias guardadas','ok');
     this.closeModal();
+  },
+
+  /* ----- PORTAL DEL CLIENTE (Clear) ----- */
+  async portalGenerarLink(cotizacionId){
+    const cot = cache.cotizaciones.find(c=>c.id===cotizacionId);
+    if(!cot) return;
+    const proyecto = cot.proyectos;
+    const cli = cache.clientes.find(c=>c.id===proyecto?.cliente_id);
+    if(!cli){ this.toast('La cotización no tiene un cliente asignado','err'); return; }
+    // Generar token
+    const token = Array.from(crypto.getRandomValues(new Uint8Array(24)))
+      .map(b=>b.toString(16).padStart(2,'0')).join('');
+    const expira = new Date();
+    expira.setDate(expira.getDate() + 30);  // 30 dias
+    const { error } = await db.from('portal_access').insert({
+      token, cliente_id: cli.id, proyecto_id: cot.proyecto_id,
+      email: cli.email || '', descripcion: `Acceso a ${cot.titulo} (v${cot.version})`,
+      expira_en: expira.toISOString(), created_by: session.user.id
+    });
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    const url = `https://sumipanel-admin.vercel.app/portal.html?t=${token}`;
+    this.openModal('Link generado para el cliente', `
+      <p class="t-body" style="margin-bottom:14px">Copiá este link y mandáselo a <b>${cli.razon}</b> por email o WhatsApp. El link expira el <b>${this.fmtDate(expira)}</b>.</p>
+      <div style="background:#0e1119;padding:14px;border-radius:8px;font-family:monospace;font-size:13px;word-break:break-all;color:#e6e9f2;border:1px solid var(--line)">${url}</div>
+      <div style="margin-top:14px;display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="navigator.clipboard.writeText('${url}');App.toast('Link copiado al portapapeles','ok')">📋 Copiar link</button>
+        <a class="btn" href="${url}" target="_blank">👁️ Vista previa</a>
+      </div>
+      <div class="t-meta" style="margin-top:14px">El cliente podrá ver esta cotización, el avance del proyecto, hacer preguntas y aprobarla/rechazarla. Sin necesidad de password.</div>
+    `, [{label:'Cerrar', cls:'btn', fn:()=> this.closeModal()}]);
+    this.logEvent('portal','Link generado',`${cli.razon} · ${cot.titulo}`, token.slice(0,8));
+  },
+
+  async renderPortalLinks(){
+    if(!['admin','gerencia','ventas'].includes(profile.role)) return;
+    const { data } = await db.from('portal_access')
+      .select('*, clientes(razon), proyectos(codigo, nombre)')
+      .order('created_at',{ascending:false}).limit(50);
+    const tb = document.querySelector('#tblPortal tbody');
+    tb.innerHTML = '';
+    (data||[]).forEach(p=>{
+      const expiro = p.expira_en && new Date(p.expira_en) < new Date();
+      const url = `https://sumipanel-admin.vercel.app/portal.html?t=${p.token}`;
+      tb.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td><b>${p.clientes?.razon||'—'}</b><div class="t-meta">${p.email}</div></td>
+          <td>${p.proyectos?.codigo||'—'}</td>
+          <td class="mono" style="font-size:11px">${p.token.slice(0,16)}…</td>
+          <td>${p.activo?(expiro?'<span class="pill danger"><span class="pdot"></span>Expirado</span>':'<span class="pill ok"><span class="pdot"></span>Activo</span>'):'<span class="pill muted">Inactivo</span>'}</td>
+          <td class="mono">${p.ultimo_acceso?this.fmtDate(p.ultimo_acceso,true):'Nunca'}</td>
+          <td class="mono">${p.expira_en?this.fmtDate(p.expira_en):'∞'}</td>
+          <td>
+            <div class="row-actions">
+              <button title="Copiar link" onclick="navigator.clipboard.writeText('${url}');App.toast('Link copiado','ok')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+              <button title="Ver" onclick="window.open('${url}','_blank')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button title="Desactivar" onclick="App.portalDesactivar(${p.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+          </td>
+        </tr>`);
+    });
+    if(!data?.length) tb.innerHTML = `<tr><td colspan="7" class="empty">Sin links generados todavía</td></tr>`;
+  },
+
+  async portalDesactivar(id){
+    if(!confirm('¿Desactivar este link? El cliente no podrá acceder más.')) return;
+    const { error } = await db.from('portal_access').update({ activo: false }).eq('id', id);
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    this.toast('Link desactivado','ok');
+    this.renderPortalLinks();
   },
 
   /* ----- MI PERFIL ----- */
