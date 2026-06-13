@@ -385,6 +385,10 @@
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
             Mi actividad
           </div>
+          <div class="item" onclick="App.openNotifConfig()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            Notificaciones email
+          </div>
           <div class="sep"></div>
           <div class="item danger" onclick="App.logout()">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
@@ -3565,6 +3569,60 @@ const App = {
     `;
     printArea.classList.add('show');
     setTimeout(()=> window.print(), 400);
+  },
+
+  async loadNotifConfig(){
+    const { data } = await db.from('notif_config').select('*').eq('usuario_id', session.user.id).maybeSingle();
+    this.notifConfig = data || {
+      email_recepcion: true, email_stock_critico: true, email_tarea_asignada: true,
+      email_tarea_vencida: true, email_oc_atrasada: true, email_oc_cambio_estado: false
+    };
+  },
+
+  async openNotifConfig(){
+    await this.loadNotifConfig();
+    const c = this.notifConfig;
+    this.openModal('Mis notificaciones por email', `
+      <div class="t-meta" style="margin-bottom:14px">Elegí qué eventos querés que te avisen por mail. La dirección de envío es la de tu cuenta.</div>
+      <div class="field"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="nc_1" ${c.email_recepcion?'checked':''}/> <b>Recepciones registradas</b>
+      </label><div class="t-meta">Te avisamos cuando entra mercadería nueva</div></div>
+      <div class="field" style="margin-top:10px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="nc_2" ${c.email_stock_critico?'checked':''}/> <b>Stock bajo mínimo</b>
+      </label><div class="t-meta">Cuando un producto cae bajo el stock mínimo</div></div>
+      <div class="field" style="margin-top:10px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="nc_3" ${c.email_tarea_asignada?'checked':''}/> <b>Tarea asignada</b>
+      </label><div class="t-meta">Cuando te asignan una tarea</div></div>
+      <div class="field" style="margin-top:10px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="nc_4" ${c.email_tarea_vencida?'checked':''}/> <b>Tarea vencida</b>
+      </label><div class="t-meta">Cuando tenés una tarea que vence hoy o se pasó</div></div>
+      <div class="field" style="margin-top:10px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="nc_5" ${c.email_oc_atrasada?'checked':''}/> <b>OC atrasada</b>
+      </label><div class="t-meta">Cuando una OC pasó su fecha estimada</div></div>
+      <div class="field" style="margin-top:10px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="nc_6" ${c.email_oc_cambio_estado?'checked':''}/> <b>OC cambió de estado</b>
+      </label><div class="t-meta">Cada vez que una OC se mueve en el kanban</div></div>
+    `, [
+      {label:'Cancelar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Guardar', cls:'btn btn-primary', fn:()=> this.saveNotifConfig()}
+    ]);
+  },
+
+  async saveNotifConfig(){
+    const data = {
+      usuario_id: session.user.id,
+      email_recepcion: document.getElementById('nc_1').checked,
+      email_stock_critico: document.getElementById('nc_2').checked,
+      email_tarea_asignada: document.getElementById('nc_3').checked,
+      email_tarea_vencida: document.getElementById('nc_4').checked,
+      email_oc_atrasada: document.getElementById('nc_5').checked,
+      email_oc_cambio_estado: document.getElementById('nc_6').checked,
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await db.from('notif_config').upsert(data);
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    this.toast('Preferencias guardadas','ok');
+    this.closeModal();
   },
 
   /* ----- MI PERFIL ----- */
