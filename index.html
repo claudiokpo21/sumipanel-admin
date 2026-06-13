@@ -3367,7 +3367,6 @@ const App = {
       </div>
     `, [
       {label:'Cerrar', cls:'btn', fn:()=> this.closeModal()},
-      {label:'Compartir con cliente', cls:'btn', fn:()=> { this.closeModal(); this.portalGenerarLink(id); }},
       {label:'Guardar', cls:'btn btn-primary', fn:()=> this.saveCotizacionEditor(id)}
     ]);
   },
@@ -3653,14 +3652,32 @@ const App = {
   async portalGenerarLink(cotizacionId){
     const cot = cache.cotizaciones.find(c=>c.id===cotizacionId);
     if(!cot) return;
-    const proyecto = cot.proyectos;
-    const cli = cache.clientes.find(c=>c.id===proyecto?.cliente_id);
-    if(!cli){ this.toast('La cotización no tiene un cliente asignado','err'); return; }
+    let proyecto = cot.proyectos;
+    let cli = proyecto ? cache.clientes.find(c=>c.id===proyecto.cliente_id) : null;
+    // Si no hay proyecto o no tiene cliente, ofrecer elegir en el momento
+    if(!cli){
+      const prysOpts = cache.proyectos.map(p=>`<option value="${p.id}" ${p.id==cot.proyecto_id?'selected':''}>${p.codigo} · ${p.nombre} (${p.cliente_nombre||'sin cliente'})</option>`).join('');
+      const clsOpts = cache.clientes.map(c=>`<option value="${c.id}">${c.razon}</option>`).join('');
+      this.openModal('Asignar cliente a la cotización', `
+        <p class="t-body" style="margin-bottom:14px">La cotización no tiene un cliente asignado. Elegí el proyecto y cliente para generar el link del portal.</p>
+        <div class="field"><label>Proyecto</label>
+          <select id="pl_proy">${prysOpts}</select>
+        </div>
+        <div class="field" style="margin-top:10px"><label>Cliente</label>
+          <select id="pl_cli">${clsOpts}</select>
+        </div>
+        <div class="t-meta" style="margin-top:10px">Esto va a actualizar la cotización y el proyecto con el cliente elegido.</div>
+      `, [
+        {label:'Cancelar', cls:'btn', fn:()=> this.closeModal()},
+        {label:'Guardar y generar link', cls:'btn btn-primary', fn:()=> this.portalAsignarYGenerar(cot.id)}
+      ]);
+      return;
+    }
     // Generar token
     const token = Array.from(crypto.getRandomValues(new Uint8Array(24)))
       .map(b=>b.toString(16).padStart(2,'0')).join('');
     const expira = new Date();
-    expira.setDate(expira.getDate() + 30);  // 30 dias
+    expira.setDate(expira.getDate() + 30);
     const { error } = await db.from('portal_access').insert({
       token, cliente_id: cli.id, proyecto_id: cot.proyecto_id,
       email: cli.email || '', descripcion: `Acceso a ${cot.titulo} (v${cot.version})`,
@@ -3678,6 +3695,26 @@ const App = {
       <div class="t-meta" style="margin-top:14px">El cliente podrá ver esta cotización, el avance del proyecto, hacer preguntas y aprobarla/rechazarla. Sin necesidad de password.</div>
     `, [{label:'Cerrar', cls:'btn', fn:()=> this.closeModal()}]);
     this.logEvent('portal','Link generado',`${cli.razon} · ${cot.titulo}`, token.slice(0,8));
+  },
+
+  async portalAsignarYGenerar(cotizacionId){
+    const proyecto_id = parseInt(document.getElementById('pl_proy').value);
+    const cliente_id = parseInt(document.getElementById('pl_cli').value);
+    const cliente = cache.clientes.find(c=>c.id===cliente_id);
+    if(!cliente){ this.toast('Cliente no encontrado','err'); return; }
+    // Actualizar proyecto con el cliente
+    const { error: e1 } = await db.from('proyectos').update({
+      cliente_id, cliente_nombre: cliente.razon
+    }).eq('id', proyecto_id);
+    if(e1){ this.toast('Error: '+e1.message,'err'); return; }
+    // Actualizar cotizacion con el proyecto
+    const { error: e2 } = await db.from('cotizaciones').update({ proyecto_id }).eq('id', cotizacionId);
+    if(e2){ this.toast('Error: '+e2.message,'err'); return; }
+    this.toast('Cliente asignado. Generando link...','ok');
+    this.closeModal();
+    await this.renderAll();
+    // Reintentar generar link
+    setTimeout(()=> this.portalGenerarLink(cotizacionId), 500);
   },
 
   async renderPortalLinks(){
