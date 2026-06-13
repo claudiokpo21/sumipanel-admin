@@ -343,6 +343,7 @@
       <div class="nav-title">Proyectos IT</div>
       <div class="nav-item" data-view="proyectos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v13H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Proyectos</div>
       <div class="nav-item" data-view="cotizaciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg>Cotizaciones</div>
+      <div class="nav-item" data-view="plantillas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Plantillas</div>
       <div class="nav-item" data-view="alcances"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Alcances</div>
       <div class="nav-item" data-view="tareas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Tareas</div>
     </div>
@@ -611,6 +612,20 @@
         </div>
       </section>
 
+      <!-- PLANTILLAS DE COTIZACION -->
+      <section class="view" data-view="plantillas">
+        <div class="page-head">
+          <div>
+            <div class="page-title">Plantillas de cotización</div>
+            <div class="page-sub">Reutilizá cotizaciones típicas con un click</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="App.openPlantilla()">+ Nueva plantilla</button>
+          </div>
+        </div>
+        <div class="grid-3" id="plantillasGrid"></div>
+      </section>
+
       <!-- ALCANCES -->
       <section class="view" data-view="alcances">
         <div class="page-head">
@@ -830,12 +845,12 @@ const ROLE_LABELS = {
 };
 
 const ROLE_ACCESS = {
-  admin:       ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','usuarios','reportes','portal-links'],
-  gerencia:    ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','reportes','portal-links'],
+  admin:       ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','plantillas','alcances','tareas','trazabilidad','log','proveedores','usuarios','reportes','portal-links'],
+  gerencia:    ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','plantillas','alcances','tareas','trazabilidad','log','proveedores','reportes','portal-links'],
   compras:     ['dashboard','compras','seguimiento','recepcion','stock','proyectos','tareas','trazabilidad','proveedores'],
   deposito:    ['dashboard','compras','seguimiento','recepcion','stock','tareas','trazabilidad'],
-  ventas:      ['dashboard','pedidos','ventas','stock','proyectos','cotizaciones','tareas','trazabilidad','portal-links'],
-  proyectos:   ['dashboard','proyectos','cotizaciones','alcances','tareas','trazabilidad','log'],
+  ventas:      ['dashboard','pedidos','ventas','stock','proyectos','cotizaciones','plantillas','tareas','trazabilidad','portal-links'],
+  proyectos:   ['dashboard','proyectos','cotizaciones','plantillas','alcances','tareas','trazabilidad','log'],
   tecnico:     ['dashboard','tareas','trazabilidad']
 };
 
@@ -972,6 +987,7 @@ const App = {
       stock:['Stock','Inventario'],
       proyectos:['Proyectos IT','Cartera de proyectos'],
       cotizaciones:['Cotizaciones','Materiales + MO · PDF'],
+      plantillas:['Plantillas','Reutilizables'],
       alcances:['Alcances Técnicos','Entregables'],
       tareas:['Tareas','Mis tareas'],
       trazabilidad:['Trazabilidad','Recorrido completo'],
@@ -3573,6 +3589,212 @@ equipo,1,un,NVR 128ch,13000"></textarea>
     this.closeModal();
     this.renderAll();
     this.openCotizacionEditor(cot.id);
+  },
+
+  /* ----- PLANTILLAS DE COTIZACION ----- */
+  async renderPlantillas(){
+    const { data } = await db.from('cotizacion_plantillas').select('*').eq('activo', true).order('nombre');
+    const grid = document.getElementById('plantillasGrid');
+    if(!grid) return;
+    if(!data?.length){
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Sin plantillas. Creá la primera con "+ Nueva plantilla".</div>';
+      return;
+    }
+    grid.innerHTML = data.map(p=>{
+      const items = p.items||[];
+      const total = items.reduce((s,i)=>s+((i.cantidad||0)*(i.precio_unitario||0)),0);
+      return `<div class="panel" style="cursor:pointer" onclick="App.usarPlantilla(${p.id})">
+        <div class="panel-body" style="text-align:center;padding:24px 20px">
+          <div style="font-size:40px">${p.icono||'📋'}</div>
+          <div class="panel-title" style="margin-top:12px">${p.nombre}</div>
+          <div class="t-meta" style="margin-top:6px">${p.descripcion||''}</div>
+          <div class="t-meta" style="margin-top:8px"><b>${items.length} ítems</b> · Estimado $${this.fmt(total)}</div>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:12px">
+            <button class="btn btn-primary" onclick="event.stopPropagation();App.usarPlantilla(${p.id})">Usar plantilla</button>
+            ${['admin','proyectos','ventas'].includes(profile.role) ? `<button class="btn" onclick="event.stopPropagation();App.openPlantilla(${p.id})">✏️</button><button class="btn" onclick="event.stopPropagation();App.eliminarPlantilla(${p.id})">🗑️</button>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  },
+
+  async usarPlantilla(plantillaId){
+    const { data: plt } = await db.from('cotizacion_plantillas').select('*').eq('id', plantillaId).single();
+    if(!plt) return;
+    const prys = cache.proyectos.map(p=>`<option value="${p.id}">${p.codigo} · ${p.nombre}</option>`).join('');
+    if(!prys){ this.toast('Primero creá un proyecto','err'); return; }
+    const items = plt.items || [];
+    const html = `
+      <p class="t-body" style="margin-bottom:14px">Usá esta plantilla como base. Editá los precios, cantidades o quitá ítems antes de guardar.</p>
+      <div class="form-row">
+        <div class="field"><label>Proyecto</label><select id="up_proy">${prys}</select></div>
+        <div class="field"><label>Moneda</label>
+          <select id="up_mon"><option value="USD">USD</option><option value="ARS">ARS</option></select>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:8px">
+        <div class="field"><label>Título</label><input id="up_tit" value="${plt.nombre}"/></div>
+        <div class="field"><label>TC</label><input type="number" id="up_tc" value="1"/></div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="panel-title" style="margin-bottom:6px">Items (${items.length})</div>
+        <table class="cot-tbl">
+          <thead><tr><th style="width:90px">Tipo</th><th style="width:60px">Cant</th><th style="width:60px">Unidad</th><th>Descripcion</th><th style="width:90px">P.U.</th><th style="width:36px"></th></tr></thead>
+          <tbody id="up_items">
+            ${items.map((it,i)=>`<tr data-i="${i}">
+              <td><span class="cot-tipo-pill cot-tipo-${it.tipo}">${it.tipo}</span></td>
+              <td><input type="number" value="${it.cantidad||0}" data-f="cantidad" style="width:60px" oninput="App.calcPlantilla()"/></td>
+              <td><input type="text" value="${it.unidad||'un'}" data-f="unidad" style="width:60px" oninput="App.calcPlantilla()"/></td>
+              <td><input type="text" value="${(it.descripcion||'').replace(/"/g,'&quot;')}" data-f="descripcion" oninput="App.calcPlantilla()"/></td>
+              <td><input type="number" value="${it.precio_unitario||0}" data-f="precio_unitario" style="width:80px" oninput="App.calcPlantilla()"/></td>
+              <td><button class="row-actions" onclick="this.closest('tr').remove();App.calcPlantilla()">×</button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        <div style="text-align:right;font-size:14px;margin-top:10px">Total estimado: <b id="up_total">$0</b></div>
+      </div>
+    `;
+    this._plantillaItems = JSON.parse(JSON.stringify(items));
+    this.openModal('Usar plantilla: '+plt.nombre, html, [
+      {label:'Cancelar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Crear cotización', cls:'btn btn-primary', fn:()=> this.confirmarUsarPlantilla()}
+    ]);
+    setTimeout(()=> this.calcPlantilla(), 100);
+  },
+
+  calcPlantilla(){
+    let total = 0;
+    document.querySelectorAll('#up_items tr').forEach(tr=>{
+      const cant = parseFloat(tr.querySelector('[data-f=cantidad]').value)||0;
+      const precio = parseFloat(tr.querySelector('[data-f=precio_unitario]').value)||0;
+      total += cant*precio;
+    });
+    document.getElementById('up_total').textContent = '$'+this.fmt(total);
+  },
+
+  async confirmarUsarPlantilla(){
+    const proyecto_id = parseInt(document.getElementById('up_proy').value);
+    const titulo = document.getElementById('up_tit').value.trim()||'Cotización';
+    const moneda = document.getElementById('up_mon').value;
+    const tc = parseFloat(document.getElementById('up_tc').value)||1;
+    const items = [];
+    document.querySelectorAll('#up_items tr').forEach((tr,idx)=>{
+      const cant = parseFloat(tr.querySelector('[data-f=cantidad]').value)||0;
+      const precio = parseFloat(tr.querySelector('[data-f=precio_unitario]').value)||0;
+      const desc = tr.querySelector('[data-f=descripcion]').value;
+      const unidad = tr.querySelector('[data-f=unidad]').value;
+      const tipo = tr.querySelector('.cot-tipo-pill').className.match(/cot-tipo-(\w+)/)[1];
+      if(cant>0 && desc){
+        items.push({tipo, cantidad:cant, unidad, descripcion:desc, precio_unitario:precio, subtotal:cant*precio, orden:idx});
+      }
+    });
+    if(!items.length){ this.toast('Sin items','err'); return; }
+    const total = items.reduce((s,i)=>s+i.subtotal,0);
+    const { data: cot, error } = await db.from('cotizaciones').insert({
+      proyecto_id, titulo, moneda, tipo_cambio:tc, version:1, estado:'borrador', total
+    }).select().single();
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    await db.from('cotizacion_items').insert(items.map(i=>({...i, cotizacion_id: cot.id})));
+    await this.logEvent('cotizacion','Plantilla usada',`${plt?.nombre||titulo} → ${titulo} (${items.length} items)`, cot.id+'');
+    this.toast('Cotización creada desde plantilla','ok');
+    this.closeModal();
+    this.renderAll();
+    this.openCotizacionEditor(cot.id);
+  },
+
+  openPlantilla(plantillaId=null){
+    if(plantillaId){
+      db.from('cotizacion_plantillas').select('*').eq('id', plantillaId).single().then(({data})=>{
+        if(!data) return;
+        this.mostrarEditorPlantilla(data);
+      });
+    } else {
+      this.mostrarEditorPlantilla({nombre:'', descripcion:'', categoria:'', icono:'📋', items:[]});
+    }
+  },
+
+  mostrarEditorPlantilla(plt){
+    const items = plt.items || [];
+    this.openModal(plt.id ? 'Editar plantilla' : 'Nueva plantilla', `
+      <div class="form-row">
+        <div class="field"><label>Nombre</label><input id="pl_nombre" value="${plt.nombre||''}"/></div>
+        <div class="field"><label>Icono (emoji)</label><input id="pl_icono" value="${plt.icono||'📋'}" maxlength="2" style="width:80px"/></div>
+      </div>
+      <div class="field" style="margin-top:8px"><label>Descripción</label><input id="pl_desc" value="${plt.descripcion||''}"/></div>
+      <div class="field" style="margin-top:8px"><label>Categoría</label><input id="pl_cat" value="${plt.categoria||''}"/></div>
+      <div style="margin-top:14px">
+        <div class="panel-title" style="margin-bottom:6px">Items</div>
+        <table class="cot-tbl" id="pl_items">
+          <thead><tr><th style="width:90px">Tipo</th><th style="width:60px">Cant</th><th style="width:60px">Unidad</th><th>Descripcion</th><th style="width:90px">P.U.</th><th style="width:36px"></th></tr></thead>
+          <tbody>${items.map(it=>`<tr>
+            <td><select class="filter-select" data-f="tipo"><option value="material" ${it.tipo==='material'?'selected':''}>Material</option><option value="equipo" ${it.tipo==='equipo'?'selected':''}>Equipo</option><option value="mano_obra" ${it.tipo==='mano_obra'?'selected':''}>Mano de obra</option><option value="servicio" ${it.tipo==='servicio'?'selected':''}>Servicio</option></select></td>
+            <td><input type="number" value="${it.cantidad||0}" data-f="cantidad" style="width:60px"/></td>
+            <td><input type="text" value="${it.unidad||'un'}" data-f="unidad" style="width:60px"/></td>
+            <td><input type="text" value="${(it.descripcion||'').replace(/"/g,'&quot;')}" data-f="descripcion"/></td>
+            <td><input type="number" value="${it.precio_unitario||0}" data-f="precio_unitario" style="width:80px"/></td>
+            <td><button class="row-actions" onclick="this.closest('tr').remove()">×</button></td>
+          </tr>`).join('')}</tbody>
+        </table>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button class="btn" onclick="App.addItemPlantilla('material')">+ Material</button>
+          <button class="btn" onclick="App.addItemPlantilla('equipo')">+ Equipo</button>
+          <button class="btn" onclick="App.addItemPlantilla('mano_obra')">+ Mano de obra</button>
+          <button class="btn" onclick="App.addItemPlantilla('servicio')">+ Servicio</button>
+        </div>
+      </div>
+    `, [
+      {label:'Cancelar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Guardar', cls:'btn btn-primary', fn:()=> this.savePlantilla(${plt.id||'null'})}
+    ]);
+  },
+
+  addItemPlantilla(tipo){
+    const tb = document.querySelector('#pl_items tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><select class="filter-select" data-f="tipo"><option value="material" ${tipo==='material'?'selected':''}>Material</option><option value="equipo" ${tipo==='equipo'?'selected':''}>Equipo</option><option value="mano_obra" ${tipo==='mano_obra'?'selected':''}>Mano de obra</option><option value="servicio" ${tipo==='servicio'?'selected':''}>Servicio</option></select></td>
+      <td><input type="number" value="1" data-f="cantidad" style="width:60px"/></td>
+      <td><input type="text" value="un" data-f="unidad" style="width:60px"/></td>
+      <td><input type="text" value="" data-f="descripcion"/></td>
+      <td><input type="number" value="0" data-f="precio_unitario" style="width:80px"/></td>
+      <td><button class="row-actions" onclick="this.closest('tr').remove()">×</button></td>`;
+    tb.appendChild(tr);
+  },
+
+  async savePlantilla(id){
+    const items = [];
+    document.querySelectorAll('#pl_items tbody tr').forEach(tr=>{
+      const tipo = tr.querySelector('[data-f=tipo]').value;
+      const cant = parseFloat(tr.querySelector('[data-f=cantidad]').value)||0;
+      const unidad = tr.querySelector('[data-f=unidad]').value;
+      const descripcion = tr.querySelector('[data-f=descripcion]').value;
+      const precio_unitario = parseFloat(tr.querySelector('[data-f=precio_unitario]').value)||0;
+      if(descripcion) items.push({tipo, cantidad:cant, unidad, descripcion, precio_unitario});
+    });
+    const data = {
+      nombre: document.getElementById('pl_nombre').value.trim(),
+      descripcion: document.getElementById('pl_desc').value,
+      categoria: document.getElementById('pl_cat').value,
+      icono: document.getElementById('pl_icono').value||'📋',
+      items,
+      activo: true
+    };
+    if(!data.nombre){ this.toast('Nombre obligatorio','err'); return; }
+    if(id){
+      await db.from('cotizacion_plantillas').update(data).eq('id', id);
+    } else {
+      data.created_by = session.user.id;
+      await db.from('cotizacion_plantillas').insert(data);
+    }
+    this.toast('Plantilla guardada','ok');
+    this.closeModal();
+    this.renderPlantillas();
+  },
+
+  async eliminarPlantilla(id){
+    if(!confirm('¿Eliminar esta plantilla?')) return;
+    await db.from('cotizacion_plantillas').update({ activo: false }).eq('id', id);
+    this.toast('Plantilla eliminada','ok');
+    this.renderPlantillas();
   },
 
   openCotizacion(){
