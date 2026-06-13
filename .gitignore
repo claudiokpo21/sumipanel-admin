@@ -20,3 +20,30 @@ server.err
 # Build artifacts
 dist/
 build/
+
+# OpenCode runtime (no commitear)
+.opencode/
+
+# Proyectos viejos en este workspace (no son parte de SUMIPANEL)
+Kimey/
+ecu-global-v2/
+sumi-mockup/
+xr190l_pages/
+xr190l_full.txt
+xr_preview.html
+XR190L_*
+ktm-950-ecu-interactive.html
+auditoria-suministrosind.html
+troublesheet.html
+sumi_home.html
+sumi_quienes.html
+index.html
+casos-data.json
+quiz-data.json
+DIAGNOSTICO-2026-06-09.md
+img_*.png
+informe_*.png
+extract_pdf.py
+render_*.py
+server.js
+pw_*.json
