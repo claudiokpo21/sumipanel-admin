@@ -303,7 +303,52 @@ async function init(){
   }
   DATA = data;
   render();
+  // Cargar comentarios y archivos para cada cotizacion
+  for(const cot of DATA.cotizaciones){
+    cargarArchivos(cot.id);
+    cargarComentariosItems(cot.id);
+  }
   document.getElementById('userTag').innerHTML = `<b>${data.cliente.razon}</b> · ${data.portal.email}`;
+}
+
+async function cargarArchivos(cotId){
+  const { data } = await db.from('portal_archivos')
+    .select('*').eq('cotizacion_id', cotId).order('created_at', {ascending:false});
+  const cont = document.getElementById('archivos-'+cotId);
+  if(!cont) return;
+  if(!data?.length){ cont.innerHTML = '<div class="t-meta" style="padding:6px 0">Sin archivos adjuntos</div>'; return; }
+  cont.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">' + data.map(a=>`
+    <a href="${a.url_publica}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);text-decoration:none;color:var(--ink)">
+      <div style="font-size:24px">${a.mime_type?.includes('pdf')?'📄':a.mime_type?.includes('image')?'🖼️':a.mime_type?.includes('zip')?'🗜️':'📎'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.nombre}</div>
+        <div style="font-size:11px;color:var(--muted)">${(a.tamano_bytes/1024).toFixed(0)} KB</div>
+      </div>
+    </a>
+  `).join('') + '</div>';
+}
+
+async function cargarComentariosItems(cotId){
+  const { data } = await db.from('portal_item_comentarios')
+    .select('*, cotizacion_items!inner(sku, descripcion)')
+    .eq('cotizacion_id', cotId).order('created_at', {ascending:false});
+  if(!data?.length) return;
+  // Agrupar por item
+  const porItem = {};
+  data.forEach(c=>{
+    if(!porItem[c.item_id]) porItem[c.item_id] = [];
+    porItem[c.item_id].push(c);
+  });
+  for(const itemId in porItem){
+    const cont = document.getElementById('icom-'+itemId);
+    if(!cont) continue;
+    cont.innerHTML = porItem[itemId].map(c=>`
+      <div class="comentario" style="margin-top:4px;font-size:12px">
+        <b>${c.autor_nombre}:</b> ${c.texto}
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">${fmtDate(c.created_at,true)}</div>
+      </div>
+    `).join('');
+  }
 }
 
 function render(){
@@ -414,19 +459,33 @@ function render(){
           ${cot.notas ? `<p style="color:var(--ink-2);font-size:14px;line-height:1.6;background:var(--bg);padding:12px 16px;border-radius:var(--radius);border-left:3px solid var(--terracota-soft)">${cot.notas.replace(/\n/g,'<br>')}</p>` : ''}
 
           <table class="items">
-            <thead><tr><th style="width:60px">Tipo</th><th style="width:60px">Cant</th><th>Descripción</th><th class="right" style="width:100px">P.U.</th><th class="right" style="width:110px">Subtotal</th></tr></thead>
+            <thead><tr><th style="width:60px">Tipo</th><th style="width:60px">Cant</th><th>Descripción</th><th class="right" style="width:90px">P.U.</th><th class="right" style="width:100px">Subtotal</th><th style="width:60px"></th></tr></thead>
             <tbody>
               ${items.map(i => `
-                <tr class="${i.tipo}">
-                  <td><span class="item-tipo ${i.tipo}">${({material:'Material',equipo:'Equipo',mano_obra:'Mano de obra',servicio:'Servicio'})[i.tipo]||i.tipo}</span></td>
+                <tr class="${i.tipo}" data-item-id="${i.id}">
+                  <td><span class="item-tipo ${i.tipo}">${({material:'Material',equipo:' Equipo',mano_obra:'Mano de obra',servicio:'Servicio'})[i.tipo]||i.tipo}</span></td>
                   <td class="mono">${i.cantidad}</td>
-                  <td>${i.descripcion}</td>
+                  <td>${i.descripcion}
+                    <div id="icom-${i.id}" class="item-comments" style="margin-top:6px"></div>
+                  </td>
                   <td class="right mono">${simbolo} ${fmt(i.precio_unitario)}</td>
                   <td class="right mono"><b>${simbolo} ${fmt(i.subtotal)}</b></td>
+                  <td>
+                    <button class="btn-ghost" onclick="comentarItem(${cot.id}, ${i.id}, '${i.descripcion.replace(/'/g,"\\'")}')" style="padding:4px 8px;font-size:11px" title="Comentar">💬</button>
+                  </td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
+
+          <!-- Archivos adjuntos -->
+          <div style="margin-top:24px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div class="panel-title" style="font-size:14px">📎 Documentos</div>
+              <button class="btn-ghost" onclick="adjuntarArchivo(${cot.id})" style="padding:6px 12px">+ Adjuntar archivo</button>
+            </div>
+            <div id="archivos-${cot.id}" class="archivos-list"></div>
+          </div>
 
           <div class="totales">
             <div class="total-row"><span>Subtotal</span><span class="mono">${simbolo} ${fmt(subtotal)}</span></div>
@@ -464,31 +523,139 @@ function render(){
   document.getElementById('content').innerHTML = html;
 }
 
-async function aprobarCotizacion(cotId, decision){
-  if(!confirm(decision==='aprobada'?'¿Confirmás la aprobación de esta cotización?':'¿Confirmás el rechazo de esta cotización?')) return;
+// Subir archivo a la cotizacion
+async function adjuntarArchivo(cotId){
   openModal(`
-    <h2 class="modal-title">${decision==='aprobada'?'Aprobar cotización':'Rechazar cotización'}</h2>
-    <p class="modal-sub">¿Querés dejar un comentario? (opcional)</p>
-    <div class="field"><label>Tu nombre</label><input id="dec_nombre" value="${DATA.cliente.razon}"/></div>
-    <div class="field"><label>Comentario</label><textarea id="dec_comentario" placeholder="Alguna aclaración..."></textarea></div>
+    <h2 class="modal-title">Adjuntar documento</h2>
+    <p class="modal-sub">Subí un PDF, imagen o documento. Límite 10MB.</p>
+    <div class="field"><label>Nombre del archivo</label>
+      <input id="ar_nombre" placeholder="Plano electrico.pdf"/>
+    </div>
+    <div class="field" style="margin-top:10px"><label>Descripción (opcional)</label>
+      <input id="ar_desc" placeholder="Plano de planta baja"/>
+    </div>
+    <div class="field" style="margin-top:10px"><label>Archivo</label>
+      <input type="file" id="ar_file" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.dwg,.zip"/>
+    </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-      <button class="btn ${decision==='aprobada'?'btn-success':'btn-danger-outline'}" onclick="confirmarDecision(${cotId}, '${decision}')">${decision==='aprobada'?'Confirmar aprobación':'Confirmar rechazo'}</button>
+      <button class="btn btn-terracota" onclick="subirArchivo(${cotId})">📎 Subir</button>
+    </div>
+  `);
+}
+
+async function subirArchivo(cotId){
+  const file = document.getElementById('ar_file').files[0];
+  const nombre = document.getElementById('ar_nombre').value.trim() || (file?file.name:'archivo');
+  const desc = document.getElementById('ar_desc').value.trim();
+  if(!file){ toast('Elegí un archivo','error'); return; }
+  if(file.size > 10*1024*1024){ toast('Máximo 10MB','error'); return; }
+  // Subir a Storage
+  const path = `cotizacion-${cotId}/${Date.now()}-${file.name}`;
+  const { error: upErr } = await db.storage.from('portal-archivos').upload(path, file, { upsert: true });
+  if(upErr){ toast('Error subiendo: '+upErr.message, 'error'); return; }
+  const { data: pub } = db.storage.from('portal-archivos').getPublicUrl(path);
+  // Guardar registro
+  const { error: dbErr } = await db.from('portal_archivos').insert({
+    portal_id: DATA.portal.id, cotizacion_id: cotId,
+    nombre, descripcion: desc||null, url_storage: path, url_publica: pub.publicUrl,
+    mime_type: file.type, tamano_bytes: file.size,
+    subido_por: DATA.cliente.razon, subido_por_usuario: false
+  });
+  if(dbErr){ toast('Error: '+dbErr.message, 'error'); return; }
+  toast('📎 Archivo subido','ok');
+  closeModal();
+  setTimeout(()=> init(), 300);
+}
+
+// Comentar sobre un item especifico
+async function comentarItem(cotId, itemId, desc){
+  openModal(`
+    <h2 class="modal-title">Comentar sobre un ítem</h2>
+    <p class="modal-sub">Tu pregunta va dirigida al proveedor sobre este ítem específico.</p>
+    <div style="background:var(--bg);padding:10px 14px;border-radius:var(--radius);margin-bottom:14px;font-size:13px">
+      <b>Ítem:</b> ${desc}
+    </div>
+    <div class="field"><label>Tu nombre</label>
+      <input id="cm_nombre" value="${DATA.cliente.razon}"/>
+    </div>
+    <div class="field" style="margin-top:10px"><label>Tu pregunta</label>
+      <textarea id="cm_texto" placeholder="Necesito más info sobre este material..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-terracota" onclick="enviarItemComentario(${cotId}, ${itemId})">Enviar</button>
+    </div>
+  `);
+}
+
+async function enviarItemComentario(cotId, itemId){
+  const nombre = document.getElementById('cm_nombre').value.trim();
+  const texto = document.getElementById('cm_texto').value.trim();
+  if(!texto){ toast('Escribí tu pregunta','error'); return; }
+  const { error } = await db.from('portal_item_comentarios').insert({
+    portal_id: DATA.portal.id, cotizacion_id: cotId, item_id: itemId,
+    autor_nombre: nombre, autor_email: DATA.portal.email, texto
+  });
+  if(error){ toast('Error: '+error.message, 'error'); return; }
+  toast('💬 Pregunta enviada','ok');
+  closeModal();
+  setTimeout(()=> init(), 300);
+}
+
+async function aprobarCotizacion(cotId, decision){
+  openModal(`
+    <h2 class="modal-title">${decision==='aprobada'?'Aprobar cotización':'Rechazar cotización'}</h2>
+    <p class="modal-sub">Tu firma queda registrada con fecha, hora y dirección IP.</p>
+    <div class="field"><label>Nombre completo <span style="color:#dc2626">*</span></label>
+      <input id="dec_nombre" value="${DATA.cliente.razon}" required/>
+    </div>
+    <div class="field"><label>Email <span style="color:#dc2626">*</span></label>
+      <input type="email" id="dec_email" value="${DATA.portal.email}" required/>
+    </div>
+    <div class="form-row" style="margin-top:8px">
+      <div class="field"><label>Cargo / Puesto</label>
+        <input id="dec_cargo" placeholder="Director de IT, Gerente, etc."/>
+      </div>
+      <div class="field"><label>DNI / CUIT (opcional)</label>
+        <input id="dec_dni" placeholder="Para referencia del documento"/>
+      </div>
+    </div>
+    <div class="field" style="margin-top:10px"><label>Comentario (opcional)</label>
+      <textarea id="dec_comentario" placeholder="Alguna aclaración o condición especial..."></textarea>
+    </div>
+    <div style="background:var(--bg);padding:12px;border-radius:var(--radius);margin-top:14px;font-size:12px;color:var(--ink-2)">
+      🖋️ <b>Firma digital:</b> Al confirmar, dejás tu consentimiento registrado. Esto tiene validez legal como aceptación.
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn ${decision==='aprobada'?'btn-success':'btn-danger-outline'}" onclick="confirmarDecision(${cotId}, '${decision}')">🖋️ Firmar y ${decision==='aprobada'?'aprobar':'rechazar'}</button>
     </div>
   `);
 }
 
 async function confirmarDecision(cotId, decision){
-  const nombre = document.getElementById('dec_nombre').value.trim() || DATA.cliente.razon;
+  const nombre = document.getElementById('dec_nombre').value.trim();
+  const email = document.getElementById('dec_email').value.trim();
+  const cargo = document.getElementById('dec_cargo').value.trim();
+  const dni = document.getElementById('dec_dni').value.trim();
   const comentario = document.getElementById('dec_comentario').value.trim();
-  const { data, error } = await db.rpc('portal_aprobar_cotizacion', {
+  if(!nombre || !email){ toast('Nombre y email son obligatorios para firmar','error'); return; }
+  // Primero insertamos la firma
+  const { error: e1 } = await db.from('portal_firmas').insert({
+    portal_id: DATA.portal.id, cotizacion_id: cotId, decision,
+    firmado_por: nombre, email_firmante: email, cargo: cargo||null, dni_cuit: dni||null,
+    ip_address: 'client', user_agent: navigator.userAgent.slice(0, 200)
+  });
+  if(e1){ toast('Error: '+e1.message, 'error'); return; }
+  // Despues actualizamos el estado via RPC
+  const { error: e2 } = await db.rpc('portal_aprobar_cotizacion', {
     p_token: TOKEN, p_cotizacion_id: cotId, p_decision: decision,
     p_comentario: comentario, p_firmado_por: nombre
   });
-  if(error){ toast('Error: '+error.message, 'error'); return; }
+  if(e2){ toast('Error: '+e2.message, 'error'); return; }
   closeModal();
-  toast(decision==='aprobada'?'✓ Cotización aprobada. ¡Gracias!':'Cotización rechazada');
-  // recargar
+  toast(decision==='aprobada'?'✓ Cotización firmada y aprobada. ¡Gracias!':'Cotización firmada y rechazada');
   setTimeout(()=> init(), 800);
 }
 
