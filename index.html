@@ -228,6 +228,54 @@
   .upload-zone input{display:none}
   .fotos-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
   .fotos-list img{width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+
+  /* ===== COTIZADOR ===== */
+  .cot-tipo-material{background:rgba(59,130,246,.18);color:#bfdbfe}
+  .cot-tipo-equipo{background:rgba(245,158,11,.18);color:#fcd34d}
+  .cot-tipo-mano_obra{background:rgba(239,68,68,.18);color:#fca5a5}
+  .cot-tipo-servicio{background:rgba(34,211,164,.18);color:#86efac}
+  .cot-tipo-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+  .cot-tbl{width:100%;border-collapse:collapse;font-size:13px}
+  .cot-tbl input,.cot-tbl select{background:transparent;border:1px solid transparent;padding:6px 8px;color:var(--text);width:100%;font:inherit;border-radius:4px}
+  .cot-tbl input:focus,.cot-tbl select:focus{outline:none;border-color:var(--accent);background:#0e1119}
+  .cot-tbl input[type=number]{text-align:right;font-family:ui-monospace,monospace}
+  .cot-tbl td{padding:4px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .cot-tbl tr.tr-material{background:rgba(59,130,246,.06)}
+  .cot-tbl tr.tr-equipo{background:rgba(245,158,11,.08)}
+  .cot-tbl tr.tr-mano_obra{background:rgba(239,68,68,.08)}
+  .cot-tbl tr.tr-servicio{background:rgba(34,211,164,.06)}
+
+  .cot-header{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;padding:16px;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;margin-bottom:14px}
+  .cot-summary{background:#0e1119;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:14px}
+  .cot-summary .row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
+  .cot-summary .row.total{border-top:1px solid var(--line);padding-top:10px;margin-top:6px;font-size:18px;font-weight:700;color:var(--ok)}
+
+  .cot-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+
+  /* Print styles */
+  @media print {
+    body * { visibility: hidden; }
+    #printArea, #printArea * { visibility: visible; }
+    #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white; color: black; }
+    .no-print { display: none !important; }
+  }
+  #printArea{display:none}
+  #printArea.show{display:block;position:fixed;left:0;top:0;width:100%;height:100%;background:#fff;color:#000;z-index:9999;padding:40px;overflow:auto}
+  #printArea h1{font-size:24px;margin:0 0 4px}
+  #printArea h2{font-size:14px;color:#666;margin:0 0 20px;font-weight:400}
+  #printArea .pa-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;font-size:12px}
+  #printArea .pa-info b{display:block;color:#888;font-size:10px;text-transform:uppercase}
+  #printArea table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:14px}
+  #printArea th{background:#1a1a1a;color:#fff;padding:6px 8px;text-align:left;font-size:10px;text-transform:uppercase}
+  #printArea td{padding:5px 8px;border-bottom:1px solid #ddd}
+  #printArea tr.material{background:#e0ecff}
+  #printArea tr.equipo{background:#fef3c7}
+  #printArea tr.mano_obra{background:#fee2e2}
+  #printArea tr.servicio{background:#d1fae5}
+  #printArea .pa-total{text-align:right;font-size:14px;margin-top:14px}
+  #printArea .pa-total b{font-size:18px}
+  #printArea .pa-foot{margin-top:30px;font-size:10px;color:#666;text-align:center;border-top:1px solid #ccc;padding-top:10px}
 </style>
 </head>
 <body>
@@ -286,6 +334,7 @@
     <div class="nav-section" data-section="it">
       <div class="nav-title">Proyectos IT</div>
       <div class="nav-item" data-view="proyectos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v13H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Proyectos</div>
+      <div class="nav-item" data-view="cotizaciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg>Cotizaciones</div>
       <div class="nav-item" data-view="alcances"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Alcances</div>
       <div class="nav-item" data-view="tareas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Tareas</div>
     </div>
@@ -463,6 +512,26 @@
         </div>
       </section>
 
+      <!-- COTIZACIONES -->
+      <section class="view" data-view="cotizaciones">
+        <div class="page-head">
+          <div>
+            <div class="page-title">Cotizaciones</div>
+            <div class="page-sub">Materiales + equipos + mano de obra · USD/ARS · PDF imprimible</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="App.openCotizacion()">+ Nueva cotización</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Listado</div></div>
+          <div class="table-wrap"><table class="table" id="tblCotizaciones">
+            <thead><tr><th>Cotización</th><th>Proyecto</th><th>Cliente</th><th>Versión</th><th>Estado</th><th>Moneda</th><th>Total</th><th>Fecha</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </div>
+      </section>
+
       <!-- ALCANCES -->
       <section class="view" data-view="alcances">
         <div class="page-head">
@@ -581,6 +650,9 @@
 
 <div class="toast-wrap" id="toasts"></div>
 
+<!-- Area de impresion PDF (oculta hasta que se active) -->
+<div id="printArea"></div>
+
 <script>
 /* =====================================================
    CONFIG & STATE
@@ -602,12 +674,12 @@ const ROLE_LABELS = {
 };
 
 const ROLE_ACCESS = {
-  admin:       ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','alcances','tareas','trazabilidad','log','proveedores','usuarios'],
-  gerencia:    ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','alcances','tareas','trazabilidad','log','proveedores'],
+  admin:       ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores','usuarios'],
+  gerencia:    ['dashboard','pedidos','ventas','compras','seguimiento','recepcion','stock','proyectos','cotizaciones','alcances','tareas','trazabilidad','log','proveedores'],
   compras:     ['dashboard','compras','seguimiento','recepcion','stock','proyectos','tareas','trazabilidad','proveedores'],
   deposito:    ['dashboard','compras','seguimiento','recepcion','stock','tareas','trazabilidad'],
-  ventas:      ['dashboard','pedidos','ventas','stock','tareas','trazabilidad'],
-  proyectos:   ['dashboard','proyectos','alcances','tareas','trazabilidad','log'],
+  ventas:      ['dashboard','pedidos','ventas','stock','proyectos','cotizaciones','tareas','trazabilidad'],
+  proyectos:   ['dashboard','proyectos','cotizaciones','alcances','tareas','trazabilidad','log'],
   tecnico:     ['dashboard','tareas','trazabilidad']
 };
 
@@ -616,7 +688,8 @@ let profile = null;
 let cache = {
   clientes: [], proveedores: [], productos: [],
   pedidos: [], ventas: [], compras: [], recepciones: [],
-  proyectos: [], alcances: [], tareas: [], log: []
+  proyectos: [], alcances: [], tareas: [], log: [],
+  cotizaciones: [], cot_items: [], cot_catalogo: []
 };
 
 /* =====================================================
@@ -742,6 +815,7 @@ const App = {
       recepcion:['Recepción','Validación de mercadería'],
       stock:['Stock','Inventario'],
       proyectos:['Proyectos IT','Cartera de proyectos'],
+      cotizaciones:['Cotizaciones','Materiales + MO · PDF'],
       alcances:['Alcances Técnicos','Entregables'],
       tareas:['Tareas','Mis tareas'],
       trazabilidad:['Trazabilidad','Recorrido completo'],
@@ -876,7 +950,7 @@ const App = {
   /* ----- DATA LOADING ----- */
   async loadAll(){
     try{
-      const [cli, prov, prod, ped, vt, com, rec, pry, alc, tar, lg] = await Promise.all([
+      const [cli, prov, prod, ped, vt, com, rec, pry, alc, tar, lg, cot, cotIt, cotCat] = await Promise.all([
         db.from('clientes').select('*').eq('active', true).order('razon'),
         db.from('proveedores').select('*').eq('active', true).order('razon'),
         db.from('productos').select('*').eq('active', true).order('nombre'),
@@ -889,7 +963,10 @@ const App = {
         db.from('tareas').select('*, proyectos(codigo, nombre), profiles:asignado_id(full_name)').order('created_at',{ascending:false}).limit(300),
         (profile.role==='admin'||profile.role==='gerencia')
           ? db.from('log_eventos').select('*').order('created_at',{ascending:false}).limit(300)
-          : Promise.resolve({data:[],error:null})
+          : Promise.resolve({data:[],error:null}),
+        db.from('cotizaciones').select('*, proyectos(codigo, nombre, cliente_nombre)').order('created_at',{ascending:false}).limit(200),
+        db.from('cotizacion_items').select('*').order('orden').limit(2000),
+        db.from('cotizacion_catalogo').select('*').order('tipo, descripcion')
       ]);
       cache.clientes = cli.data||[];
       cache.proveedores = prov.data||[];
@@ -902,6 +979,9 @@ const App = {
       cache.alcances = alc.data||[];
       cache.tareas = tar.data||[];
       cache.log = lg.data||[];
+      cache.cotizaciones = cot.data||[];
+      cache.cot_items = cotIt.data||[];
+      cache.cot_catalogo = cotCat.data||[];
     }catch(e){
       console.error('loadAll', e);
       this.toast('Error al cargar datos: '+e.message, 'err');
@@ -918,6 +998,7 @@ const App = {
     this.renderRecepciones();
     this.renderStock();
     this.renderProyectos();
+    this.renderCotizaciones();
     this.renderAlcances();
     this.renderTareas();
     this.renderLog();
@@ -2152,6 +2233,417 @@ const App = {
     this.closeModal();
     this.renderAll();
     this.go('seguimiento');
+  },
+
+  /* ====================================================
+     COTIZADOR
+  ==================================================== */
+  TIPOS_COT: [
+    {id:'material',   label:'Material',   cls:'tr-material'},
+    {id:'equipo',     label:'Equipo',     cls:'tr-equipo'},
+    {id:'mano_obra',  label:'Mano de obra', cls:'tr-mano_obra'},
+    {id:'servicio',   label:'Servicio',   cls:'tr-servicio'}
+  ],
+
+  renderCotizaciones(){
+    const tb = document.querySelector('#tblCotizaciones tbody');
+    tb.innerHTML = '';
+    cache.cotizaciones.forEach(c=>{
+      const items = cache.cot_items.filter(i=>i.cotizacion_id===c.id);
+      const subtotal = items.reduce((s,i)=>s+(i.subtotal||0),0);
+      const desc = subtotal * (c.descuento_pct||0)/100;
+      const iva = (subtotal-desc) * (c.iva_pct||0)/100;
+      const total = subtotal - desc + iva;
+      const pill = {borrador:'muted',enviada:'info',aprobada:'ok',rechazada:'danger',vencida:'warn'}[c.estado]||'muted';
+      tb.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td><b>${c.titulo}</b></td>
+          <td>${c.proyectos?.codigo||'—'}</td>
+          <td>${c.proyectos?.cliente_nombre||'—'}</td>
+          <td>v${c.version}</td>
+          <td><span class="pill ${pill}"><span class="pdot"></span>${c.estado}</span></td>
+          <td>${c.moneda}</td>
+          <td class="right mono"><b>${c.moneda==='USD'?'$':'ARS$'}${this.fmt(c.moneda==='USD'?total:total*(c.tipo_cambio||1))}</b></td>
+          <td class="mono">${this.fmtDate(c.fecha)}</td>
+          <td>
+            <div class="row-actions">
+              <button title="Abrir / editar" onclick="App.openCotizacionEditor(${c.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+            </div>
+          </td>
+        </tr>`);
+    });
+    if(!cache.cotizaciones.length) tb.innerHTML = `<tr><td colspan="9" class="empty">Sin cotizaciones. Creá la primera con "+ Nueva cotización".</td></tr>`;
+  },
+
+  openCotizacion(){
+    const prys = cache.proyectos.map(p=>`<option value="${p.id}">${p.codigo} · ${p.nombre}</option>`).join('');
+    if(!prys){ this.toast('Primero creá un proyecto','err'); return; }
+    this.openModal('Nueva cotización', `
+      <div class="field"><label>Proyecto</label><select id="cot_proy">${prys}</select></div>
+      <div class="field" style="margin-top:10px"><label>Título</label><input id="cot_tit" placeholder="Cotización inicial / Revisión 1 / etc"/></div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="field"><label>Moneda</label>
+          <select id="cot_mon">
+            <option value="USD">USD - Dólar</option>
+            <option value="ARS">ARS - Peso argentino</option>
+          </select>
+        </div>
+        <div class="field"><label>Tipo de cambio (1 USD = ?)</label><input type="number" id="cot_tc" value="1" step="0.01"/></div>
+      </div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="field"><label>Vigencia (días)</label><input type="number" id="cot_vig" value="15"/></div>
+        <div class="field"><label>Descuento (%)</label><input type="number" id="cot_desc" value="0" step="0.01"/></div>
+      </div>
+      <div class="field" style="margin-top:10px"><label>Notas / condiciones</label><textarea id="cot_notas" placeholder="Forma de pago, plazo de entrega, condiciones..."></textarea></div>
+    `, [
+      {label:'Cancelar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Crear y abrir', cls:'btn btn-primary', fn:()=> this.saveCotizacion()}
+    ]);
+  },
+
+  async saveCotizacion(){
+    const proyecto_id = parseInt(document.getElementById('cot_proy').value);
+    const data = {
+      proyecto_id,
+      titulo: document.getElementById('cot_tit').value.trim() || 'Cotización',
+      moneda: document.getElementById('cot_mon').value,
+      tipo_cambio: parseFloat(document.getElementById('cot_tc').value)||1,
+      vigencia_dias: parseInt(document.getElementById('cot_vig').value)||15,
+      descuento_pct: parseFloat(document.getElementById('cot_desc').value)||0,
+      notas: document.getElementById('cot_notas').value,
+      version: 1
+    };
+    const { data: cot, error } = await db.from('cotizaciones').insert(data).select().single();
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    await this.logEvent('cotizacion','Cotización creada',`${data.titulo} · v1 · ${data.moneda}`, cot.id+'');
+    this.closeModal();
+    await this.renderAll();
+    this.openCotizacionEditor(cot.id);
+  },
+
+  async openCotizacionEditor(id){
+    const cot = cache.cotizaciones.find(c=>c.id===id);
+    if(!cot) return;
+    const items = cache.cot_items.filter(i=>i.cotizacion_id===id).sort((a,b)=>a.orden-b.orden);
+    const proyecto = cot.proyectos;
+    const tc = cot.tipo_cambio || 1;
+    const subtotal = items.reduce((s,i)=>s+(i.subtotal||0),0);
+    const desc = subtotal * (cot.descuento_pct||0)/100;
+    const base = subtotal - desc;
+    const iva = base * (cot.iva_pct||0)/100;
+    const total = base + iva;
+    const totalARS = cot.moneda==='ARS' ? total : total * tc;
+    const totalUSD = cot.moneda==='USD' ? total : total / tc;
+
+    const catalogoOpts = cache.cot_catalogo.map(c=>`<option value="${c.id}" data-tipo="${c.tipo}" data-desc="${c.descripcion.replace(/"/g,'&quot;')}" data-unidad="${c.unidad||'un'}" data-precio="${c.precio_referencial||0}">${c.descripcion}</option>`).join('');
+
+    this.openModal(`${cot.titulo} (v${cot.version}) · ${proyecto?.codigo||''}`, `
+      <div class="cot-header">
+        <div>
+          <div class="label" style="color:var(--muted);font-size:11px;text-transform:uppercase">Proyecto</div>
+          <div style="margin-top:4px"><b>${proyecto?.codigo||'—'}</b> · ${proyecto?.nombre||''}</div>
+        </div>
+        <div>
+          <div class="label" style="color:var(--muted);font-size:11px;text-transform:uppercase">Cliente</div>
+          <div style="margin-top:4px"><b>${proyecto?.cliente_nombre||'—'}</b></div>
+        </div>
+        <div>
+          <div class="label" style="color:var(--muted);font-size:11px;text-transform:uppercase">Moneda</div>
+          <div style="margin-top:4px">
+            <select id="ce_mon" onchange="App.cotRecalc(${id})" class="filter-select">
+              <option value="USD" ${cot.moneda==='USD'?'selected':''}>USD</option>
+              <option value="ARS" ${cot.moneda==='ARS'?'selected':''}>ARS</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="label" style="color:var(--muted);font-size:11px;text-transform:uppercase">Tipo de cambio</div>
+          <div style="margin-top:4px"><input type="number" id="ce_tc" value="${tc}" step="0.01" onchange="App.cotRecalc(${id})" style="background:#0e1119;border:1px solid var(--line);border-radius:6px;padding:5px 8px;color:var(--text);width:100px"/></div>
+        </div>
+      </div>
+
+      <div class="cot-actions">
+        <select class="filter-select" id="addCatTipo" onchange="App.addCotItemTipo(${id})">
+          <option value="material">+ Material</option>
+          <option value="equipo">+ Equipo</option>
+          <option value="mano_obra">+ Mano de obra</option>
+          <option value="servicio">+ Servicio</option>
+        </select>
+        <select class="filter-select" id="addCatItem" onchange="App.addCotItemFromCatalogo(${id})" style="min-width:280px">
+          <option value="">— Del catálogo —</option>
+          ${catalogoOpts}
+        </select>
+        <span style="margin-left:auto"></span>
+        <button class="btn" onclick="App.cotNuevaVersion(${id})">📋 Nueva versión</button>
+        <button class="btn" onclick="App.cotImprimirPDF(${id})">🖨️ Imprimir PDF</button>
+      </div>
+
+      <table class="cot-tbl" id="cotTbl">
+        <thead>
+          <tr style="background:#0e1119">
+            <th style="width:90px">Tipo</th>
+            <th style="width:70px">Cant</th>
+            <th style="width:70px">Unidad</th>
+            <th>Descripción</th>
+            <th style="width:110px">P.U.</th>
+            <th style="width:120px">Subtotal</th>
+            <th style="width:36px"></th>
+          </tr>
+        </thead>
+        <tbody id="cotTblBody">
+          ${items.map(i=>this.cotItemRowHTML(i)).join('')}
+        </tbody>
+      </table>
+
+      <div class="cot-summary">
+        <div class="row"><span>Subtotal</span><b class="mono" id="ce_sub">${this.fmt(subtotal)}</b></div>
+        <div class="row"><span>Descuento (${cot.descuento_pct||0}%)</span><b class="mono" id="ce_desc">-${this.fmt(desc)}</b></div>
+        <div class="row"><span>IVA (${cot.iva_pct||0}%)</span><b class="mono" id="ce_iva">${this.fmt(iva)}</b></div>
+        <div class="row total"><span>Total ${cot.moneda}</span><b class="mono" id="ce_total">${this.fmt(total)}</b></div>
+        ${cot.moneda==='ARS' ? `<div class="row" style="color:var(--muted)"><span>Equivale a USD</span><b class="mono">${this.fmt(totalUSD)}</b></div>` : `<div class="row" style="color:var(--muted)"><span>Equivale a ARS</span><b class="mono">${this.fmt(totalARS)}</b></div>`}
+      </div>
+
+      <div class="form-row" style="margin-top:14px">
+        <div class="field"><label>Estado</label>
+          <select id="ce_estado">
+            <option value="borrador" ${cot.estado==='borrador'?'selected':''}>Borrador</option>
+            <option value="enviada" ${cot.estado==='enviada'?'selected':''}>Enviada al cliente</option>
+            <option value="aprobada" ${cot.estado==='aprobada'?'selected':''}>Aprobada</option>
+            <option value="rechazada" ${cot.estado==='rechazada'?'selected':''}>Rechazada</option>
+            <option value="vencida" ${cot.estado==='vencida'?'selected':''}>Vencida</option>
+          </select>
+        </div>
+        <div class="field"><label>Vigencia (días)</label><input type="number" id="ce_vig" value="${cot.vigencia_dias||15}"/></div>
+      </div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="field"><label>Descuento (%)</label><input type="number" id="ce_desc_pct" value="${cot.descuento_pct||0}" step="0.01" onchange="App.cotRecalc(${id})"/></div>
+        <div class="field"><label>Notas</label><input id="ce_notas" value="${cot.notas||''}" placeholder="Forma de pago, plazo..."/></div>
+      </div>
+    `, [
+      {label:'Cerrar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Guardar', cls:'btn btn-primary', fn:()=> this.saveCotizacionEditor(${id})}
+    ]);
+  },
+
+  cotItemRowHTML(i){
+    const tipoLabel = (this.TIPOS_COT.find(t=>t.id===i.tipo)||{}).label || i.tipo;
+    const tipoPillClass = `cot-tipo-${i.tipo}`;
+    return `
+      <tr class="${(this.TIPOS_COT.find(t=>t.id===i.tipo)||{}).cls||''}" data-id="${i.id}">
+        <td><span class="cot-tipo-pill ${tipoPillClass}">${tipoLabel}</span></td>
+        <td><input type="number" step="0.01" value="${i.cantidad}" oninput="App.cotItemChange(${i.id},'cantidad',this.value)"/></td>
+        <td><input type="text" value="${i.unidad||''}" oninput="App.cotItemChange(${i.id},'unidad',this.value)"/></td>
+        <td><input type="text" value="${(i.descripcion||'').replace(/"/g,'&quot;')}" oninput="App.cotItemChange(${i.id},'descripcion',this.value)"/></td>
+        <td><input type="number" step="0.01" value="${i.precio_unitario}" oninput="App.cotItemChange(${i.id},'precio_unitario',this.value)"/></td>
+        <td class="mono" style="text-align:right;padding-right:12px"><b>${this.fmt(i.subtotal)}</b></td>
+        <td><button class="row-actions" onclick="App.cotItemDelete(${i.id})" title="Quitar">×</button></td>
+      </tr>`;
+  },
+
+  async addCotItemTipo(cotId){
+    const tipo = document.getElementById('addCatTipo').value;
+    const items = cache.cot_items.filter(i=>i.cotizacion_id===cotId);
+    const orden = items.length ? Math.max(...items.map(i=>i.orden))+1 : 0;
+    const { data, error } = await db.from('cotizacion_items').insert({
+      cotizacion_id: cotId, tipo, cantidad: 1, unidad: 'un', descripcion: '', precio_unitario: 0, subtotal: 0, orden
+    }).select().single();
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    cache.cot_items.push(data);
+    document.querySelector('#cotTblBody').insertAdjacentHTML('beforeend', this.cotItemRowHTML(data));
+    this.cotRecalc(cotId);
+  },
+
+  async addCotItemFromCatalogo(cotId){
+    const sel = document.getElementById('addCatItem');
+    const opt = sel.options[sel.selectedIndex];
+    if(!opt.value) return;
+    const items = cache.cot_items.filter(i=>i.cotizacion_id===cotId);
+    const orden = items.length ? Math.max(...items.map(i=>i.orden))+1 : 0;
+    const { data, error } = await db.from('cotizacion_items').insert({
+      cotizacion_id: cotId,
+      tipo: opt.dataset.tipo,
+      cantidad: 1,
+      unidad: opt.dataset.unidad,
+      descripcion: opt.dataset.desc,
+      precio_unitario: parseFloat(opt.dataset.precio)||0,
+      subtotal: parseFloat(opt.dataset.precio)||0,
+      orden
+    }).select().single();
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    cache.cot_items.push(data);
+    sel.value = '';
+    document.querySelector('#cotTblBody').insertAdjacentHTML('beforeend', this.cotItemRowHTML(data));
+    this.cotRecalc(cotId);
+  },
+
+  async cotItemChange(id, campo, valor){
+    const item = cache.cot_items.find(i=>i.id===id);
+    if(!item) return;
+    if(campo==='cantidad' || campo==='precio_unitario'){
+      item[campo] = parseFloat(valor)||0;
+      item.subtotal = (item.cantidad||0) * (item.precio_unitario||0);
+    } else {
+      item[campo] = valor;
+    }
+    const tr = document.querySelector(`#cotTbl tr[data-id="${id}"]`);
+    if(tr) tr.querySelector('td:nth-child(6) b').textContent = this.fmt(item.subtotal);
+    this.cotRecalc(item.cotizacion_id);
+  },
+
+  async cotItemDelete(id){
+    if(!confirm('¿Quitar este ítem?')) return;
+    const item = cache.cot_items.find(i=>i.id===id);
+    const { error } = await db.from('cotizacion_items').delete().eq('id', id);
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    cache.cot_items = cache.cot_items.filter(i=>i.id!==id);
+    const tr = document.querySelector(`#cotTbl tr[data-id="${id}"]`);
+    if(tr) tr.remove();
+    this.cotRecalc(item.cotizacion_id);
+  },
+
+  cotRecalc(cotId){
+    const items = cache.cot_items.filter(i=>i.cotizacion_id===cotId);
+    const subtotal = items.reduce((s,i)=>s+(i.subtotal||0),0);
+    const descPct = parseFloat(document.getElementById('ce_desc_pct')?.value)||0;
+    const desc = subtotal * descPct/100;
+    const base = subtotal - desc;
+    const iva = base * 0.21;
+    const total = base + iva;
+    const mon = document.getElementById('ce_mon')?.value || 'USD';
+    const tc = parseFloat(document.getElementById('ce_tc')?.value)||1;
+    if(document.getElementById('ce_sub')) document.getElementById('ce_sub').textContent = this.fmt(subtotal);
+    if(document.getElementById('ce_desc')) document.getElementById('ce_desc').textContent = '-'+this.fmt(desc);
+    if(document.getElementById('ce_iva')) document.getElementById('ce_iva').textContent = this.fmt(iva);
+    if(document.getElementById('ce_total')){
+      const totEl = document.getElementById('ce_total');
+      totEl.textContent = this.fmt(total);
+      totEl.parentElement.querySelector('span').textContent = 'Total '+mon;
+    }
+  },
+
+  async saveCotizacionEditor(id){
+    const items = cache.cot_items.filter(i=>i.cotizacion_id===id);
+    const subtotal = items.reduce((s,i)=>s+(i.subtotal||0),0);
+    const descPct = parseFloat(document.getElementById('ce_desc_pct')?.value)||0;
+    const desc = subtotal * descPct/100;
+    const base = subtotal - desc;
+    const iva = base * 0.21;
+    const total = base + iva;
+    const data = {
+      moneda: document.getElementById('ce_mon').value,
+      tipo_cambio: parseFloat(document.getElementById('ce_tc').value)||1,
+      estado: document.getElementById('ce_estado').value,
+      vigencia_dias: parseInt(document.getElementById('ce_vig').value)||15,
+      descuento_pct: descPct,
+      notas: document.getElementById('ce_notas').value,
+      total
+    };
+    // Guardar items modificados
+    for(const it of items){
+      await db.from('cotizacion_items').update({
+        cantidad: it.cantidad, precio_unitario: it.precio_unitario, subtotal: it.subtotal,
+        unidad: it.unidad, descripcion: it.descripcion, tipo: it.tipo
+      }).eq('id', it.id);
+    }
+    const { error } = await db.from('cotizaciones').update(data).eq('id', id);
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    await this.logEvent('cotizacion','Cotización actualizada',`${data.moneda} · total $${this.fmt(total)}`, id+'');
+    this.toast('Cotización guardada','ok');
+    this.closeModal();
+    this.renderAll();
+  },
+
+  async cotNuevaVersion(id){
+    if(!confirm('Crear nueva versión copiando los ítems actuales?')) return;
+    const cot = cache.cotizaciones.find(c=>c.id===id);
+    const oldItems = cache.cot_items.filter(i=>i.cotizacion_id===id);
+    // Crear nueva version
+    const { data: nueva, error } = await db.from('cotizaciones').insert({
+      proyecto_id: cot.proyecto_id,
+      titulo: cot.titulo,
+      version: cot.version+1,
+      estado: 'borrador',
+      moneda: cot.moneda,
+      tipo_cambio: cot.tipo_cambio,
+      vigencia_dias: cot.vigencia_dias,
+      descuento_pct: cot.descuento_pct,
+      iva_pct: cot.iva_pct,
+      notas: cot.notas,
+      total: cot.total
+    }).select().single();
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    // Copiar items
+    if(oldItems.length){
+      const rows = oldItems.map(i=>({
+        cotizacion_id: nueva.id, tipo: i.tipo, orden: i.orden,
+        cantidad: i.cantidad, unidad: i.unidad, descripcion: i.descripcion,
+        precio_unitario: i.precio_unitario, subtotal: i.subtotal
+      }));
+      await db.from('cotizacion_items').insert(rows);
+    }
+    await this.logEvent('cotizacion','Nueva versión',`v${nueva.version} de "${cot.titulo}"`, nueva.id+'');
+    this.toast('Nueva versión creada','ok');
+    this.closeModal();
+    await this.renderAll();
+    this.openCotizacionEditor(nueva.id);
+  },
+
+  cotImprimirPDF(id){
+    const cot = cache.cotizaciones.find(c=>c.id===id);
+    const items = cache.cot_items.filter(i=>i.cotizacion_id===id).sort((a,b)=>a.orden-b.orden);
+    const proyecto = cot.proyectos;
+    const tc = cot.tipo_cambio||1;
+    const subtotal = items.reduce((s,i)=>s+(i.subtotal||0),0);
+    const desc = subtotal*(cot.descuento_pct||0)/100;
+    const base = subtotal-desc;
+    const iva = base*(cot.iva_pct||21)/100;
+    const total = base+iva;
+    const totalARS = cot.moneda==='ARS' ? total : total*tc;
+    const totalUSD = cot.moneda==='USD' ? total : total/tc;
+
+    const printArea = document.getElementById('printArea');
+    printArea.innerHTML = `
+      <div class="no-print" style="position:absolute;top:10px;right:10px;display:flex;gap:6px">
+        <button onclick="window.print()" style="background:#1a1a1a;color:#fff;border:0;padding:8px 14px;border-radius:6px;cursor:pointer">🖨️ Imprimir ahora</button>
+        <button onclick="document.getElementById('printArea').classList.remove('show')" style="background:#dc2626;color:#fff;border:0;padding:8px 14px;border-radius:6px;cursor:pointer">✕ Cerrar</button>
+      </div>
+      <h1>${cot.titulo}</h1>
+      <h2>Versión ${cot.version} · ${cot.estado.toUpperCase()} · ${this.fmtDate(cot.fecha)}</h2>
+      <div class="pa-info">
+        <div><b>Proyecto</b>${proyecto?.codigo||'—'} · ${proyecto?.nombre||''}</div>
+        <div><b>Cliente</b>${proyecto?.cliente_nombre||'—'}</div>
+        <div><b>Vigencia</b>${cot.vigencia_dias||15} días</div>
+        <div><b>Moneda</b>${cot.moneda} ${cot.moneda==='ARS'?'(TC: '+this.fmt(tc)+')':''}</div>
+      </div>
+      <table>
+        <thead><tr><th style="width:60px">Cant</th><th style="width:60px">Unidad</th><th>Descripción</th><th style="width:90px;text-align:right">P.U.</th><th style="width:110px;text-align:right">Subtotal</th></tr></thead>
+        <tbody>
+          ${items.map(i=>{
+            const t = i.tipo;
+            return `<tr class="${t}">
+              <td class="mono">${i.cantidad}</td>
+              <td>${i.unidad||'un'}</td>
+              <td>${i.descripcion}</td>
+              <td class="mono" style="text-align:right">${this.fmt(i.precio_unitario)}</td>
+              <td class="mono" style="text-align:right">${this.fmt(i.subtotal)}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+      <div class="pa-total">
+        Subtotal: ${this.fmt(subtotal)} ${cot.moneda}<br>
+        ${desc>0?`Descuento (${cot.descuento_pct}%): -${this.fmt(desc)} ${cot.moneda}<br>`:''}
+        IVA (${cot.iva_pct||21}%): ${this.fmt(iva)} ${cot.moneda}<br>
+        <b>TOTAL: ${this.fmt(total)} ${cot.moneda}</b><br>
+        <span style="font-size:11px;color:#666">
+          ${cot.moneda==='ARS'?'Equivale a USD '+this.fmt(totalUSD):'Equivale a ARS '+this.fmt(totalARS)}
+        </span>
+      </div>
+      ${cot.notas?`<div style="margin-top:18px;padding:10px;background:#f5f5f5;font-size:10px"><b>Condiciones:</b><br>${cot.notas.replace(/\n/g,'<br>')}</div>`:''}
+      <div class="pa-foot">SUMIPANEL · Documento generado el ${new Date().toLocaleString('es-AR')}</div>
+    `;
+    printArea.classList.add('show');
+    setTimeout(()=> window.print(), 400);
   },
 
   /* ----- MI PERFIL ----- */
