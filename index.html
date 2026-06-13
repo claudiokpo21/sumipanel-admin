@@ -363,6 +363,10 @@
       <button class="icon-btn" onclick="App.openGlobalSearch()" title="Búsqueda global (Ctrl+K)" style="margin-left:18px">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </button>
+      <button class="icon-btn" onclick="App.openNotifications()" title="Notificaciones" style="margin-left:8px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="badge" id="notifBadge" style="display:none">0</span>
+      </button>
       <div class="top-actions">
         <div class="user" id="userBtn">
           <div class="avatar" id="userAvatar">?</div>
@@ -1056,6 +1060,64 @@ const App = {
     }
   },
 
+  /* ----- NOTIFICACIONES PUSH INTERNAS ----- */
+  notifications:[],
+  checkNotifications(){
+    if(!profile) return;
+    const list = [];
+    const today = new Date(); today.setHours(0,0,0,0);
+    const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
+    // OC atrasadas
+    cache.compras.forEach(c=>{
+      const eta = c.eta ? new Date(c.eta) : null;
+      if(eta && eta < today && c.estado!=='cerrada' && c.estado!=='cancelada' && c.estado!=='rechazada'){
+        const dias = Math.floor((today - eta)/86400000);
+        list.push({tipo:'danger', icono:'⚠️', titulo:`OC ${c.folio} atrasada`, sub:`${c.proveedores?.razon||''} · ${dias} días`, goto:'seguimiento'});
+      }
+    });
+    // Stock crítico (solo si tiene permiso de depósito/compras)
+    if(['admin','deposito','compras'].includes(profile.role)){
+      const criticos = cache.productos.filter(p=> p.stock <= p.stock_min);
+      if(criticos.length){
+        list.push({tipo:'warn', icono:'📦', titulo:`${criticos.length} producto(s) bajo mínimo`, sub:'Revisar stock', goto:'stock'});
+      }
+    }
+    // Tareas del usuario que vencen hoy o ayer
+    if(['admin','proyectos','gerencia'].includes(profile.role) || profile.role==='tecnico'){
+      cache.tareas.filter(t=> t.asignado_id===session.user.id && t.estado!=='completada' && t.estado!=='cancelada' && t.fecha_limite).forEach(t=>{
+        const fl = new Date(t.fecha_limite);
+        if(fl < today){
+          list.push({tipo:'danger', icono:'🔥', titulo:`Tarea vencida: ${t.titulo}`, sub:`Vencía ${this.fmtDate(t.fecha_limite)}`, goto:'tareas'});
+        } else if(fl < tomorrow){
+          list.push({tipo:'warn', icono:'⏰', titulo:`Tarea vence hoy: ${t.titulo}`, sub:'Vence hoy', goto:'tareas'});
+        }
+      });
+    }
+    this.notifications = list;
+    const badge = document.getElementById('notifBadge');
+    if(badge){
+      badge.textContent = list.length;
+      badge.style.display = list.length ? 'grid' : 'none';
+    }
+  },
+
+  openNotifications(){
+    if(!this.notifications.length){
+      this.openModal('Notificaciones', '<div class="empty">Sin notificaciones pendientes</div>', [{label:'Cerrar', cls:'btn', fn:()=> this.closeModal()}]);
+      return;
+    }
+    const html = this.notifications.map(n=>`
+      <div style="padding:12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:10px" onclick="App.closeModal();App.go('${n.goto}')">
+        <div style="font-size:20px">${n.icono}</div>
+        <div style="flex:1">
+          <div><b>${n.titulo}</b></div>
+          <div class="t-meta">${n.sub}</div>
+        </div>
+        <div class="pill ${n.tipo}"><span class="pdot"></span>${n.tipo}</div>
+      </div>`).join('');
+    this.openModal('Notificaciones ('+this.notifications.length+')', html, [{label:'Cerrar', cls:'btn', fn:()=> this.closeModal()}]);
+  },
+
   /* ====================================================
      REPORTES PDF
   ==================================================== */
@@ -1474,6 +1536,7 @@ const App = {
     this.renderLog();
     this.renderProveedores();
     this.renderUsuarios();
+    this.checkNotifications();
   },
 
   /* ----- DASHBOARD ----- */
