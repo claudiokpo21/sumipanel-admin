@@ -3652,11 +3652,13 @@ const App = {
   async portalGenerarLink(cotizacionId){
     const cot = cache.cotizaciones.find(c=>c.id===cotizacionId);
     if(!cot) return;
-    let proyecto = cot.proyectos;
+    // Buscar proyecto y cliente del cache fresco (puede haberse actualizado)
+    const proyectoId = cot.proyecto_id;
+    const proyecto = cache.proyectos.find(p=>p.id===proyectoId);
     let cli = proyecto ? cache.clientes.find(c=>c.id===proyecto.cliente_id) : null;
     // Si no hay proyecto o no tiene cliente, ofrecer elegir en el momento
     if(!cli){
-      const prysOpts = cache.proyectos.map(p=>`<option value="${p.id}" ${p.id==cot.proyecto_id?'selected':''}>${p.codigo} · ${p.nombre} (${p.cliente_nombre||'sin cliente'})</option>`).join('');
+      const prysOpts = cache.proyectos.map(p=>`<option value="${p.id}" ${p.id==proyectoId?'selected':''}>${p.codigo} · ${p.nombre} (${p.cliente_nombre||'sin cliente'})</option>`).join('');
       const clsOpts = cache.clientes.map(c=>`<option value="${c.id}">${c.razon}</option>`).join('');
       this.openModal('Asignar cliente a la cotización', `
         <p class="t-body" style="margin-bottom:14px">La cotización no tiene un cliente asignado. Elegí el proyecto y cliente para generar el link del portal.</p>
