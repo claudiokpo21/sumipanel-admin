@@ -1,6 +1,6 @@
 // Edge Function: send-email
 // Lee la cola notif_queue y manda cada mail via Resend
-// Se invoca con un GET o POST (con autenticacion anon del proyecto)
+// Invocar con header: x-cron-key: sumipanel-cron-2026
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -13,7 +13,6 @@ const MAX_PER_RUN = 20;
 const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 Deno.serve(async (req) => {
-  // Solo permitir con token secreto (header 'x-cron-key') o desde el mismo proyecto
   const cronKey = req.headers.get('x-cron-key');
   const expectedKey = Deno.env.get('CRON_SECRET') || 'sumipanel-cron-2026';
   if (cronKey !== expectedKey) {
@@ -21,7 +20,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // 1) Traer pendientes
     const { data: emails, error } = await db
       .from('notif_queue')
       .select('*')
