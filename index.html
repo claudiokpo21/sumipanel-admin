@@ -4,6 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>SUMIPANEL · Admin</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c5cff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3659,6 +3663,13 @@ document.addEventListener('keydown', (e)=>{
     if(App && App.closeModal) App.closeModal();
   }
 });
+
+// Service worker para PWA
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=> {
+    navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW err',err));
+  });
+}
 
 document.addEventListener('DOMContentLoaded', ()=> App.init());
 </script>
