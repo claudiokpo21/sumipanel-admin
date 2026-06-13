@@ -3669,10 +3669,19 @@ equipo,1,un,NVR 128ch,13000"></textarea>
           <option value="mano_obra">+ Mano de obra</option>
           <option value="servicio">+ Servicio</option>
         </select>
-        <select class="filter-select" id="addCatItem" onchange="App.addCotItemFromCatalogo(${id})" style="min-width:280px">
+        <input class="filter-select" id="addCatSearch" placeholder="🔍 Buscar en catálogo..." style="min-width:220px" oninput="App.filtrarCatalogo(this.value, ${id})"/>
+        <select class="filter-select" id="addCatFiltroTipo" onchange="App.filtrarCatalogo(document.getElementById('addCatSearch').value, ${id})">
+          <option value="">Todos los tipos</option>
+          <option value="material">Materiales</option>
+          <option value="equipo">Equipos</option>
+          <option value="mano_obra">Mano de obra</option>
+          <option value="servicio">Servicios</option>
+        </select>
+        <select class="filter-select" id="addCatItem" onchange="App.addCotItemFromCatalogo(${id})" style="min-width:240px;display:none">
           <option value="">— Del catálogo —</option>
           ${catalogoOpts}
         </select>
+        <button class="btn" onclick="App.toggleCatalogoLista(${id})" title="Ver lista completa">📋 Lista</button>
         <span style="margin-left:auto"></span>
         <button class="btn" onclick="App.cotNuevaVersion(${id})">📋 Nueva versión</button>
         <button class="btn" onclick="App.cotImprimirPDF(${id})">🖨️ Imprimir PDF</button>
@@ -3773,8 +3782,75 @@ equipo,1,un,NVR 128ch,13000"></textarea>
     if(error){ this.toast('Error: '+error.message,'err'); return; }
     cache.cot_items.push(data);
     sel.value = '';
+    document.getElementById('addCatSearch').value = '';
     document.querySelector('#cotTblBody').insertAdjacentHTML('beforeend', this.cotItemRowHTML(data));
     this.cotRecalc(cotId);
+  },
+
+  filtrarCatalogo(q, cotId){
+    const filtroTipo = document.getElementById('addCatFiltroTipo')?.value || '';
+    q = (q||'').toLowerCase().trim();
+    // Reconstruir el select filtrado
+    const sel = document.getElementById('addCatItem');
+    if(!sel) return;
+    sel.innerHTML = '<option value="">— Del catálogo —</option>' + cache.cot_catalogo
+      .filter(c=> !filtroTipo || c.tipo === filtroTipo)
+      .filter(c=> !q || c.descripcion.toLowerCase().includes(q))
+      .map(c=>`<option value="${c.id}" data-tipo="${c.tipo}" data-desc="${c.descripcion.replace(/"/g,'&quot;')}" data-unidad="${c.unidad||'un'}" data-precio="${c.precio_referencial||0}">${c.descripcion}</option>`)
+      .join('');
+  },
+
+  toggleCatalogoLista(cotId){
+    // Mostrar lista completa con favoritos
+    const cats = cache.cot_catalogo;
+    const favoritos = JSON.parse(localStorage.getItem('cot_favs')||'[]');
+    const html = `
+      <div style="max-height:380px;overflow:auto;margin-top:14px">
+        ${cats.map(c=>{
+          const esFav = favoritos.includes(c.id);
+          return `<div style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid var(--line);cursor:pointer" onclick="App.addCotRapidoCatalogo(${c.id}, ${cotId})">
+            <span style="cursor:pointer;font-size:18px" onclick="event.stopPropagation();App.toggleFavCatalogo(${c.id}, this)">${esFav?'⭐':'☆'}</span>
+            <span class="cot-tipo-pill cot-tipo-${c.tipo}">${c.tipo}</span>
+            <span style="flex:1;font-size:13px">${c.descripcion}</span>
+            <span class="mono" style="font-size:12px;color:var(--muted)">$${this.fmt(c.precio_referencial||0)}</span>
+          </div>`;
+        }).join('') || '<div class="empty">Sin productos en catálogo</div>'}
+      </div>
+    `;
+    // Mostrar en un modal aparte
+    this.openModal('Catálogo completo', html, [{label:'Cerrar', cls:'btn', fn:()=> this.closeModal()}]);
+  },
+
+  async addCotRapidoCatalogo(catId, cotId){
+    this.closeModal();
+    // Llamar la funcion de insercion reutilizando el flujo normal
+    const c = cache.cot_catalogo.find(x=>x.id===catId);
+    if(!c) return;
+    const items = cache.cot_items.filter(i=>i.cotizacion_id===cotId);
+    const orden = items.length ? Math.max(...items.map(i=>i.orden))+1 : 0;
+    const { data, error } = await db.from('cotizacion_items').insert({
+      cotizacion_id: cotId, tipo: c.tipo, cantidad:1, unidad: c.unidad||'un',
+      descripcion: c.descripcion, precio_unitario: c.precio_referencial||0, subtotal: c.precio_referencial||0, orden
+    }).select().single();
+    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    cache.cot_items.push(data);
+    document.querySelector('#cotTblBody').insertAdjacentHTML('beforeend', this.cotItemRowHTML(data));
+    this.cotRecalc(cotId);
+    this.toast('+ '+c.descripcion,'ok');
+    // Reabrir la lista
+    setTimeout(()=> this.toggleCatalogoLista(cotId), 300);
+  },
+
+  toggleFavCatalogo(catId, el){
+    let favoritos = JSON.parse(localStorage.getItem('cot_favs')||'[]');
+    if(favoritos.includes(catId)){
+      favoritos = favoritos.filter(x=>x!==catId);
+      el.textContent = '☆';
+    } else {
+      favoritos.push(catId);
+      el.textContent = '⭐';
+    }
+    localStorage.setItem('cot_favs', JSON.stringify(favoritos));
   },
 
   async cotItemChange(id, input){
