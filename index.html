@@ -443,6 +443,24 @@
             <div class="panel-head"><div class="panel-title">Stock por categoría</div><div class="panel-sub">Unidades</div></div>
             <div class="panel-body"><div class="chart-wrap"><canvas id="chartStock"></canvas></div></div>
           </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Top clientes (ventas)</div><div class="panel-sub">Histórico completo</div></div>
+            <div class="panel-body"><div class="chart-wrap"><canvas id="chartTopClientes"></canvas></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Recepciones por día</div><div class="panel-sub">Últimos 30 días</div></div>
+            <div class="panel-body"><div class="chart-wrap"><canvas id="chartRecepciones"></canvas></div></div>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top:14px">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Horas estimadas vs reales</div><div class="panel-sub">Por proyecto activo</div></div>
+            <div class="panel-body"><div class="chart-wrap"><canvas id="chartHoras"></canvas></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Progreso de proyectos</div><div class="panel-sub">% avance actual</div></div>
+            <div class="panel-body"><div id="dashProyList" style="max-height:240px;overflow:auto"></div></div>
+          </div>
         </div>
       </section>
 
@@ -1684,6 +1702,75 @@ const App = {
         data:{labels:stkLabels, datasets:[{label:'Stock', data:stkData, backgroundColor:'rgba(34,211,164,.6)', borderColor:'#22d3a4', borderWidth:1, borderRadius:4}]},
         options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:textColor, callback:v=>this.fmt(v)}, grid:{color:gridColor}}, y:{ticks:{color:textColor}, grid:{display:false}}}}
       });
+    }
+
+    // Top clientes
+    const porCliente = {};
+    cache.ventas.forEach(v=>{ porCliente[v.cliente_nombre] = (porCliente[v.cliente_nombre]||0) + (v.total||0); });
+    const top = Object.entries(porCliente).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    if(this.charts.top) this.charts.top.destroy();
+    const ctxTC = document.getElementById('chartTopClientes');
+    if(ctxTC && top.length){
+      this.charts.top = new Chart(ctxTC, {
+        type:'bar',
+        data:{labels:top.map(t=>t[0]), datasets:[{label:'Total vendido', data:top.map(t=>t[1]), backgroundColor:'rgba(56,189,248,.6)', borderColor:'#38bdf8', borderWidth:1, borderRadius:4}]},
+        options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:textColor, callback:v=>'$'+this.fmt(v)}, grid:{color:gridColor}}, y:{ticks:{color:textColor, font:{size:10}}, grid:{display:false}}}}
+      });
+    }
+
+    // Recepciones por dia (ultimos 30)
+    const ult30 = [];
+    const recPorDia = {};
+    for(let i=29; i>=0; i--){
+      const d = new Date(); d.setDate(d.getDate()-i);
+      const key = d.toISOString().slice(0,10);
+      const label = d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
+      ult30.push({label, key});
+      recPorDia[key] = 0;
+    }
+    cache.recepciones.forEach(r=>{ const k = (r.fecha||'').slice(0,10); if(recPorDia[k]!==undefined) recPorDia[k]++; });
+    if(this.charts.rec) this.charts.rec.destroy();
+    const ctxR = document.getElementById('chartRecepciones');
+    if(ctxR){
+      this.charts.rec = new Chart(ctxR, {
+        type:'line',
+        data:{labels:ult30.map(d=>d.label), datasets:[{label:'Recepciones', data:ult30.map(d=>recPorDia[d.key]), borderColor:'#7c5cff', backgroundColor:'rgba(124,92,255,.15)', fill:true, tension:.3, pointRadius:2}]},
+        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color:textColor, font:{size:9}, maxRotation:0, autoSkip:true, maxTicksLimit:10}, grid:{display:false}}, y:{ticks:{color:textColor}, grid:{color:gridColor}, beginAtZero:true}}}
+      });
+    }
+
+    // Horas estimadas vs reales (proyectos en curso)
+    const prActivos = cache.proyectos.filter(p=> p.estado==='en_curso' || p.estado==='planificacion').slice(0,8);
+    if(this.charts.horas) this.charts.horas.destroy();
+    const ctxH = document.getElementById('chartHoras');
+    if(ctxH && prActivos.length){
+      this.charts.horas = new Chart(ctxH, {
+        type:'bar',
+        data:{labels:prActivos.map(p=>p.codigo), datasets:[
+          {label:'Estimadas', data:prActivos.map(p=>p.horas_estimadas||0), backgroundColor:'rgba(124,92,255,.6)', borderColor:'#7c5cff'},
+          {label:'Reales', data:prActivos.map(p=>p.horas_reales||0), backgroundColor:'rgba(245,165,36,.6)', borderColor:'#f5a524'}
+        ]},
+        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:textColor, font:{size:10}}}}, scales:{x:{ticks:{color:textColor, font:{size:9}}, grid:{display:false}}, y:{ticks:{color:textColor}, grid:{color:gridColor}}}}
+      });
+    }
+
+    // Progreso de proyectos (lista de barras)
+    const cont = document.getElementById('dashProyList');
+    if(cont){
+      const prs = cache.proyectos.filter(p=> p.estado==='en_curso' || p.estado==='planificacion').slice(0,8);
+      if(!prs.length){ cont.innerHTML = '<div class="empty" style="padding:20px">Sin proyectos activos</div>'; }
+      else cont.innerHTML = prs.map(p=>{
+        const av = this.calcAvanceProyecto(p.id);
+        const manual = p.avance != null && p.avance !== av.auto;
+        const v = p.avance != null ? p.avance : av.auto;
+        return `<div style="padding:8px 0;border-bottom:1px solid var(--line)">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+            <b>${p.codigo} · ${p.nombre}</b>
+            <span style="color:${v>=80?'#22c55e':v>=50?'#f5a524':'#7c5cff'};font-weight:600">${v}%</span>
+          </div>
+          <div class="progress" style="height:6px"><div style="width:${v}%;background:linear-gradient(90deg,var(--accent),#3b82f6)"></div></div>
+        </div>`;
+      }).join('');
     }
   },
 
