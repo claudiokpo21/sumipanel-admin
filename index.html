@@ -3211,7 +3211,8 @@ const App = {
           <td class="mono">${this.fmtDate(c.fecha)}</td>
           <td>
             <div class="row-actions">
-              <button title="Abrir / editar" onclick="App.openCotizacionEditor(${c.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+              <button title="Editar" onclick="App.openCotizacionEditor(${c.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+              <button title="Compartir con cliente" onclick="App.portalGenerarLink(${c.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
             </div>
           </td>
         </tr>`);
@@ -3320,6 +3321,7 @@ const App = {
         <span style="margin-left:auto"></span>
         <button class="btn" onclick="App.cotNuevaVersion(${id})">📋 Nueva versión</button>
         <button class="btn" onclick="App.cotImprimirPDF(${id})">🖨️ Imprimir PDF</button>
+        <button class="btn btn-primary" onclick="App.portalGenerarLink(${id})">🔗 Compartir con cliente</button>
       </div>
 
       <table class="cot-tbl" id="cotTbl">
@@ -3365,6 +3367,7 @@ const App = {
       </div>
     `, [
       {label:'Cerrar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Compartir con cliente', cls:'btn', fn:()=> { this.closeModal(); this.portalGenerarLink(id); }},
       {label:'Guardar', cls:'btn btn-primary', fn:()=> this.saveCotizacionEditor(id)}
     ]);
   },
