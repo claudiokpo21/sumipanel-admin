@@ -2431,10 +2431,10 @@ const App = {
     return `
       <tr class="${(this.TIPOS_COT.find(t=>t.id===i.tipo)||{}).cls||''}" data-id="${i.id}">
         <td><span class="cot-tipo-pill ${tipoPillClass}">${tipoLabel}</span></td>
-        <td><input type="number" step="0.01" value="${i.cantidad}" oninput="App.cotItemChange(${i.id},'cantidad',this.value)"/></td>
-        <td><input type="text" value="${i.unidad||''}" oninput="App.cotItemChange(${i.id},'unidad',this.value)"/></td>
-        <td><input type="text" value="${(i.descripcion||'').replace(/"/g,'&quot;')}" oninput="App.cotItemChange(${i.id},'descripcion',this.value)"/></td>
-        <td><input type="number" step="0.01" value="${i.precio_unitario}" oninput="App.cotItemChange(${i.id},'precio_unitario',this.value)"/></td>
+        <td><input type="number" step="0.01" value="${i.cantidad}" data-field="cantidad" oninput="App.cotItemChange(${i.id}, this)"/></td>
+        <td><input type="text" value="${i.unidad||''}" data-field="unidad" oninput="App.cotItemChange(${i.id}, this)"/></td>
+        <td><input type="text" value="${(i.descripcion||'').replace(/"/g,'&quot;')}" data-field="descripcion" oninput="App.cotItemChange(${i.id}, this)"/></td>
+        <td><input type="number" step="0.01" value="${i.precio_unitario}" data-field="precio_unitario" oninput="App.cotItemChange(${i.id}, this)"/></td>
         <td class="mono" style="text-align:right;padding-right:12px"><b>${this.fmt(i.subtotal)}</b></td>
         <td><button class="row-actions" onclick="App.cotItemDelete(${i.id})" title="Quitar">×</button></td>
       </tr>`;
@@ -2476,9 +2476,11 @@ const App = {
     this.cotRecalc(cotId);
   },
 
-  async cotItemChange(id, campo, valor){
+  async cotItemChange(id, input){
     const item = cache.cot_items.find(i=>i.id===id);
     if(!item) return;
+    const campo = input.dataset.field;
+    const valor = input.value;
     if(campo==='cantidad' || campo==='precio_unitario'){
       item[campo] = parseFloat(valor)||0;
       item.subtotal = (item.cantidad||0) * (item.precio_unitario||0);
