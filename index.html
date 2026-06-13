@@ -546,6 +546,7 @@
           <div><div class="page-title">Stock</div><div class="page-sub">Inventario por SKU</div></div>
           <div class="page-actions">
             <button class="btn" onclick="App.exportarModulo('stock')">↓ CSV</button>
+            <button class="btn" onclick="App.openImportProductos()">📥 Importar CSV</button>
             <button class="btn btn-primary" onclick="App.openProducto()">+ Producto</button>
           </div>
         </div>
@@ -2180,6 +2181,149 @@ const App = {
     if(error){ this.toast('Error: '+error.message,'err'); return; }
     await this.logEvent('stock','Producto creado',`${data.sku} · ${data.nombre} — stock inicial ${data.stock}`, data.sku);
     this.toast('Producto guardado','ok');
+    this.closeModal();
+    this.renderAll();
+  },
+
+  /* ----- IMPORTADOR DE PRODUCTOS (CSV) ----- */
+  openImportProductos(){
+    this.openModal('Importar productos desde CSV', `
+      <p class="t-body" style="margin-bottom:12px">Pegá el contenido de tu CSV abajo. El sistema detecta automáticamente las columnas: <b>sku, nombre, categoria, unidad, stock, stock_min, precio_venta, costo</b></p>
+      <div class="t-meta" style="margin-bottom:8px">
+        <b>Formato esperado:</b><br>
+        <code style="display:block;background:#0e1119;padding:8px;border-radius:4px;margin-top:6px;font-size:11px">
+          sku,nombre,categoria,unidad,stock,stock_min,precio_venta,costo<br>
+          CH-001,Chapa galvanizada 1.22x2.44,Chapas,unidad,120,50,22500,18500<br>
+          PR-010,Perfil C 100x50,Perfiles,unidad,42,30,28900,24000
+        </code>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Pegar CSV</label>
+        <textarea id="csv_input" style="min-height:200px;font-family:monospace;font-size:12px" placeholder="sku,nombre,categoria,unidad,stock,stock_min,precio_venta,costo
+CH-001,Chapa galvanizada,Chapas,unidad,120,50,22500,18500"></textarea>
+      </div>
+      <div class="field" style="margin-top:10px">
+        <label>O subir archivo .csv</label>
+        <input type="file" id="csv_file" accept=".csv,.txt" onchange="App.leerArchivoCSV(this)"/>
+      </div>
+      <div id="csv_preview" style="margin-top:14px"></div>
+    `, [
+      {label:'Cancelar', cls:'btn', fn:()=> this.closeModal()},
+      {label:'Parsear', cls:'btn btn-primary', fn:()=> this.parsearCSV()}
+    ]);
+  },
+
+  leerArchivoCSV(input){
+    const f = input.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onload = e=>{
+      document.getElementById('csv_input').value = e.target.result;
+      this.parsearCSV();
+    };
+    reader.readAsText(f);
+  },
+
+  parsearCSV(){
+    const txt = document.getElementById('csv_input').value.trim();
+    if(!txt){ this.toast('Pegá el CSV primero','err'); return; }
+    // Parser CSV que respeta comillas
+    const lineas = this.parsearCSVLines(txt);
+    if(lineas.length < 2){ this.toast('CSV vacío o sin filas','err'); return; }
+    const header = lineas[0].map(c=> c.toLowerCase().trim());
+    const colIdx = {
+      sku: header.findIndex(h=> h.includes('sku')),
+      nombre: header.findIndex(h=> h.includes('nombre') || h.includes('descripcion') || h.includes('producto')),
+      categoria: header.findIndex(h=> h.includes('cat')),
+      unidad: header.findIndex(h=> h.includes('unidad')),
+      stock: header.findIndex(h=> h.includes('stock') && !h.includes('min')),
+      stock_min: header.findIndex(h=> h.includes('min')),
+      precio_venta: header.findIndex(h=> h.includes('precio') || h.includes('venta')),
+      costo: header.findIndex(h=> h.includes('costo') || h.includes('compra'))
+    };
+    if(colIdx.sku<0 || colIdx.nombre<0){
+      this.toast('Faltan columnas sku o nombre en el header','err');
+      return;
+    }
+    const productos = [];
+    const errores = [];
+    for(let i=1; i<lineas.length; i++){
+      const r = lineas[i];
+      if(r.length < 2) continue;
+      const sku = (r[colIdx.sku]||'').trim();
+      const nombre = (r[colIdx.nombre]||'').trim();
+      if(!sku || !nombre){ errores.push(`Fila ${i+1}: falta sku o nombre`); continue; }
+      productos.push({
+        sku, nombre,
+        categoria: colIdx.categoria>=0 ? (r[colIdx.categoria]||'').trim() : '',
+        unidad: colIdx.unidad>=0 ? (r[colIdx.unidad]||'unidad').trim() : 'unidad',
+        stock: colIdx.stock>=0 ? parseFloat((r[colIdx.stock]||'0').replace(',','.'))||0 : 0,
+        stock_min: colIdx.stock_min>=0 ? parseFloat((r[colIdx.stock_min]||'0').replace(',','.'))||0 : 0,
+        precio_venta: colIdx.precio_venta>=0 ? parseFloat((r[colIdx.precio_venta]||'0').replace(',','.'))||0 : 0,
+        costo: colIdx.costo>=0 ? parseFloat((r[colIdx.costo]||'0').replace(',','.'))||0 : 0
+      });
+    }
+    // Mostrar preview
+    const html = `
+      <div style="background:#0e1119;padding:12px;border-radius:6px;margin-bottom:10px">
+        <b>${productos.length} productos listos para importar</b>${errores.length?' · <span style="color:#fca5a5">'+errores.length+' errores</span>':''}
+      </div>
+      ${errores.length ? '<details style="margin-bottom:10px"><summary style="cursor:pointer;color:#fca5a5">Ver errores</summary><pre style="background:#0e1119;padding:8px;border-radius:4px;margin-top:6px;font-size:11px;max-height:120px;overflow:auto">'+errores.join('\n')+'</pre></details>' : ''}
+      <div style="max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:6px">
+        <table class="table" style="font-size:11px">
+          <thead><tr><th>SKU</th><th>Nombre</th><th>Cat</th><th>Stock</th><th>Min</th><th>Venta</th><th>Costo</th></tr></thead>
+          <tbody>${productos.slice(0,20).map(p=>`<tr><td class="mono">${p.sku}</td><td>${p.nombre}</td><td>${p.categoria||'-'}</td><td>${p.stock}</td><td>${p.stock_min}</td><td>${p.precio_venta}</td><td>${p.costo}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+      ${productos.length > 20 ? `<div class="t-meta" style="margin-top:6px">... y ${productos.length-20} más</div>` : ''}
+      <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn" onclick="App.closeModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="App.ejecutarImportProductos(${JSON.stringify(productos).replace(/"/g,'&quot;')})">📥 Importar ${productos.length} productos</button>
+      </div>
+    `;
+    document.getElementById('csv_preview').innerHTML = html;
+  },
+
+  // Parser CSV básico que maneja comillas y comas dentro de comillas
+  parsearCSVLines(txt){
+    const lineas = [];
+    let cur = [], cell = '', enComilla = false;
+    for(let i=0; i<txt.length; i++){
+      const c = txt[i], next = txt[i+1];
+      if(c === '"'){
+        if(enComilla && next === '"'){ cell += '"'; i++; }
+        else enComilla = !enComilla;
+      } else if(c === ',' && !enComilla){
+        cur.push(cell); cell = '';
+      } else if((c === '\n' || c === '\r') && !enComilla){
+        if(cell !== '' || cur.length > 0){ cur.push(cell); lineas.push(cur); cur = []; cell = ''; }
+      } else cell += c;
+    }
+    if(cell !== '' || cur.length > 0){ cur.push(cell); lineas.push(cur); }
+    return lineas.filter(l=> l.length > 1 || (l.length===1 && l[0].trim()));
+  },
+
+  async ejecutarImportProductos(productos){
+    if(!productos.length){ this.toast('Nada que importar','err'); return; }
+    // Verificar duplicados con los existentes
+    const skusExistentes = new Set(cache.productos.map(p=> p.sku));
+    const nuevos = productos.filter(p=> !skusExistentes.has(p.sku));
+    const duplicados = productos.length - nuevos.length;
+    let inserted = 0, errors = 0;
+    // Insertar en lotes de 50
+    for(let i=0; i<nuevos.length; i+=50){
+      const batch = nuevos.slice(i, i+50);
+      const { data, error } = await db.from('productos').insert(batch).select();
+      if(error){ errors++; this.toast('Error: '+error.message,'err'); }
+      else inserted += data?.length || 0;
+    }
+    // Agregar al catálogo del cotizador también
+    const tiposCatalog = {
+      material: {categoria:null, precio_referencial: 'precio_venta'},
+      equipo: {categoria:null, precio_referencial: 'precio_venta'}
+    };
+    await this.logEvent('stock','Importación masiva',`${inserted} productos importados · ${duplicados} duplicados saltados · ${errors} errores`);
+    this.toast(`${inserted} productos importados${duplicados?' ('+duplicados+' duplicados)':''}`,'ok');
     this.closeModal();
     this.renderAll();
   },
