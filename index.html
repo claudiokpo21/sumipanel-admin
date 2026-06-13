@@ -3664,7 +3664,7 @@ const App = {
       expira_en: expira.toISOString(), created_by: session.user.id
     });
     if(error){ this.toast('Error: '+error.message,'err'); return; }
-    const url = `https://sumipanel-admin.vercel.app/portal.html?t=${token}`;
+    const url = `https://clear-portal-cliente.vercel.app?t=${token}`;
     this.openModal('Link generado para el cliente', `
       <p class="t-body" style="margin-bottom:14px">Copiá este link y mandáselo a <b>${cli.razon}</b> por email o WhatsApp. El link expira el <b>${this.fmtDate(expira)}</b>.</p>
       <div style="background:#0e1119;padding:14px;border-radius:8px;font-family:monospace;font-size:13px;word-break:break-all;color:#e6e9f2;border:1px solid var(--line)">${url}</div>
@@ -3686,7 +3686,7 @@ const App = {
     tb.innerHTML = '';
     (data||[]).forEach(p=>{
       const expiro = p.expira_en && new Date(p.expira_en) < new Date();
-      const url = `https://sumipanel-admin.vercel.app/portal.html?t=${p.token}`;
+      const url = `https://clear-portal-cliente.vercel.app?t=${p.token}`;
       tb.insertAdjacentHTML('beforeend', `
         <tr>
           <td><b>${p.clientes?.razon||'—'}</b><div class="t-meta">${p.email}</div></td>
