@@ -1559,7 +1559,7 @@ const App = {
         (profile.role==='admin'||profile.role==='gerencia')
           ? db.from('log_eventos').select('*').order('created_at',{ascending:false}).limit(300)
           : Promise.resolve({data:[],error:null}),
-        db.from('cotizaciones').select('*, proyectos(codigo, nombre, cliente_nombre)').order('created_at',{ascending:false}).limit(200),
+        db.from('cotizaciones').select('*').order('created_at',{ascending:false}).limit(200),
         db.from('cotizacion_items').select('*').order('orden').limit(2000),
         db.from('cotizacion_catalogo').select('*').order('tipo, descripcion')
       ]);
@@ -3440,6 +3440,7 @@ CH-001,Chapa galvanizada,Chapas,unidad,120,50,22500,18500"></textarea>
   renderCotizaciones(){
     const tb = document.querySelector('#tblCotizaciones tbody');
     tb.innerHTML = '';
+    if(!tb){ console.warn('tblCotizaciones no existe'); return; }
     cache.cotizaciones.forEach(c=>{
       const items = cache.cot_items.filter(i=>i.cotizacion_id===c.id);
       const subtotal = items.reduce((s,i)=>s+(i.subtotal||0),0);
@@ -3447,11 +3448,12 @@ CH-001,Chapa galvanizada,Chapas,unidad,120,50,22500,18500"></textarea>
       const iva = (subtotal-desc) * (c.iva_pct||0)/100;
       const total = subtotal - desc + iva;
       const pill = {borrador:'muted',enviada:'info',aprobada:'ok',rechazada:'danger',vencida:'warn'}[c.estado]||'muted';
+      const proyecto = cache.proyectos.find(p=>p.id===c.proyecto_id);
       tb.insertAdjacentHTML('beforeend', `
         <tr>
           <td><b>${c.titulo}</b></td>
-          <td>${c.proyectos?.codigo||'—'}</td>
-          <td>${c.proyectos?.cliente_nombre||'—'}</td>
+          <td>${proyecto?.codigo||'—'}</td>
+          <td>${proyecto?.cliente_nombre||'—'}</td>
           <td>v${c.version}</td>
           <td><span class="pill ${pill}"><span class="pdot"></span>${c.estado}</span></td>
           <td>${c.moneda}</td>
@@ -3836,9 +3838,15 @@ equipo,1,un,NVR 128ch,13000"></textarea>
       version: 1
     };
     const { data: cot, error } = await db.from('cotizaciones').insert(data).select().single();
-    if(error){ this.toast('Error: '+error.message,'err'); return; }
+    if(error){ this.toast('Error: '+error.message,'err'); console.error('saveCotizacion error:', error); return; }
     await this.logEvent('cotizacion','Cotización creada',`${data.titulo} · v1 · ${data.moneda}`, cot.id+'');
+    // Agregar al cache inmediatamente
+    if(cot){
+      const proyecto = cache.proyectos.find(p=>p.id===cot.proyecto_id);
+      cache.cotizaciones.unshift({...cot, proyectos: proyecto});
+    }
     this.closeModal();
+    // Refrescar despues
     await this.renderAll();
     this.openCotizacionEditor(cot.id);
   },
